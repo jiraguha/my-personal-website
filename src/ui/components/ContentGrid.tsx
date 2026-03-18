@@ -16,10 +16,7 @@ export function ContentGrid({ posts }: ContentGridProps) {
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-          Projects, Writing, Talks &amp; Code
-        </h2>
+      <div className="flex justify-end mb-6">
         <CategoryFilter active={filter} onChange={setFilter} />
       </div>
 

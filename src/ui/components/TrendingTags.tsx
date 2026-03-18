@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { TrendingTag } from "@shared/schemas/tags.schema";
+import { SectionDivider } from "./SectionDivider";
 
 interface TrendingTagsProps {
   tags: TrendingTag[];
@@ -34,13 +35,8 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
 
   return (
     <section aria-label="Trending tags">
-      {/* Divider label */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800" />
-        <span className="text-xs font-mono uppercase tracking-widest text-gray-400 dark:text-gray-600 select-none">
-          Trending
-        </span>
-        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800" />
+      <div className="mb-4">
+        <SectionDivider label="Trending" />
       </div>
 
       {/* Chip row — wraps on desktop, horizontal scroll on mobile */}
