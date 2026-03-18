@@ -82,7 +82,7 @@ export function Hero({ profile }: HeroProps) {
               </p>
 
               {/* Social links */}
-              <div className="flex items-center gap-5 mt-4">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4">
                 {profile.socials.email && (
                   <a
                     href={profile.socials.email}
