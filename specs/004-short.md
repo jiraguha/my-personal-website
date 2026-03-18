@@ -1,6 +1,6 @@
 # 004 — Short Notes Content Category
 
-> Status: `implementing`
+> Status: `complete`
 > Mode: `full`
 > Date: 2026-03-18
 
@@ -125,6 +125,8 @@ _None. This feature uses existing dependencies from spec 001. No new packages._
 
 ## Post-Implementation Notes
 
-_Filled when status → complete._
-
-- ...
+- Promoted from prototype via `/spec-promote 004-short` on 2026-03-18.
+- RSS and sitemap criteria removed — neither feature exists in this SPA; scope them to a future spec if/when added.
+- `getFeaturedPost()` updated to `category !== "short"` — one-line fix, covered by unit + E2E tests.
+- ShortBadge uses violet to distinguish from existing category badge colours (blue/green/orange).
+- The `Post` interface in `test/lib/posts.test.ts` now includes `"short"` in the category union.

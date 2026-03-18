@@ -58,7 +58,7 @@ interface Post {
   summary: string;
   cover: string;
   tags: string[];
-  category: "blog" | "project" | "talk";
+  category: "blog" | "project" | "talk" | "short";
   featured: boolean;
   draft: boolean;
   externalUrl?: string;
@@ -383,5 +383,134 @@ describe("LIB-7: toPostCard — shape and no extra fields", () => {
   it("does not include the markdown content body", () => {
     const card = toPostCard(post);
     expect((card as Record<string, unknown>).content).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Fixtures for short-category posts (spec 004)
+// ---------------------------------------------------------------------------
+
+const SHORT_POST = `---
+title: "TIL: kubectl debug"
+date: "2026-03-18"
+summary: "Attach ephemeral containers to running pods."
+category: short
+tags: [kubernetes, devtools]
+featured: false
+draft: false
+---
+\`kubectl debug\` is great.
+`;
+
+const FEATURED_SHORT_POST = `---
+title: "Featured Short"
+date: "2026-03-19"
+summary: "A short that was mistakenly marked featured."
+category: short
+tags: [test]
+featured: true
+draft: false
+---
+Body.
+`;
+
+// ---------------------------------------------------------------------------
+// API-1: schema accepts "short" as a valid category
+// ---------------------------------------------------------------------------
+
+describe("API-1: ContentCategorySchema accepts 'short'", () => {
+  it("buildPost succeeds for category: short", () => {
+    const post = buildPost(SHORT_POST, "/content/posts/til-kubectl-debug.md");
+    expect(post).not.toBeNull();
+    expect(post?.category).toBe("short");
+  });
+
+  it("short post passes full Zod validation", () => {
+    const { data } = parseFrontmatter(SHORT_POST);
+    const result = PostFrontmatterSchema.safeParse({
+      slug: "til-kubectl-debug",
+      ...data,
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API-3: getAllPosts includes shorts
+// ---------------------------------------------------------------------------
+
+describe("API-3: shorts appear in the full post list", () => {
+  const posts = [
+    buildPost(VALID_POST, "/content/posts/a.md")!,
+    buildPost(SHORT_POST, "/content/posts/til.md")!,
+  ].filter(Boolean);
+
+  it("short is included alongside blog posts", () => {
+    expect(posts.find((p) => p.category === "short")).toBeDefined();
+  });
+
+  it("both posts survive filterAndSort in production mode", () => {
+    const sorted = filterAndSort(posts, false);
+    expect(sorted).toHaveLength(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API-4: getPostsByTag includes shorts
+// ---------------------------------------------------------------------------
+
+describe("API-4: getPostsByTag includes short-category posts", () => {
+  const posts = [
+    buildPost(VALID_POST, "/content/posts/a.md")!,       // tags: [foo, bar]
+    buildPost(SHORT_POST, "/content/posts/til.md")!,     // tags: [kubernetes, devtools]
+  ].filter(Boolean);
+
+  const getByTag = (tag: string) => posts.filter((p) => p.tags.includes(tag));
+
+  it("returns a short when querying its tag", () => {
+    const results = getByTag("kubernetes");
+    expect(results).toHaveLength(1);
+    expect(results[0].category).toBe("short");
+  });
+
+  it("does not include the short for a blog-only tag", () => {
+    const results = getByTag("foo");
+    expect(results.every((p) => p.category !== "short")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API-5: getFeaturedPost skips shorts
+// ---------------------------------------------------------------------------
+
+describe("API-5: getFeaturedPost skips shorts with featured: true", () => {
+  // featured short + non-featured blog — featured short must be skipped
+  const posts = [
+    buildPost(FEATURED_SHORT_POST, "/content/posts/featured-short.md")!, // featured, short
+    buildPost(VALID_POST, "/content/posts/blog.md")!,                    // not featured, blog
+  ].filter(Boolean);
+
+  const sorted = filterAndSort(posts, false);
+  const getFeatured = () => sorted.find((p) => p.featured && p.category !== "short");
+
+  it("returns undefined when only featured post is a short", () => {
+    expect(getFeatured()).toBeUndefined();
+  });
+
+  // featured short + featured blog — blog should win
+  const postsWithBlog = [
+    buildPost(FEATURED_SHORT_POST, "/content/posts/featured-short.md")!,
+    buildPost(FEATURED_POST, "/content/posts/featured-blog.md")!,
+  ].filter(Boolean);
+
+  const sortedWithBlog = filterAndSort(postsWithBlog, false);
+  const getFeaturedWithBlog = () =>
+    sortedWithBlog.find((p) => p.featured && p.category !== "short");
+
+  it("returns the non-short featured post when both exist", () => {
+    const featured = getFeaturedWithBlog();
+    expect(featured).toBeDefined();
+    expect(featured?.category).not.toBe("short");
+    expect(featured?.title).toBe("Featured Post");
   });
 });
