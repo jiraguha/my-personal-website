@@ -19,7 +19,7 @@ function categoryLabel(cat: string) {
 }
 
 export function FeaturedCard({ post }: FeaturedCardProps) {
-  const href = post.externalUrl ?? `/posts/${post.slug}`;
+  const href = post.externalUrl || `/posts/${post.slug}`;
   const isExternal = !!post.externalUrl;
 
   return (

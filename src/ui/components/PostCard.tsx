@@ -21,7 +21,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export function PostCard({ post }: PostCardProps) {
-  const href = post.externalUrl ?? `/posts/${post.slug}`;
+  const href = post.externalUrl || `/posts/${post.slug}`;
   const isExternal = !!post.externalUrl;
 
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
