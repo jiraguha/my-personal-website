@@ -10,5 +10,6 @@ export const siteProfile: SiteProfile = {
     github: "https://github.com/jiraguha",
     linkedin: "https://www.linkedin.com/in/jiraguha/",
     email: "mailto:jp@iraguha.dev",
+    resume: "/assets/resume/jean-paul-iraguha-resume.pdf",
   },
 };

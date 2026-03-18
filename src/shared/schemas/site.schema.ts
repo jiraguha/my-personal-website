@@ -42,6 +42,7 @@ export const SiteProfileSchema = z.object({
     linkedin: z.string().optional(),
     twitter: z.string().optional(),
     email: z.string().optional(),
+    resume: z.string().startsWith("/assets/").optional(),
   }),
 });
 export type SiteProfile = z.infer<typeof SiteProfileSchema>;

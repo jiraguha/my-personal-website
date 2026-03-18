@@ -59,6 +59,22 @@ export function Nav({ profile }: NavProps) {
               </svg>
             </a>
           )}
+          {profile.socials.resume && (
+            <a
+              href={profile.socials.resume}
+              download="jean-paul-iraguha-resume.pdf"
+              aria-label="Download resume as PDF"
+              title="Download resume"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <line x1="9" y1="15" x2="15" y2="15" />
+              </svg>
+            </a>
+          )}
           <ThemeToggle />
         </div>
 
@@ -94,6 +110,16 @@ export function Nav({ profile }: NavProps) {
           {profile.socials.email && (
             <a href={profile.socials.email} className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
               Email
+            </a>
+          )}
+          {profile.socials.resume && (
+            <a
+              href={profile.socials.resume}
+              download="jean-paul-iraguha-resume.pdf"
+              aria-label="Download resume as PDF"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+            >
+              Resume
             </a>
           )}
           <ThemeToggle />
