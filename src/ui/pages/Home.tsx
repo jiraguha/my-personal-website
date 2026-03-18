@@ -13,7 +13,7 @@ export function Home() {
   const gridPosts = allPosts
     .filter((p) => !p.featured)
     .map(toPostCard);
-  const trendingTags = computeTrendingTags();
+  const trendingTags = computeTrendingTags(5);
 
   return (
     <div>
