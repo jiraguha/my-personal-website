@@ -42,16 +42,17 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
   [*] --> Draft
-  Draft --> Implementing: /spec-test
-  Implementing --> Complete: /spec-verify passes
+  Draft --> Implementing : spec-test
+  Implementing --> Complete : spec-verify
   Complete --> [*]
-  Implementing --> Draft: tests fail
+  Implementing --> Draft : tests fail
 ```
 
-## Error state demo
+## Error state
 
-The following block has invalid syntax and should show an error card:
+Invalid syntax renders an error card instead of breaking the page:
 
 ```mermaid
-this is not valid mermaid %%%
+unknownDiagramType
+  A --> B
 ```
