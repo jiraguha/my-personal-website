@@ -1,13 +1,13 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "Stop": [
       {
-        "matcher": "Edit|Write",
         "hooks": [
           {
-            "type": "command",
-            "command": "cd /Users/jpiraguha/dev/my-personal-website && git add -A && if ! git diff --cached --quiet; then FILES=$(git diff --cached --name-only | head -3 | tr '\\n' ',' | sed 's/,$//;s/,/, /g') && COUNT=$(git diff --cached --name-only | wc -l | tr -d ' ') && EXTRA=$((COUNT > 3 ? COUNT - 3 : 0)) && MSG=\"update $FILES\" && [ \"$EXTRA\" -gt 0 ] && MSG=\"$MSG (+$EXTRA more)\"; git commit -m \"auto: $MSG\"; fi 2>/dev/null || true",
-            "statusMessage": "Auto-committing changes..."
+            "type": "agent",
+            "model": "claude-haiku-4-5-20251001",
+            "prompt": "Stage all changes and commit them. Run: git add -A. Then check if there is anything staged with git diff --cached --name-only. If there is, write a short conventional commit message (e.g. 'feat: add hero component' or 'fix: avatar fallback') based on what changed, and run git commit -m with that message. If nothing is staged, do nothing.",
+            "statusMessage": "Committing changes..."
           }
         ]
       }
