@@ -53,7 +53,7 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
                 tierClasses(t.rank),
               ].join(" ")}
             >
-              {t.displayName}
+              #{t.displayName}
               <span className="text-xs opacity-50 font-normal">×{t.count}</span>
             </Link>
           ))}
