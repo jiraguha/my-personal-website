@@ -77,7 +77,7 @@ export function getPostBySlug(slug: string): Post | undefined {
 }
 
 export function getFeaturedPost(): Post | undefined {
-  return getAllPosts().find((p) => p.featured);
+  return getAllPosts().find((p) => p.featured && p.category !== "short");
 }
 
 export function getPostsByTag(tag: string): Post[] {
