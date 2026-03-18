@@ -20,8 +20,6 @@ export function Home() {
       <Hero profile={siteProfile} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16 space-y-12">
-        <TrendingTags tags={trendingTags} />
-
         <section className="space-y-6">
           <SectionDivider label="Featured" />
           {featured ? (
@@ -32,6 +30,8 @@ export function Home() {
             </div>
           )}
         </section>
+
+        <TrendingTags tags={trendingTags} />
 
         {gridPosts.length > 0 && (
           <section className="space-y-6">
