@@ -1,10 +1,12 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { getPostBySlug } from "../lib/posts";
 import { TagChip } from "../components/TagChip";
+import { MermaidDiagram } from "../components/MermaidDiagram";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -13,6 +15,16 @@ function formatDate(iso: string) {
     day: "numeric",
   });
 }
+
+const markdownComponents: Components = {
+  code({ className, children, ...props }) {
+    const language = /language-(\w+)/.exec(className ?? "")?.[1];
+    if (language === "mermaid") {
+      return <MermaidDiagram code={String(children)} />;
+    }
+    return <code className={className} {...props}>{children}</code>;
+  },
+};
 
 export function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -77,6 +89,7 @@ export function PostDetail() {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}
+          components={markdownComponents}
         >
           {post.content}
         </ReactMarkdown>
