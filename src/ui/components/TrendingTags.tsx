@@ -48,12 +48,12 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
               to={`/tags/${t.tag}`}
               className={[
                 "flex-shrink-0 inline-flex items-center gap-1.5",
-                "px-3 py-1.5 rounded-full border text-sm font-medium",
+                "px-3 py-1.5 rounded-md border text-sm font-medium",
                 "transition-all duration-150 hover:-translate-y-px",
                 tierClasses(t.rank),
               ].join(" ")}
             >
-              #{t.displayName}
+              # {t.displayName}
               <span className="text-xs opacity-50 font-normal">×{t.count}</span>
             </Link>
           ))}
