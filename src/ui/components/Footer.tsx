@@ -11,7 +11,7 @@ export function Footer({ profile }: FooterProps) {
     <footer className="mt-24 border-t border-gray-200 dark:border-gray-800 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-500">
         <p>
-          © {year} {profile.name} · Built with React + Vite
+          © {year} {profile.name} · Built with React + Vite + Bun
         </p>
         <div className="flex gap-4">
           {profile.socials.github && (

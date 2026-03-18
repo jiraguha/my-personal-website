@@ -7,8 +7,8 @@ export const siteProfile: SiteProfile = {
   bio: "I build agentic systems, developer tooling, and resilient infrastructure. Passionate about the intersection of AI and software engineering — from spec-driven development to multi-agent orchestration.",
   avatar: "/assets/authors/jp.png",
   socials: {
-    github: "https://github.com/jpiraguha",
-    linkedin: "https://linkedin.com/in/jpiraguha",
-    email: "mailto:hello@jpiraguha.dev",
+    github: "https://github.com/jiraguha",
+    linkedin: "https://www.linkedin.com/in/jiraguha/",
+    email: "mailto:jp@iraguha.dev",
   },
 };
