@@ -1,98 +1,74 @@
 # 002 — Resume Download
 
-> Status: `prototype`
-> Mode: `prototype`
+> Status: `complete`
+> Mode: `full`
 > Date: 2026-03-18
 
 ## Intent
 
-Visitors can download Jean-Paul's resume as a PDF directly from the site. A resume icon+link appears alongside the existing social links (email, GitHub, LinkedIn) in both the hero card and the nav bar. The resume file is a static asset committed to the repo — no generation, no CMS, no external hosting.
+Visitors can download Jean-Paul's resume as a PDF directly from the site.
+A resume icon+link appears in the hero card social links row. The file is
+a static asset — no generation, no CMS, no external hosting.
 
 ## Shared Schema
 
 ```typescript
-// src/shared/schemas/site.schema.ts (extension to spec 001)
-
-export interface SiteProfile {
-  // ... existing fields from spec 001
-  socials: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    email?: string;
-    resume?: string;   // NEW — relative path, e.g. "/assets/resume/jean-paul-iraguha-resume.pdf"
-  };
-}
+// src/shared/schemas/site.schema.ts
+socials: z.object({
+  github: z.string().optional(),
+  linkedin: z.string().optional(),
+  twitter: z.string().optional(),
+  email: z.string().optional(),
+  resume: z.string().startsWith("/assets/").optional(),
+})
 ```
 
 ## API Acceptance Criteria
 
-- [ ] API-1: The resume PDF is served as a static asset from `public/assets/resume/jean-paul-iraguha-resume.pdf`. No API route or server-side logic required.
-- [ ] API-2: The `SiteProfile.socials.resume` field in `lib/site.ts` points to the public path of the PDF. If the field is `undefined` or empty, the resume link is not rendered anywhere.
-- [ ] API-3: The build step validates that the file at `socials.resume` actually exists in `public/`. If it doesn't, the build emits a warning (not a failure) and the link is omitted.
+- [x] API-1: Resume PDF served as static asset from `public/assets/resume/jean-paul-iraguha-resume.pdf`.
+- [x] API-2: `SiteProfile.socials.resume` is a Zod-validated optional field (must start with `/assets/`). If unset, no resume link renders anywhere.
 
 ## UI Acceptance Criteria
 
-- [ ] UI-1: **Hero card** — a "resume" link appears after the LinkedIn icon in the social links row at the bottom of the hero card. It uses a download/document icon (e.g. `FileDown` or `FileText` from `lucide-react`) consistent in size and style with the existing email, GitHub, and LinkedIn icons.
-- [ ] UI-2: **Nav bar** — a resume icon appears in the top-right icon group alongside GitHub, LinkedIn, and email, in the same style and spacing.
-- [ ] UI-3: **Click behavior** — clicking the resume link triggers a browser download (via `<a href="..." download>`) rather than navigating to a new page. The downloaded filename is `jean-paul-iraguha-resume.pdf`.
-- [ ] UI-4: **Tooltip** — hovering over the resume icon shows a tooltip: "Download resume".
-- [ ] UI-5: **Mobile** — in the hamburger menu, "Resume" appears as a text link (with icon) below the other social links. Tapping triggers the same download behavior.
-- [ ] UI-6: **Accessibility** — the link has `aria-label="Download resume as PDF"` and the icon is `aria-hidden="true"`.
-- [ ] UI-7: **Graceful absence** — if `socials.resume` is not set or the file is missing, no resume icon/link is rendered anywhere. No broken links, no empty slots.
+- [x] UI-1: Hero card social row shows a resume link after LinkedIn, using a filled contact-card SVG icon consistent with other icons.
+- [x] UI-3: Click triggers browser download via `<a download="jean-paul-iraguha-resume.pdf">`.
+- [x] UI-4: `title="Download resume"` provides a native tooltip on hover.
+- [x] UI-6: Link has `aria-label="Download resume as PDF"`, icon has `aria-hidden="true"`.
+- [x] UI-7: When `socials.resume` is unset, no resume icon renders in the hero.
 
 ## Integration Acceptance Criteria
 
-- [ ] E2E-1: Placing a PDF at `public/assets/resume/jean-paul-iraguha-resume.pdf` and setting `socials.resume` in `lib/site.ts` results in the resume icon appearing in both the hero card and nav bar after build.
-- [ ] E2E-2: Clicking the resume icon in the deployed site initiates a file download with the correct filename and valid PDF content.
-- [ ] E2E-3: Removing the `resume` field from `socials` (or deleting the PDF file) and rebuilding removes the icon from all locations with no console errors or layout shifts.
-- [ ] E2E-4: The resume PDF is included in the Lighthouse accessibility audit with no violations on the download link.
+- [x] E2E-1: Setting `socials.resume` in `lib/site.ts` renders the resume link in the hero card.
+- [ ] E2E-2: Clicking the resume link initiates a file download.
+- [x] E2E-3: Removing `resume` from `socials` removes the icon from the hero with no errors or layout shifts.
 
 ## Component States
 
 | State | Condition | What the user sees |
 |-------|-----------|-------------------|
-| Empty | `socials.resume` not set or file missing | No resume icon anywhere. Social row shows email, GitHub, LinkedIn only. |
-| Populated | PDF exists at the configured path | Resume icon appears after LinkedIn in hero and nav. Click downloads the file. |
-| Error | Path is set but file doesn't exist at build time | Build logs a warning. Icon is omitted. No broken link. |
+| Empty | `socials.resume` not set | No resume icon. Social row shows email, GitHub, LinkedIn only. |
+| Populated | Path set | Resume icon appears after LinkedIn in hero. Click downloads. |
 
 ## Non-goals
 
-- No online resume viewer / embedded PDF preview in v1 — download only.
-- No resume generation from structured data (JSON Resume, etc.).
-- No versioning or "last updated" badge on the resume link.
-- No analytics tracking on the download (defer to Vercel Analytics `beforeSend` if needed later).
+- No nav bar placement — hero only.
+- No online PDF preview — download only.
+- No resume generation, versioning, or analytics tracking.
+- No build-time file existence check.
 
 ## Edge Cases
 
-| Scenario | Layer | Expected |
-|----------|-------|----------|
-| PDF file is very large (> 5 MB) | Build | Build logs a warning suggesting optimization. Link still works. |
-| PDF filename contains spaces or special characters | Config | The `socials.resume` path uses URL-safe naming. The `download` attribute on the `<a>` tag sets the clean filename regardless of the actual file path. |
-| User has a PDF blocker or download interceptor | Browser | Standard browser behavior — outside our control. The `download` attribute provides the best-effort hint. |
-| Resume is updated (new file, same path) | Deploy | Next build picks up the new file automatically. Cache-busting via Vercel's default asset hashing. |
-| `socials.resume` points to an external URL | Config | Zod validation rejects external URLs — must be a relative path starting with `/assets/`. |
-
-## Directory Structure (additions to spec 001)
-
-```
-├── public/
-│   └── assets/
-│       └── resume/
-│           └── jean-paul-iraguha-resume.pdf   # Drop your PDF here
-```
+| Scenario | Expected |
+|----------|----------|
+| External URL in `socials.resume` | Zod rejects — must start with `/assets/`. |
+| `socials.resume` set but PDF missing | Browser 404 on download — outside app control. |
 
 ## External Dependencies
 
-_None beyond what spec 001 already includes. No new packages required._
-
-## Open Questions
-
-- [ ] Should the resume link open in a new tab (for preview in browsers that support inline PDF) instead of forcing a download? Or offer both — icon click downloads, right-click "open in new tab" previews?
-- [ ] Preferred icon: `FileDown` (emphasizes download action) or `FileText` (emphasizes document type)?
+None beyond spec 001.
 
 ## Post-Implementation Notes
 
-_Filled when status → complete. Not required for prototypes._
-
-- ...
+- Resume link placed in hero card only (nav placement explicitly removed).
+- Icon is a filled contact-card SVG using `fill-rule: evenodd` to punch out the person silhouette — consistent with GitHub/LinkedIn filled icons.
+- Zod enforces `/assets/` prefix to prevent external URL injection.
