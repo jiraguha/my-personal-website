@@ -1,8 +1,10 @@
 import { Hero } from "../components/Hero";
 import { FeaturedCard } from "../components/FeaturedCard";
 import { ContentGrid } from "../components/ContentGrid";
+import { TrendingTags } from "../components/TrendingTags";
 import { siteProfile } from "../lib/site";
 import { getAllPosts, getFeaturedPost, toPostCard } from "../lib/posts";
+import { computeTrendingTags } from "../lib/trending";
 
 export function Home() {
   const featured = getFeaturedPost();
@@ -10,12 +12,15 @@ export function Home() {
   const gridPosts = allPosts
     .filter((p) => !p.featured)
     .map(toPostCard);
+  const trendingTags = computeTrendingTags();
 
   return (
     <div>
       <Hero profile={siteProfile} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16 space-y-12">
+        <TrendingTags tags={trendingTags} />
+
         {featured ? (
           <FeaturedCard post={toPostCard(featured)} />
         ) : (
