@@ -4,10 +4,8 @@
       {
         "hooks": [
           {
-            "type": "agent",
-            "model": "claude-haiku-4-5-20251001",
-            "prompt": "Stage all changes and commit them. Run: git add -A. Then check if there is anything staged with git diff --cached --name-only. If there is, write a short conventional commit message (e.g. 'feat: add hero component' or 'fix: avatar fallback') based on what changed, and run git commit -m with that message. If nothing is staged, do nothing.",
-            "statusMessage": "Committing changes..."
+            "type": "command",
+            "command": "cd /Users/jpiraguha/dev/my-personal-website && git add -A && git diff --cached --quiet || git commit -m \"chore: auto-commit changes\""
           }
         ]
       }
