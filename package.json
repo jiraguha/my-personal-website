@@ -9,26 +9,37 @@
     "infra:up": "docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down",
     "infra:reset": "docker compose -f infra/docker-compose.yml down -v && docker compose -f infra/docker-compose.yml up -d",
-    "test": "bun run test:api && bun run test:ui",
-    "test:api": "bun test test/api/",
-    "test:ui": "playwright test test/ui/",
+    "test": "bun run test:lib && bun run test:e2e",
+    "test:lib": "vitest run test/lib/",
     "test:e2e": "playwright test test/e2e/",
-    "test:all": "bun run test:api && bun run test:ui && bun run test:e2e",
+    "test:all": "bun run test:lib && bun run test:e2e",
     "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.13.1",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.2.2",
     "@types/bun": "latest",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "autoprefixer": "^10.4.27",
     "concurrently": "^9.1.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5.7.0",
-    "vite": "^6.1.0"
+    "vite": "^6.1.0",
+    "vitest": "^4.1.0"
   }
 }
