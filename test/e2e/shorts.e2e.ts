@@ -120,38 +120,11 @@ test.describe("E2E-4: Featured short is excluded from hero", () => {
   test("hero FeaturedCard is not a short (no ⚡ SHORT badge in featured section)", async ({ page }) => {
     await page.goto("/");
 
-    // The FeaturedCard is the first major card section before the content grid
-    // It renders inside a div that comes before the ContentGrid section
-    // We check that the featured area does not contain a SHORT badge
-    const featuredSection = page.locator("section, div").filter({ hasText: /featured|coming soon/i }).first();
+    // The Posts section divider confirms the grid has loaded
+    await expect(page.getByText("Posts", { exact: true })).toBeVisible();
 
-    // If there's a featured card, it shouldn't have a SHORT badge
-    const shortBadgeInFeatured = page.locator("h2").filter({ hasText: /featured/i })
-      .locator(".. >> text=SHORT");
-
-    // The simplest check: the hero area (before the content grid h2) has no SHORT badge
-    // We check the full page — if our only short is the sample one (not featured),
-    // the hero should show a non-short post or the "Coming soon" placeholder
-    const heroArea = page.locator("div").first();
-    // Short badge text should not appear in the FeaturedCard component
-    // FeaturedCard renders differently (larger card, before the grid section)
-    // The grid section starts with the h2 "Projects, Writing, Talks & Code"
-    const gridHeading = page.getByText("Projects, Writing, Talks & Code");
-    await expect(gridHeading).toBeVisible();
-
-    // Content before the grid heading should not contain a SHORT badge in the featured slot
-    // We'll verify by checking the sample short is NOT the featured post
-    // (since til-kubectl-debug.md has featured: false)
-    const featuredCard = page.locator("article").first();
-    // If there's a featured article rendered, it should not be a short
-    if (await featuredCard.isVisible()) {
-      const cardText = await featuredCard.textContent();
-      // This is the grid's first card — we're testing the FeaturedCard separately
-      // The FeaturedCard is not an <article> element — it's a different component
-    }
-
-    // Definitive check: navigate to hero, look for the FeaturedCard link
-    // FeaturedCard renders a Link with "Read more" — if present, that post must not be a short
+    // Definitive check: navigate to the FeaturedCard link
+    // FeaturedCard renders a Link with "Read →" — if present, that post must not be a short
     const readMoreLink = page.getByRole("link", { name: /read more/i });
     if (await readMoreLink.isVisible()) {
       await readMoreLink.click();

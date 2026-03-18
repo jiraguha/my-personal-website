@@ -30,8 +30,8 @@ test.describe("E2E-1: Home page structure", () => {
     await expect(cards.first()).toBeVisible();
   });
 
-  test("renders the content grid heading", async ({ page }) => {
-    await expect(page.getByText("Projects, Writing, Talks & Code")).toBeVisible();
+  test("renders the posts section divider", async ({ page }) => {
+    await expect(page.getByText("Posts", { exact: true })).toBeVisible();
   });
 });
 
