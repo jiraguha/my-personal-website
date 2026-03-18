@@ -1,14 +1,3 @@
 {
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd /Users/jpiraguha/dev/my-personal-website && git add -A && git diff --cached --quiet || git commit -m \"chore: auto-commit changes\""
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": {}
 }

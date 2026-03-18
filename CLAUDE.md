@@ -82,6 +82,12 @@ To promote a prototype to a real spec later:
 3. Code freely — no test requirement, no gates
 4. When done: either `/spec-promote NNN-feature` (add tests, verify) or delete the code
 
+## Git Workflow
+
+After every change — no matter how small — commit immediately using a short conventional commit message. Do not batch up changes across multiple tasks before committing. One logical change = one commit.
+
+Use `/commit` to trigger a commit at any time.
+
 ## Code Conventions
 
 - `import` not `require` (ESM)
