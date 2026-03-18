@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ContentCategorySchema = z.enum(["blog", "project", "talk"]);
+export const ContentCategorySchema = z.enum(["blog", "project", "talk", "short"]);
 export type ContentCategory = z.infer<typeof ContentCategorySchema>;
 
 export const PostFrontmatterSchema = z.object({

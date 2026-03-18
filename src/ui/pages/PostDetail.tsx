@@ -6,6 +6,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { getPostBySlug } from "../lib/posts";
 import { TagChip } from "../components/TagChip";
+import { ShortBadge } from "../components/ShortBadge";
 import { MermaidDiagram } from "../components/MermaidDiagram";
 
 function formatDate(iso: string) {
@@ -60,9 +61,13 @@ export function PostDetail() {
         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-500">
           <time>{formatDate(post.date)}</time>
           {post.updated && <span>Updated {formatDate(post.updated)}</span>}
-          <span className="capitalize px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium">
-            {post.category}
-          </span>
+          {post.category === "short" ? (
+            <ShortBadge />
+          ) : (
+            <span className="capitalize px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium">
+              {post.category}
+            </span>
+          )}
         </div>
 
         {post.externalUrl && (
@@ -77,8 +82,8 @@ export function PostDetail() {
         )}
       </header>
 
-      {/* Cover */}
-      {post.cover && (
+      {/* Cover — skipped for shorts */}
+      {post.cover && post.category !== "short" && (
         <div className="mb-10 rounded-xl overflow-hidden">
           <img src={post.cover} alt="" className="w-full" />
         </div>

@@ -12,6 +12,7 @@ const OPTIONS: { value: FilterOption; label: string }[] = [
   { value: "blog", label: "Blog" },
   { value: "project", label: "Projects" },
   { value: "talk", label: "Talks" },
+  { value: "short", label: "Shorts" },
 ];
 
 export function CategoryFilter({ active, onChange }: CategoryFilterProps) {

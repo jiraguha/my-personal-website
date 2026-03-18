@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { TagChip } from "./TagChip";
+import { ShortBadge } from "./ShortBadge";
 import type { PostCard as PostCardType } from "@shared/schemas/site.schema";
 
 interface PostCardProps {
@@ -23,6 +24,7 @@ const categoryColors: Record<string, string> = {
 export function PostCard({ post }: PostCardProps) {
   const href = post.externalUrl || `/posts/${post.slug}`;
   const isExternal = !!post.externalUrl;
+  const isShort = post.category === "short";
 
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
     isExternal ? (
@@ -34,6 +36,32 @@ export function PostCard({ post }: PostCardProps) {
         {children}
       </Link>
     );
+
+  if (isShort) {
+    return (
+      <Wrapper>
+        <article className="rounded-xl border border-violet-200 dark:border-violet-900/50 bg-white dark:bg-gray-900/80 hover:border-violet-400 dark:hover:border-violet-700 transition-colors flex flex-col p-4">
+          <div className="flex items-center justify-between mb-2">
+            <ShortBadge />
+            <time className="text-xs text-gray-400 dark:text-gray-600">{formatDate(post.date)}</time>
+          </div>
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1.5 text-sm sm:text-base line-clamp-2">
+            {post.title}
+          </h3>
+          {post.summary && (
+            <p className="text-gray-500 dark:text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">
+              {post.summary}
+            </p>
+          )}
+          <div className="flex flex-wrap gap-1 mt-2">
+            {post.tags.slice(0, 3).map((t) => (
+              <TagChip key={t} tag={t} clickable={false} />
+            ))}
+          </div>
+        </article>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper>
