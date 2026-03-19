@@ -71,6 +71,11 @@
   text-align: left;
 }
 
+/* Paragraphs left-aligned */
+.reveal .slides section p {
+  text-align: left;
+}
+
 /* Lists — Reveal.js strips padding/margin, hiding markers */
 .reveal ul,
 .reveal ol {
