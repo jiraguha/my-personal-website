@@ -71,8 +71,8 @@
   text-align: left;
 }
 
-/* Paragraphs left-aligned */
-.reveal .slides section p {
+/* Long paragraphs left-aligned */
+.reveal .slides section p.long-text {
   text-align: left;
 }
 

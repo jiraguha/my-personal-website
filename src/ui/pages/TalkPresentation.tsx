@@ -25,6 +25,12 @@ function stripNotes(slide: string): string {
   return slide.replace(/\nNote:[\s\S]*$/, "").trim();
 }
 
+function extractText(children: React.ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) return children.map(extractText).join("");
+  return "";
+}
+
 const slideComponents: Components = {
   code({ className, children }) {
     const language = /language-(\w+)/.exec(className ?? "")?.[1];
@@ -32,6 +38,10 @@ const slideComponents: Components = {
       return <MermaidDiagram code={String(children)} />;
     }
     return <code className={className}>{children}</code>;
+  },
+  p({ children }) {
+    const isLong = extractText(children).length > 60;
+    return <p className={isLong ? "long-text" : ""}>{children}</p>;
   },
 };
 
