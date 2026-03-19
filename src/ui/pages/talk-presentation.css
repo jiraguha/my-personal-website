@@ -45,6 +45,21 @@
   border-radius: 8px;
   box-shadow: none;
   font-size: 0.7em;
+  text-align: left;
+  width: 100%;
+  margin: 0.5em auto;
+}
+
+.reveal pre code {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  background: transparent;
+  color: #e2e8f0;
+  padding: 1em;
+  text-align: left;
+  display: block;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: auto;
 }
 
 .reveal code {
@@ -53,11 +68,16 @@
   color: #e2e8f0;
   padding: 0.1em 0.3em;
   border-radius: 4px;
+  text-align: left;
 }
 
-.reveal pre code {
-  background: transparent;
-  padding: 0;
+/* Left-align body content; headings stay centered */
+.reveal .slides section p,
+.reveal .slides section ul,
+.reveal .slides section ol,
+.reveal .slides section blockquote,
+.reveal .slides section table {
+  text-align: left;
 }
 
 /* Progress bar */
