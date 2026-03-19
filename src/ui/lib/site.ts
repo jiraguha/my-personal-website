@@ -1,15 +1,4 @@
-import type { SiteProfile } from "@shared/schemas/site.schema";
+import { SiteProfileSchema, type SiteProfile } from "@shared/schemas/site.schema";
+import rawProfile from "../../content/profile.json";
 
-export const siteProfile: SiteProfile = {
-  name: "Jean-Paul Iraguha",
-  role: "Software Engineer & Tech Lead",
-  org: "SingularFlow",
-  bio: "I build agentic systems, developer tooling, and resilient infrastructure. Passionate about the intersection of AI and software engineering — from spec-driven development to multi-agent orchestration.",
-  avatar: "/assets/authors/jp.png",
-  socials: {
-    github: "https://github.com/jiraguha",
-    linkedin: "https://www.linkedin.com/in/jiraguha/",
-    email: "mailto:jp@iraguha.dev",
-    resume: "/assets/resume/jean-paul-iraguha-resume.pdf",
-  },
-};
+export const siteProfile: SiteProfile = SiteProfileSchema.parse(rawProfile);
