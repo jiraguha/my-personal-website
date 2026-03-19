@@ -71,6 +71,32 @@
   text-align: left;
 }
 
+/* Lists — Reveal.js strips padding/margin, hiding markers */
+.reveal ul,
+.reveal ol {
+  display: block;
+  text-align: left;
+  margin: 0.4em 0;
+  padding-left: 1.4em;
+}
+
+.reveal ul {
+  list-style-type: disc;
+}
+
+.reveal ol {
+  list-style-type: decimal;
+}
+
+.reveal ul ul {
+  list-style-type: circle;
+}
+
+.reveal li {
+  margin: 0.25em 0;
+  text-align: left;
+}
+
 /* Progress bar */
 .reveal .progress {
   color: #7c3aed;
