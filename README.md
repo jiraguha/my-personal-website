@@ -1,6 +1,32 @@
-# SDD Full-Stack v2
+# My Personal Website
 
-Spec-driven development with two modes: **full** (tested, verified) and **prototype** (fast, unverified).
+![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Coverage](https://img.shields.io/badge/coverage-check%20locally-yellow)
+
+Personal website built with React, Vite, and Bun. Uses spec-driven development with two modes: **full** (tested, verified) and **prototype** (fast, unverified).
+
+## Features
+
+- **Multi-category content** — Blog posts, projects, talks, and short notes in a filterable grid
+- **Fuzzy search** — Real-time client-side search across titles, summaries, and tags
+- **Reveal.js presentations** — Markdown-authored slide decks with speaker notes and code highlighting
+- **Mermaid diagrams** — Embedded, client-rendered diagrams in posts
+- **Trending tags** — Algorithmically ranked tags by frequency and recency
+- **Dark/light mode** — Theme toggle with persistent state
+- **Featured posts** — Full-width hero card for highlighted content
+- **External links** — Posts can link out to external URLs
+- **Resume download** — Direct PDF download from the hero section
+- **Syntax highlighting** — Code blocks with language-aware highlighting
+- **Responsive design** — Mobile-friendly with hamburger menu
+
+## Roadmap
+
+- **SEO & Open Graph** — Per-post meta tags with category-aware OG images for rich sharing previews
+- **SSR support** — Server-side rendering for search engines and social crawlers
+- **AI-powered cover images** — Automatic generation via Nano Banana Pro
+- **Vercel deployment** — Production hosting with CI/CD
 
 ## Setup
 
@@ -9,90 +35,43 @@ bun install
 npx playwright install chromium
 ```
 
-## Infrastructure
-
-```bash
-bun run infra:up      # Start Postgres + Redis (Docker Compose)
-bun run infra:down    # Stop
-bun run infra:reset   # Nuke volumes + restart fresh
-```
-
-Services are port-forwarded to localhost: Postgres on 5432, Redis on 6379.
-
-## Dev loop
+## Dev
 
 ```bash
 bun run dev           # API (3000) + Vite (5173)
 ```
 
-## Two modes
-
-### Full mode — tested, verified, production-ready
-
-```
-/spec-create user registration       # or /spec-refine raw/notes.md
-/spec-test 002-user-registration
-/spec-implement 002-user-registration
-/spec-verify 002-user-registration
-```
-
-### Prototype mode — fast, skip tests
-
-```
-/spec-proto quick monitoring dashboard    # Freeform: creates minimal spec + builds
-/spec-proto 003-monitoring                # From existing spec: skips test gates
-```
-
-When the prototype proves the idea works:
-```
-/spec-promote 003-monitoring              # Adds tests, fills spec gaps, verifies
-```
-
-Or just delete it if it was throwaway.
-
 ## Testing
 
 ```bash
-bun run test:api      # Bun test (hits real Docker services)
-bun run test:ui       # Playwright (mocked API)
-bun run test:e2e      # Playwright (real everything)
+bun run test:lib      # Vitest (unit/lib tests)
+bun run test:e2e      # Playwright (E2E)
 bun run test:all      # All of the above
+bun run typecheck     # TypeScript type checking
 ```
 
-## Commands
-
-| Command | Phase | Mode | What it does |
-|---------|-------|------|-------------|
-| `/spec-create` | 1 | both | Claude interviews you, generates spec |
-| `/spec-refine` | 1 | both | Structures raw notes into spec |
-| `/spec-test` | 2 | full | Generates failing tests |
-| `/spec-implement` | 3 | full | API → UI → E2E, atomic commits |
-| `/spec-verify` | 4 | full | Typecheck + all tests → complete |
-| `/spec-proto` | 1-3 | proto | Skip tests, build fast |
-| `/spec-promote` | 2-4 | proto→full | Add tests, verify, mark complete |
-| `/spec-status` | — | both | Dashboard of all specs |
-
-## Project structure
+## Project Structure
 
 ```
-CLAUDE.md
-specs/
-  NNN-feature.md              # Numbered, sequential
-  raw/                        # Brain dumps
-infra/
-  docker-compose.yml          # Postgres, Redis
-  init/                       # DB init scripts
 src/
-  shared/schemas/             # Zod (THE contract)
-  api/handlers/
-  api/services/
-  api/index.ts
-  ui/components/
-  ui/pages/
-  ui/lib/
-  ui/main.tsx
+  shared/schemas/             # Zod schemas (API ↔ UI contract)
+  api/                        # Bun API server
+  ui/                         # React frontend
+  content/                    # Production content (posts, profile)
+  lib/                        # Shared libraries
 test/
-  api/                        # Bun test
-  ui/                         # Playwright (mocked)
-  e2e/                        # Playwright (real)
+  lib/                        # Vitest unit tests
+  e2e/                        # Playwright E2E tests
+  content/                    # Test fixtures (isolated from production)
+specs/                        # Feature specs (SDD)
+infra/                        # Docker Compose (Postgres, Redis)
 ```
+
+## Stack
+
+- **Runtime**: [Bun](https://bun.sh)
+- **Frontend**: [React 19](https://react.dev) + [Vite 6](https://vite.dev)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com)
+- **Validation**: [Zod](https://zod.dev)
+- **Testing**: [Vitest](https://vitest.dev) + [Playwright](https://playwright.dev)
+- **Content**: Markdown with frontmatter, [Fuse.js](https://www.fusejs.io) search
