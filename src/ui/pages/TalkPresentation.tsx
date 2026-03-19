@@ -11,6 +11,7 @@ import Notes from "reveal.js/plugin/notes";
 import "reveal.js/reveal.css";
 import "./talk-presentation.css";
 import { getPostBySlug } from "../lib/posts";
+import { parseSlides, stripNotes } from "../lib/slides";
 import type { MermaidConfig } from "mermaid";
 import { mermaidConfig } from "../lib/mermaid-theme";
 
@@ -61,17 +62,6 @@ function SlideMermaid({ code }: { code: string }) {
   return <div ref={containerRef} className="flex justify-center my-4" />;
 }
 
-/** Split raw markdown into [horizontal][vertical] slide groups. */
-function parseSlides(content: string): string[][] {
-  return content
-    .split(/\n---\n/)
-    .map((hSlide) => hSlide.split(/\n----\n/));
-}
-
-/** Strip speaker notes (everything from a line that starts with "Note:"). */
-function stripNotes(slide: string): string {
-  return slide.replace(/\nNote:[\s\S]*$/, "").trim();
-}
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
