@@ -119,8 +119,8 @@ test.describe("E2E-3: Clear search", () => {
     const filteredCount = await page.locator("article").count();
     expect(filteredCount).toBeLessThanOrEqual(blogCount);
 
-    // Clear search
-    await page.getByRole("button", { name: "Clear search" }).click();
+    // Clear search via the X button in the input (use aria-label to disambiguate)
+    await page.getByLabel("Clear search").click();
     await page.waitForTimeout(200);
 
     // Should restore to blog count (category still active)
@@ -136,8 +136,12 @@ test.describe("E2E-4: Keyboard shortcuts", () => {
   test("pressing / expands and focuses the search bar", async ({ page }) => {
     await page.goto("/");
 
-    // Press /
-    await page.keyboard.press("/");
+    // Ensure no input is focused by clicking on the body
+    await page.locator("body").click();
+    await page.waitForTimeout(100);
+
+    // Press / (Slash key)
+    await page.keyboard.press("Slash");
 
     const searchInput = page.getByRole("searchbox", { name: "Search posts" });
     await expect(searchInput).toBeVisible();
@@ -178,8 +182,8 @@ test.describe("E2E-5: No results empty state", () => {
 
     await openSearchAndType(page, "xyzzyplugh");
 
-    const clearLink = page.getByRole("button", { name: "Clear search" });
-    await expect(clearLink).toBeVisible();
+    // The empty state "Clear search" is a text button (not the X icon which has aria-label)
+    await expect(page.getByText("Clear search")).toBeVisible();
   });
 
   test("clicking 'Clear search' in empty state restores the grid", async ({ page }) => {
@@ -190,8 +194,8 @@ test.describe("E2E-5: No results empty state", () => {
     await openSearchAndType(page, "xyzzyplugh");
     await expect(page.getByText(/No posts matching/)).toBeVisible();
 
-    // Click "Clear search" button in the empty state
-    await page.getByRole("button", { name: "Clear search" }).click();
+    // Click the "Clear search" text button in the empty state (not the X icon)
+    await page.getByText("Clear search").click();
     await page.waitForTimeout(200);
 
     const allCardsAfter = await page.locator("article").count();

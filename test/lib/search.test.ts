@@ -144,8 +144,8 @@ describe("API-3: createSearchIndex", () => {
 
   it("index contains all posts", () => {
     const index = createSearchIndex(ALL_CARDS);
-    // Searching for a very broad term should return results
-    const results = index.search("a");
+    // Searching for a term that appears across multiple posts
+    const results = index.search("production");
     expect(results.length).toBeGreaterThan(0);
   });
 
