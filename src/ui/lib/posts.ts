@@ -40,7 +40,7 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
   return { data, content };
 }
 
-const rawFiles = import.meta.glob("/src/content/posts/*.md", {
+const rawFiles = import.meta.glob("/src/content/posts/**/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
@@ -52,7 +52,7 @@ function loadPosts(): Post[] {
   return Object.entries(rawFiles)
     .map(([filePath, raw]) => {
       const { data, content } = parseFrontmatter(raw);
-      const slug = filePath.replace("/src/content/posts/", "").replace(/\.md$/, "");
+      const slug = filePath.replace(/^\/src\/content\/posts\/[^/]+\//, "").replace(/\.md$/, "");
       const result = PostFrontmatterSchema.safeParse({ slug, ...data });
       if (!result.success) {
         console.warn(`Invalid frontmatter in ${filePath}:`, result.error.format());
