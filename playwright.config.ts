@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:5173",
+    baseURL: "http://localhost:5174",
     trace: "on-first-retry",
   },
   projects: [
@@ -25,8 +25,8 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: "bun run dev:ui",
-      port: 5173,
+      command: "CONTENT_DIR=test/content bun run dev:ui -- --port 5174",
+      port: 5174,
       reuseExistingServer: !process.env.CI,
     },
   ],

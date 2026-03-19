@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import fs from "node:fs";
+import path from "node:path";
 
 /** Transforms `.md?raw` (and `?import&raw`) imports into JS modules at dev and build time. */
 function markdownRawPlugin(): Plugin {
@@ -45,6 +46,8 @@ function markdownRawPlugin(): Plugin {
   };
 }
 
+const contentDir = process.env.CONTENT_DIR || "src/content";
+
 export default defineConfig({
   plugins: [markdownRawPlugin(), tailwindcss(), react()],
   server: {
@@ -59,6 +62,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@shared": "/src/shared",
+      "@content": path.resolve(__dirname, contentDir),
     },
   },
   test: {
