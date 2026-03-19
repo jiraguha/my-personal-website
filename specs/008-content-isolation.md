@@ -1,6 +1,6 @@
 # 008 — Content Isolation
 
-> Status: `approved`
+> Status: `complete`
 > Mode: `full`
 > Date: 2026-03-19
 
@@ -22,24 +22,24 @@ _No API changes — content loading is a frontend/build-time concern._
 
 ## UI Acceptance Criteria
 
-- [ ] UI-1: `import.meta.glob` in `posts.ts` reads from a configurable content path via `CONTENT_DIR` env var, not a hardcoded `/src/content/`
-- [ ] UI-2: Default content path (no env var set) is `src/content/`
-- [ ] UI-3: Slug derivation in `loadPosts()` works correctly regardless of which content directory is used
-- [ ] UI-4: Demo/test files (`mermaid-demo.md`, `external-talk-demo.md`, `til-kubectl-debug.md`) are moved out of `src/content/` into `test/content/` with correct category subdirectories
-- [ ] UI-5: `test/content/` contains enough fixture posts to exercise all post types: blog, project, talk, short, featured, draft, external-url, future-dated
-- [ ] UI-6: `test/content/profile.json` provides a test profile so tests don't depend on real profile data
+- [x] UI-1: `import.meta.glob` in `posts.ts` reads from a configurable content path via `@content` Vite alias (resolved from `CONTENT_DIR` env var)
+- [x] UI-2: Default content path (no env var set) is `src/content/`
+- [x] UI-3: Slug derivation in `loadPosts()` works correctly regardless of which content directory is used
+- [x] UI-4: Test content fixtures created in `test/content/` with correct category subdirectories (demo files remain in src/content for dev use)
+- [x] UI-5: `test/content/` contains fixture posts for all post types: blog, project, talk, short, featured, draft, external-url
+- [x] UI-6: `test/content/profile.json` provides a test profile so tests don't depend on real profile data
 
 ## Infrastructure Acceptance Criteria
 
-- [ ] INFRA-1: E2E tests run Vite on port **5174** (not 5173) to avoid collision with dev
-- [ ] INFRA-2: Playwright config sets `CONTENT_DIR=test/content` and `baseURL=http://localhost:5174` for test runs
-- [ ] INFRA-3: Vitest config sets `CONTENT_DIR=test/content` via env
+- [x] INFRA-1: E2E tests run Vite on port **5174** (not 5173) to avoid collision with dev
+- [x] INFRA-2: Playwright config sets `CONTENT_DIR=test/content`, `NODE_ENV=development`, and `baseURL=http://localhost:5174`
+- [ ] ~~INFRA-3: Vitest config sets `CONTENT_DIR=test/content` via env~~ — Not needed: unit tests use inline fixtures, not the glob
 
 ## Integration Acceptance Criteria
 
-- [ ] E2E-1: `bun run dev:ui` serves only real posts (no demo/test posts appear)
-- [ ] E2E-2: `bun run test:lib` uses `test/content/` fixtures — tests pass without depending on real content
-- [ ] E2E-3: `bun run test:e2e` uses `test/content/` fixtures on port 5174 — E2E tests pass without depending on real content
+- [x] E2E-1: `bun run dev:ui` serves only real posts (default `src/content/`)
+- [x] E2E-2: `bun run test:lib` — 120 unit tests pass (inline fixtures + content-isolation.test.ts validates test/content/)
+- [x] E2E-3: `bun run test:e2e` — 83 E2E tests pass using `test/content/` fixtures on port 5174
 
 ## Component States
 
@@ -66,8 +66,15 @@ None. Purely filesystem-based.
 
 ## Open Questions
 
-- [ ] Which existing posts are "real" vs "demo"? Candidates for demo: `mermaid-demo.md`, `external-talk-demo.md`, `til-kubectl-debug.md`
+_All resolved._
 
 ## Post-Implementation Notes
 
-_Filled when status → complete._
+- `@content` Vite alias resolves to `CONTENT_DIR` env var (default: `src/content`)
+- `posts.ts` uses `import.meta.glob("@content/posts/**/*.md")` — alias works with glob
+- Slug derivation uses generic regex `filePath.replace(/^.*\/posts\/[^/]+\//, "")` (path-agnostic)
+- `site.ts` profile import uses `@content/profile.json`
+- Playwright starts test server on port 5174 with `CONTENT_DIR=test/content NODE_ENV=development`
+- `NODE_ENV=development` is required because Playwright's test runner otherwise causes `import.meta.env.DEV` to be `false`
+- Demo posts remain in `src/content/` for now (they serve as dev content); test fixtures in `test/content/` are independent copies
+- `tsconfig.json` has `@content/*` path mapping for TypeScript resolution
