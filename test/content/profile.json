@@ -1,0 +1,13 @@
+{
+  "name": "Jean-Paul Iraguha",
+  "role": "Software Engineer & Tech Lead",
+  "org": "SingularFlow",
+  "bio": "Test profile for automated testing.",
+  "avatar": "/assets/authors/jp.png",
+  "socials": {
+    "github": "https://github.com/jiraguha",
+    "linkedin": "https://www.linkedin.com/in/jiraguha/",
+    "email": "mailto:jp@iraguha.dev",
+    "resume": "/assets/resume/jean-paul-iraguha-resume.pdf"
+  }
+}
