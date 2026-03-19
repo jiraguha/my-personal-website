@@ -8,7 +8,7 @@ tags: [ai-safety, ai, engineering-process]
 category: talk
 featured: false
 draft: false
-externalUrl: ""
+externalUrl: "https://example.com/ai-safety-talk"
 ---
 
 # AI Safety as an Engineering Discipline

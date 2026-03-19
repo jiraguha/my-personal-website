@@ -25,7 +25,7 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: "CONTENT_DIR=test/content bun run dev:ui -- --port 5174",
+      command: "CONTENT_DIR=test/content NODE_ENV=development bun run dev:ui -- --port 5174",
       port: 5174,
       reuseExistingServer: !process.env.CI,
     },

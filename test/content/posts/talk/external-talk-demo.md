@@ -8,6 +8,5 @@ tags: [demo]
 category: talk
 featured: false
 draft: true
-externalUrl: "https://example.com/external-talk"
 externalSlides: "https://speakerdeck.com/example/demo"
 ---
