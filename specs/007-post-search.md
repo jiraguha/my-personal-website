@@ -1,6 +1,6 @@
 # 007 — Post Search
 
-> Status: `implementing`
+> Status: `complete`
 > Mode: `full`
 > Date: 2026-03-19
 
@@ -128,6 +128,9 @@ _All resolved._
 
 ## Post-Implementation Notes
 
-_Filled when status → complete._
-
-- ...
+- Fuse.js v7 used for fuzzy matching with weighted keys (title 0.4, summary 0.3, tags 0.3) and threshold 0.35.
+- Search bar is discrete by default (icon-only), expands on click or `/` shortcut — user feedback requested a less intrusive design.
+- No `PostsToolbar` wrapper created — toolbar layout handled directly in `ContentGrid.tsx` with flexbox.
+- The `handleClearSearch` in ContentGrid resets query to `""`, which triggers the PostSearch component to collapse.
+- 22 unit tests cover schema validation, index creation, search matching, sanitization, and edge cases.
+- 12 E2E tests cover filtering, category combo, clear, keyboard shortcuts, and empty state.
