@@ -8,12 +8,19 @@ interface PostSearchProps {
 
 export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
   const [localValue, setLocalValue] = useState(query);
+  const [expanded, setExpanded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const hasQuery = localValue.length > 0;
 
   // Sync external query changes (e.g. clear from empty state link)
   useEffect(() => {
     setLocalValue(query);
+    if (query.length > 0) {
+      setExpanded(true);
+    }
   }, [query]);
 
   const debouncedOnChange = useCallback(
@@ -28,7 +35,6 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
     [onChange],
   );
 
-  // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
@@ -36,6 +42,20 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
       }
     };
   }, []);
+
+  const expand = () => {
+    setExpanded(true);
+    // Wait for the input to render/become visible before focusing
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  };
+
+  const collapse = () => {
+    if (!hasQuery) {
+      setExpanded(false);
+    }
+  };
 
   const handleChange = (value: string) => {
     const capped = value.slice(0, 100);
@@ -46,18 +66,35 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
   const handleClear = () => {
     setLocalValue("");
     onChange("");
-    inputRef.current?.focus();
+    setExpanded(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       setLocalValue("");
       onChange("");
+      setExpanded(false);
       inputRef.current?.blur();
     }
   };
 
-  // Global "/" shortcut to focus search
+  // Collapse when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        expanded &&
+        !hasQuery &&
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setExpanded(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [expanded, hasQuery]);
+
+  // Global "/" shortcut to expand + focus
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (
@@ -70,30 +107,51 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
         !document.activeElement?.getAttribute("contenteditable")
       ) {
         e.preventDefault();
-        inputRef.current?.focus();
+        expand();
       }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  const searchIcon = (
+    <svg
+      className="w-4 h-4"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+
+  if (!expanded) {
+    return (
+      <button
+        onClick={expand}
+        aria-label="Open search"
+        className="p-2 rounded-md
+          text-gray-400 dark:text-slate-500
+          hover:text-gray-600 dark:hover:text-slate-300
+          hover:bg-gray-100 dark:hover:bg-gray-800
+          transition-colors"
+      >
+        {searchIcon}
+      </button>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-1">
+    <div ref={containerRef} className="flex flex-col gap-1">
       <div className="relative">
-        {/* Search icon */}
-        <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+          {searchIcon}
+        </span>
         <input
           ref={inputRef}
           type="text"
@@ -103,6 +161,7 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
           value={localValue}
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
+          onBlur={collapse}
           className="w-full sm:w-[250px] h-[38px] pl-9 pr-8 rounded-md text-sm
             bg-gray-100 dark:bg-gray-900
             border border-gray-300 dark:border-slate-700
@@ -112,8 +171,7 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
             placeholder:text-gray-500 dark:placeholder:text-slate-500
             transition-colors"
         />
-        {/* Clear button */}
-        {localValue && (
+        {hasQuery && (
           <button
             onClick={handleClear}
             aria-label="Clear search"
@@ -137,7 +195,6 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
           </button>
         )}
       </div>
-      {/* Result count */}
       {resultCount !== null && (
         <span
           className="text-xs text-gray-500 dark:text-slate-500 pl-1"
