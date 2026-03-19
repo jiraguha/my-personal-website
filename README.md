@@ -3,7 +3,9 @@
 ![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![Coverage](https://img.shields.io/badge/coverage-check%20locally-yellow)
+![Tests](https://github.com/jiraguha/my-personal-website/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/jiraguha/b9350e6da27de1f88d9f64c63af9b441/raw/coverage.json)
+[![Live](https://img.shields.io/badge/live-iraguha.dev-brightgreen)](https://iraguha.dev)
 
 Personal website built with React, Vite, and Bun. Uses spec-driven development with two modes: **full** (tested, verified) and **prototype** (fast, unverified).
 
