@@ -1,37 +1,72 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 import Reveal from "reveal.js";
 import type { RevealApi } from "reveal.js";
-import Markdown from "reveal.js/plugin/markdown";
 import Highlight from "reveal.js/plugin/highlight";
 import Notes from "reveal.js/plugin/notes";
 import "reveal.js/reveal.css";
 import "./talk-presentation.css";
 import { getPostBySlug } from "../lib/posts";
+import { MermaidDiagram } from "../components/MermaidDiagram";
+
+/** Split raw markdown into [horizontal][vertical] slide groups. */
+function parseSlides(content: string): string[][] {
+  return content
+    .split(/\n---\n/)
+    .map((hSlide) => hSlide.split(/\n----\n/));
+}
+
+/** Strip speaker notes (everything from a line that starts with "Note:"). */
+function stripNotes(slide: string): string {
+  return slide.replace(/\nNote:[\s\S]*$/, "").trim();
+}
+
+const slideComponents: Components = {
+  code({ className, children }) {
+    const language = /language-(\w+)/.exec(className ?? "")?.[1];
+    if (language === "mermaid") {
+      return <MermaidDiagram code={String(children)} />;
+    }
+    return <code className={className}>{children}</code>;
+  },
+};
+
+function Slide({ markdown }: { markdown: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeHighlight]}
+      components={slideComponents}
+    >
+      {stripNotes(markdown)}
+    </ReactMarkdown>
+  );
+}
 
 export function TalkPresentation() {
   const { slug } = useParams<{ slug: string }>();
   const post = slug ? getPostBySlug(slug) : undefined;
 
   const deckRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const revealRef = useRef<RevealApi | null>(null);
   const [backVisible, setBackVisible] = useState(true);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Back-button fade logic
+  // Fade the back-button after 3s of inactivity
   useEffect(() => {
     const show = () => {
       setBackVisible(true);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       hideTimerRef.current = setTimeout(() => setBackVisible(false), 3000);
     };
-
-    // Hide after initial 3s
     hideTimerRef.current = setTimeout(() => setBackVisible(false), 3000);
     window.addEventListener("mousemove", show);
     window.addEventListener("touchstart", show);
-
     return () => {
       window.removeEventListener("mousemove", show);
       window.removeEventListener("touchstart", show);
@@ -39,14 +74,12 @@ export function TalkPresentation() {
     };
   }, []);
 
+  // Initialize Reveal after React has rendered all <section> slides
   useEffect(() => {
-    if (!deckRef.current || !post || !textareaRef.current) return;
-
-    // Set markdown content on textarea before Reveal reads it
-    textareaRef.current.textContent = post.content;
+    if (!deckRef.current || !post) return;
 
     const deck = new Reveal(deckRef.current, {
-      plugins: [Markdown, Highlight, Notes],
+      plugins: [Highlight, Notes],
       hash: true,
       slideNumber: "c/t",
       progress: true,
@@ -66,24 +99,33 @@ export function TalkPresentation() {
       revealRef.current?.destroy();
       revealRef.current = null;
     };
-  }, [post?.slug]); // re-init only if slug changes
+  }, [post?.slug]);
 
   if (!post || post.category !== "talk" || post.externalSlides) {
     return <Navigate to="/404" replace />;
   }
 
+  const slides = parseSlides(post.content);
+
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#0b0f19", overflow: "hidden" }}>
       <div className="reveal" ref={deckRef}>
         <div className="slides">
-          <section
-            data-markdown=""
-            data-separator="^\r?\n---\r?\n"
-            data-separator-vertical="^\r?\n----\r?\n"
-            data-separator-notes="^Note:"
-          >
-            <textarea ref={textareaRef} data-template readOnly style={{ display: "none" }} />
-          </section>
+          {slides.map((hGroup, hIdx) =>
+            hGroup.length === 1 ? (
+              <section key={hIdx}>
+                <Slide markdown={hGroup[0]} />
+              </section>
+            ) : (
+              <section key={hIdx}>
+                {hGroup.map((vSlide, vIdx) => (
+                  <section key={vIdx}>
+                    <Slide markdown={vSlide} />
+                  </section>
+                ))}
+              </section>
+            )
+          )}
         </div>
       </div>
 
