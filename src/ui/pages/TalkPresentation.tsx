@@ -7,7 +7,6 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import Reveal from "reveal.js";
 import type { RevealApi } from "reveal.js";
-import Highlight from "reveal.js/plugin/highlight";
 import Notes from "reveal.js/plugin/notes";
 import "reveal.js/reveal.css";
 import "./talk-presentation.css";
@@ -79,7 +78,7 @@ export function TalkPresentation() {
     if (!deckRef.current || !post) return;
 
     const deck = new Reveal(deckRef.current, {
-      plugins: [Highlight, Notes],
+      plugins: [Notes],
       hash: true,
       slideNumber: "c/t",
       progress: true,
