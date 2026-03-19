@@ -11,7 +11,55 @@ import Notes from "reveal.js/plugin/notes";
 import "reveal.js/reveal.css";
 import "./talk-presentation.css";
 import { getPostBySlug } from "../lib/posts";
-import { MermaidDiagram } from "../components/MermaidDiagram";
+import type { MermaidConfig } from "mermaid";
+import { mermaidConfig } from "../lib/mermaid-theme";
+
+const lightMermaidConfig: MermaidConfig = {
+  startOnLoad: false,
+  theme: "base",
+  themeVariables: {
+    primaryColor: "#ccfbf1",        // teal-100 — soft fill
+    primaryTextColor: "#0f172a",    // slate-900
+    primaryBorderColor: "#0d9488",  // teal-600
+    lineColor: "#64748b",           // slate-500
+    secondaryColor: "#f0fdf4",      // green-50
+    tertiaryColor: "#f8fafc",       // slate-50
+    background: "#ffffff",
+    mainBkg: "#f0fdfa",             // teal-50
+    nodeBorder: "#0d9488",
+    clusterBkg: "rgba(13,148,136,0.06)",
+    clusterBorder: "#94a3b8",
+    titleColor: "#0f172a",
+    edgeLabelBackground: "#f8fafc",
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+    fontSize: "14px",
+  },
+};
+
+function SlideMermaid({ code }: { code: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDark = document.documentElement.classList.contains("dark");
+
+  useEffect(() => {
+    let cancelled = false;
+    import("mermaid").then(async ({ default: mermaid }) => {
+      if (cancelled || !containerRef.current) return;
+      mermaid.initialize(isDark ? mermaidConfig : lightMermaidConfig);
+      const id = `slide-mermaid-${Math.random().toString(36).slice(2)}`;
+      try {
+        const { svg } = await mermaid.render(id, code.trim());
+        if (cancelled || !containerRef.current) return;
+        containerRef.current.innerHTML = svg;
+      } catch {
+        if (cancelled || !containerRef.current) return;
+        containerRef.current.textContent = "⚠ Diagram failed to render";
+      }
+    });
+    return () => { cancelled = true; };
+  }, [code, isDark]);
+
+  return <div ref={containerRef} className="flex justify-center my-4" />;
+}
 
 /** Split raw markdown into [horizontal][vertical] slide groups. */
 function parseSlides(content: string): string[][] {
@@ -35,7 +83,7 @@ const slideComponents: Components = {
   code({ className, children }) {
     const language = /language-(\w+)/.exec(className ?? "")?.[1];
     if (language === "mermaid") {
-      return <MermaidDiagram code={String(children)} />;
+      return <SlideMermaid code={String(children)} />;
     }
     return <code className={className}>{children}</code>;
   },
