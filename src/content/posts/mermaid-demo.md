@@ -7,6 +7,7 @@ tags: [diagrams, mermaid, demo]
 category: blog
 featured: false
 draft: false
+cover: "https://corporate-assets.lucid.co/chart/d9c87457-2152-4c87-a114-7266d9e60a21.png"
 ---
 
 ## Flowchart

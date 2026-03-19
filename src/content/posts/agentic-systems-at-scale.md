@@ -3,7 +3,7 @@ title: "Building Agentic Systems at Scale"
 slug: "agentic-systems-at-scale"
 date: "2026-03-15"
 summary: "Lessons learned orchestrating multi-agent pipelines in production — from prompt architecture to failure recovery and observability."
-cover: ""
+cover: "https://akka.io/hubfs/website/blog/images/agentic-ai-architectural-components.webp"
 tags: [agentic-systems, ai, production]
 category: blog
 featured: true
