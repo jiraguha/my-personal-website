@@ -29,15 +29,15 @@ export type SearchEntry = z.infer<typeof SearchEntrySchema>;
 
 ## API Acceptance Criteria
 
-- [ ] API-1: `SearchEntrySchema` is a Zod schema in `src/shared/schemas/search.schema.ts` with fields: `slug`, `title`, `summary`, `tags` (string array), `category` (ContentCategory), `date`. It validates correctly via `.parse()`.
-- [ ] API-2: `toSearchEntry(post: PostCard)` extracts only the search-relevant fields from a PostCard — no body content, no cover image, no `featured` flag.
-- [ ] API-3: `createSearchIndex(posts: PostCard[])` builds a Fuse.js index from PostCard[], configured with weighted keys: title (0.4), summary (0.3), tags (0.3), threshold 0.35, `ignoreLocation: true`.
-- [ ] API-4: `searchPosts(index, query)` returns a `Set<string>` of matching slugs. It enforces a minimum query length of 2, caps input at 100 characters, and strips special characters before matching.
-- [ ] API-5: Search is entirely client-side. No API route, no server function, no external search service.
+- [x] API-1: `SearchEntrySchema` is a Zod schema in `src/shared/schemas/search.schema.ts` with fields: `slug`, `title`, `summary`, `tags` (string array), `category` (ContentCategory), `date`. It validates correctly via `.parse()`.
+- [x] API-2: `toSearchEntry(post: PostCard)` extracts only the search-relevant fields from a PostCard — no body content, no cover image, no `featured` flag.
+- [x] API-3: `createSearchIndex(posts: PostCard[])` builds a Fuse.js index from PostCard[], configured with weighted keys: title (0.4), summary (0.3), tags (0.3), threshold 0.35, `ignoreLocation: true`.
+- [x] API-4: `searchPosts(index, query)` returns a `Set<string>` of matching slugs. It enforces a minimum query length of 2, caps input at 100 characters, and strips special characters before matching.
+- [x] API-5: Search is entirely client-side. No API route, no server function, no external search service.
 
 ## UI Acceptance Criteria
 
-- [ ] UI-1: **Collapsed state** — by default, search renders as a small magnifying glass icon button at the top-left of the posts toolbar row, opposite the category filter tabs.
+- [x] UI-1: **Collapsed state** — by default, search renders as a small magnifying glass icon button at the top-left of the posts toolbar row, opposite the category filter tabs.
   ```
   ┌─────────────────────────────────────────────────────┐
   │  🔍                        [All][Blog][...][Shorts] │
@@ -47,31 +47,31 @@ export type SearchEntry = z.infer<typeof SearchEntrySchema>;
   │  └──────┘ └──────┘ └──────┘                         │
   └─────────────────────────────────────────────────────┘
   ```
-- [ ] UI-2: **Expanded state** — clicking the icon or pressing `/` expands into a text input with a search icon on the left and a clear button (`X`) on the right (visible only when input is non-empty). Styled with:
+- [x] UI-2: **Expanded state** — clicking the icon or pressing `/` expands into a text input with a search icon on the left and a clear button (`X`) on the right (visible only when input is non-empty). Styled with:
   - Background: `gray-100` / `gray-900` (dark)
   - Border: `gray-300` / `slate-700` (dark), transitions to `indigo-500` on focus
   - Text: `gray-900` / `slate-200` (dark)
   - Placeholder: `Search posts...` in `gray-500` / `slate-500` (dark)
   - Width: ~250px on desktop, full-width on mobile
   - Collapses back to icon on blur when input is empty
-- [ ] UI-3: **Instant filtering** — as the user types, the content grid filters in real time (debounced at 150ms). The category tab selection is preserved — search operates within the active category filter.
-- [ ] UI-4: **Search scope** — queries match against title, summary, and tag names. A query like "kubernetes" matches a post with "kubernetes" in its tags or summary.
-- [ ] UI-5: **Fuzzy matching** — Fuse.js provides fuzzy search so minor typos are tolerated and partial matches work (threshold 0.35).
-- [ ] UI-6: **Result count** — when a search query is active (≥ 2 chars), a small muted label below the search bar shows: `3 results` or `No results found`.
-- [ ] UI-7: **Empty state** — when the search returns no results, the grid area shows a centered message: "No posts matching '[query]'" with a "Clear search" link.
-- [ ] UI-8: **Clear behavior** — clicking the `X` button or pressing `Escape` clears the search input, collapses the search bar, and restores the full content grid (respecting the active category filter).
-- [ ] UI-9: **Keyboard shortcut** — pressing `/` (when not focused on another input) expands and focuses the search bar.
-- [ ] UI-10: **Combined with category filter** — search and category filter work together. Selecting "Talks" + typing "safety" shows only talks matching "safety". Clearing the search shows all talks again. Switching categories while searching re-filters against the new category.
-- [ ] UI-11: **Mobile layout** — on mobile (≤ 640px via `sm:` breakpoint), the search bar and category tabs stack vertically. Both remain visible without horizontal scrolling.
-- [ ] UI-12: **Accessibility** — the search input has `role="searchbox"`, `aria-label="Search posts"`, and the results grid has `aria-live="polite"` so screen readers announce changes.
+- [x] UI-3: **Instant filtering** — as the user types, the content grid filters in real time (debounced at 150ms). The category tab selection is preserved — search operates within the active category filter.
+- [x] UI-4: **Search scope** — queries match against title, summary, and tag names. A query like "kubernetes" matches a post with "kubernetes" in its tags or summary.
+- [x] UI-5: **Fuzzy matching** — Fuse.js provides fuzzy search so minor typos are tolerated and partial matches work (threshold 0.35).
+- [x] UI-6: **Result count** — when a search query is active (≥ 2 chars), a small muted label below the search bar shows: `3 results` or `No results found`.
+- [x] UI-7: **Empty state** — when the search returns no results, the grid area shows a centered message: "No posts matching '[query]'" with a "Clear search" link.
+- [x] UI-8: **Clear behavior** — clicking the `X` button or pressing `Escape` clears the search input, collapses the search bar, and restores the full content grid (respecting the active category filter).
+- [x] UI-9: **Keyboard shortcut** — pressing `/` (when not focused on another input) expands and focuses the search bar.
+- [x] UI-10: **Combined with category filter** — search and category filter work together. Selecting "Talks" + typing "safety" shows only talks matching "safety". Clearing the search shows all talks again. Switching categories while searching re-filters against the new category.
+- [x] UI-11: **Mobile layout** — on mobile (≤ 640px via `sm:` breakpoint), the search bar and category tabs stack vertically. Both remain visible without horizontal scrolling.
+- [x] UI-12: **Accessibility** — the search input has `role="searchbox"`, `aria-label="Search posts"`, and the results grid has `aria-live="polite"` so screen readers announce changes.
 
 ## Integration Acceptance Criteria
 
-- [ ] E2E-1: Clicking the search icon expands the input. Typing "kubernetes" filters the grid to only posts with "kubernetes" in their title, summary, or tags.
-- [ ] E2E-2: Typing a query while the "Talks" category is selected filters only within talks.
-- [ ] E2E-3: Clearing the search input restores the full grid for the active category.
-- [ ] E2E-4: Pressing `/` expands and focuses the search bar. Pressing `Escape` clears, collapses, and blurs it.
-- [ ] E2E-5: A query with zero matches shows the "No posts matching" empty state with a "Clear search" link.
+- [x] E2E-1: Clicking the search icon expands the input. Typing "kubernetes" filters the grid to only posts with "kubernetes" in their title, summary, or tags.
+- [x] E2E-2: Typing a query while the "Talks" category is selected filters only within talks.
+- [x] E2E-3: Clearing the search input restores the full grid for the active category.
+- [x] E2E-4: Pressing `/` expands and focuses the search bar. Pressing `Escape` clears, collapses, and blurs it.
+- [x] E2E-5: A query with zero matches shows the "No posts matching" empty state with a "Clear search" link.
 
 ## Component States
 
