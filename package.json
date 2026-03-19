@@ -24,6 +24,7 @@
     "react-router-dom": "^7.13.1",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
+    "reveal.js": "^6.0.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {

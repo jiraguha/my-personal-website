@@ -15,6 +15,12 @@ export const PostFrontmatterSchema = z.object({
   featured: z.boolean().optional().default(false),
   draft: z.boolean().optional().default(false),
   externalUrl: z.string().optional(),
+  // Talk-specific fields
+  event: z.string().optional(),
+  eventUrl: z.string().optional(),
+  eventDate: z.string().optional(),
+  videoUrl: z.string().optional(),
+  externalSlides: z.string().optional(),
 });
 export type PostFrontmatter = z.infer<typeof PostFrontmatterSchema>;
 
@@ -28,6 +34,7 @@ export const PostCardSchema = PostFrontmatterSchema.pick({
   category: true,
   featured: true,
   externalUrl: true,
+  externalSlides: true,
 });
 export type PostCard = z.infer<typeof PostCardSchema>;
 

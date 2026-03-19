@@ -95,7 +95,12 @@ export function PostCard({ post }: PostCardProps) {
             <time className="text-xs text-gray-400 dark:text-gray-600">
               {formatDate(post.date)}
             </time>
-            <span className="text-indigo-500 dark:text-indigo-400 text-sm font-medium">→</span>
+            <div className="flex items-center gap-2">
+              {post.category === "talk" && !post.externalSlides && (
+                <span className="text-xs font-medium text-violet-500 dark:text-violet-400">▶ Slides</span>
+              )}
+              <span className="text-indigo-500 dark:text-indigo-400 text-sm font-medium">→</span>
+            </div>
           </div>
         </div>
       </article>

@@ -101,5 +101,6 @@ export function toPostCard(post: Post): PostCard {
     category: post.category,
     featured: post.featured,
     externalUrl: post.externalUrl,
+    externalSlides: post.externalSlides,
   };
 }
