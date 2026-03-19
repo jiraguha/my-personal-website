@@ -13,4 +13,4 @@ category: short
 kubectl debug -it my-pod --image=busybox --target=my-container
 ```
 
-Changed how I debug production issues entirely.
+Changed how I debug production issues entirely. No more `FROM my-image` + install curl + rebuild + redeploy cycles.

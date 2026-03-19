@@ -1,13 +1,13 @@
 ---
 title: "Mermaid Diagrams in Posts"
-slug: "mermaid-demo"
+slug: mermaid-demo
 date: "2026-03-18"
-summary: "A demo post showing Mermaid diagram support."
+summary: "A demo post showing Mermaid diagram support — flowcharts, sequence diagrams, and more rendered inline."
 tags: [diagrams, mermaid, demo]
 category: blog
 featured: false
 draft: false
-cover: "https://example.com/mermaid-cover.png"
+cover: "https://corporate-assets.lucid.co/chart/d9c87457-2152-4c87-a114-7266d9e60a21.png"
 ---
 
 ## Flowchart
@@ -25,17 +25,35 @@ flowchart LR
 
 ```mermaid
 sequenceDiagram
-  participant U as User
-  participant A as API
-  participant DB as Database
-  U->>A: POST /create
-  A->>DB: INSERT
-  DB-->>A: OK
-  A-->>U: 201 Created
+  participant User
+  participant UI
+  participant API
+  participant DB
+
+  User->>UI: Submit form
+  UI->>API: POST /items
+  API->>DB: INSERT
+  DB-->>API: OK
+  API-->>UI: 201 Created
+  UI-->>User: Show success toast
 ```
 
-## Invalid Block (should show error)
+## State Diagram
 
 ```mermaid
-this is not valid mermaid syntax!!!
+stateDiagram-v2
+  [*] --> Draft
+  Draft --> Implementing : spec-test
+  Implementing --> Complete : spec-verify
+  Complete --> [*]
+  Implementing --> Draft : tests fail
+```
+
+## Error state
+
+Invalid syntax renders an error card instead of breaking the page:
+
+```mermaid
+unknownDiagramType
+  A --> B
 ```
