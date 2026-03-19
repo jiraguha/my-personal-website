@@ -117,7 +117,7 @@ export function TalkPresentation() {
   const slides = parseSlides(post.content);
 
   return (
-    <div style={{ width: "100vw", height: "100vh", background: "#0b0f19", overflow: "hidden" }}>
+    <div className="talk-deck-wrapper">
       <div className="reveal" ref={deckRef}>
         <div className="slides">
           {slides.map((hGroup, hIdx) =>
