@@ -1,6 +1,6 @@
 # 007 — Post Search
 
-> Status: `implementing`
+> Status: `prototype`
 > Mode: `prototype`
 > Date: 2026-03-19
 
