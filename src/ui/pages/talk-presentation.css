@@ -71,15 +71,6 @@
   text-align: left;
 }
 
-/* Left-align body content; headings stay centered */
-.reveal .slides section p,
-.reveal .slides section ul,
-.reveal .slides section ol,
-.reveal .slides section blockquote,
-.reveal .slides section table {
-  text-align: left;
-}
-
 /* Progress bar */
 .reveal .progress {
   color: #7c3aed;
