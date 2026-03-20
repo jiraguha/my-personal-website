@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { TrendingTag } from "@shared/schemas/tags.schema";
 import { SectionDivider } from "./SectionDivider";
 
@@ -43,9 +42,9 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
       <div className="relative">
         <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center sm:overflow-x-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {tags.map((t) => (
-            <Link
+            <a
               key={t.tag}
-              to={`/tags/${t.tag}`}
+              href={`/tags/${t.tag}`}
               className={[
                 "flex-shrink-0 inline-flex items-center gap-1.5",
                 "px-3 py-1.5 rounded-md border text-sm font-medium",
@@ -55,7 +54,7 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
             >
               # {t.displayName}
               <span className="text-xs opacity-50 font-normal">×{t.count}</span>
-            </Link>
+            </a>
           ))}
         </div>
         {/* Mobile fade-out hint */}

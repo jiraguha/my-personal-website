@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import {
   PostFrontmatterSchema,
   type PostCard,
@@ -40,19 +42,36 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
   return { data, content };
 }
 
-const rawFiles = import.meta.glob("@content/posts/**/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+function findMarkdownFiles(dir: string): string[] {
+  const results: string[] = [];
+  if (!fs.existsSync(dir)) return results;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...findMarkdownFiles(fullPath));
+    } else if (entry.name.endsWith(".md")) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+function getContentDir(): string {
+  const contentDir = process.env.CONTENT_DIR || "src/content";
+  return path.resolve(process.cwd(), contentDir, "posts");
+}
 
 function loadPosts(): Post[] {
-  const isDev = import.meta.env.DEV;
+  const isDev = process.env.NODE_ENV === "development";
+  const postsDir = getContentDir();
+  const files = findMarkdownFiles(postsDir);
 
-  return Object.entries(rawFiles)
-    .map(([filePath, raw]) => {
+  return files
+    .map((filePath) => {
+      const raw = fs.readFileSync(filePath, "utf-8");
       const { data, content } = parseFrontmatter(raw);
-      const slug = filePath.replace(/^.*\/posts\/[^/]+\//, "").replace(/\.md$/, "");
+      const slug = path.basename(filePath, ".md");
       const result = PostFrontmatterSchema.safeParse({ slug, ...data });
       if (!result.success) {
         console.warn(`Invalid frontmatter in ${filePath}:`, result.error.format());

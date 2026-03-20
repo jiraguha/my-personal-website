@@ -1,32 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, Navigate, Link } from "react-router-dom";
+import { useData } from "vike-react/useData";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
-import Reveal from "reveal.js";
-import type { RevealApi } from "reveal.js";
-import Notes from "reveal.js/plugin/notes";
 import "reveal.js/reveal.css";
-import "./talk-presentation.css";
-import { getPostBySlug } from "../lib/posts";
-import { parseSlides, stripNotes } from "../lib/slides";
+import "../../../src/ui/pages/talk-presentation.css";
+import { parseSlides, stripNotes } from "../../../src/ui/lib/slides";
 import type { MermaidConfig } from "mermaid";
-import { mermaidConfig } from "../lib/mermaid-theme";
+import { mermaidConfig } from "../../../src/ui/lib/mermaid-theme";
+import type { Data } from "./+data";
 
 const lightMermaidConfig: MermaidConfig = {
   startOnLoad: false,
   theme: "base",
   themeVariables: {
-    primaryColor: "#ccfbf1",        // teal-100 — soft fill
-    primaryTextColor: "#0f172a",    // slate-900
-    primaryBorderColor: "#0d9488",  // teal-600
-    lineColor: "#64748b",           // slate-500
-    secondaryColor: "#f0fdf4",      // green-50
-    tertiaryColor: "#f8fafc",       // slate-50
+    primaryColor: "#ccfbf1",
+    primaryTextColor: "#0f172a",
+    primaryBorderColor: "#0d9488",
+    lineColor: "#64748b",
+    secondaryColor: "#f0fdf4",
+    tertiaryColor: "#f8fafc",
     background: "#ffffff",
-    mainBkg: "#f0fdfa",             // teal-50
+    mainBkg: "#f0fdfa",
     nodeBorder: "#0d9488",
     clusterBkg: "rgba(13,148,136,0.06)",
     clusterBorder: "#94a3b8",
@@ -39,7 +36,11 @@ const lightMermaidConfig: MermaidConfig = {
 
 function SlideMermaid({ code }: { code: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDark = document.documentElement.classList.contains("dark");
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,15 +54,16 @@ function SlideMermaid({ code }: { code: string }) {
         containerRef.current.innerHTML = svg;
       } catch {
         if (cancelled || !containerRef.current) return;
-        containerRef.current.textContent = "⚠ Diagram failed to render";
+        containerRef.current.textContent = "Warning: Diagram failed to render";
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [code, isDark]);
 
   return <div ref={containerRef} className="flex justify-center my-4" />;
 }
-
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -95,12 +97,10 @@ function Slide({ markdown }: { markdown: string }) {
   );
 }
 
-export function TalkPresentation() {
-  const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : undefined;
-
+export function Page() {
+  const { post } = useData<Data>();
   const deckRef = useRef<HTMLDivElement>(null);
-  const revealRef = useRef<RevealApi | null>(null);
+  const revealRef = useRef<import("reveal.js").default | null>(null);
   const [backVisible, setBackVisible] = useState(true);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -125,22 +125,28 @@ export function TalkPresentation() {
   useEffect(() => {
     if (!deckRef.current || !post) return;
 
-    const deck = new Reveal(deckRef.current, {
-      plugins: [Notes],
-      hash: true,
-      slideNumber: "c/t",
-      progress: true,
-      transition: "slide",
-      backgroundTransition: "fade",
-      width: 1280,
-      height: 720,
-      margin: 0.06,
-      controls: true,
-      center: true,
-    });
+    let deck: import("reveal.js").default | null = null;
 
-    deck.initialize();
-    revealRef.current = deck;
+    import("reveal.js").then((Reveal) => {
+      import("reveal.js/plugin/notes").then((Notes) => {
+        if (!deckRef.current) return;
+        deck = new Reveal.default(deckRef.current, {
+          plugins: [Notes.default],
+          hash: true,
+          slideNumber: "c/t",
+          progress: true,
+          transition: "slide",
+          backgroundTransition: "fade",
+          width: 1280,
+          height: 720,
+          margin: 0.06,
+          controls: true,
+          center: true,
+        });
+        deck.initialize();
+        revealRef.current = deck;
+      });
+    });
 
     return () => {
       revealRef.current?.destroy();
@@ -148,40 +154,38 @@ export function TalkPresentation() {
     };
   }, [post?.slug]);
 
-  if (!post || post.category !== "talk" || post.externalSlides) {
-    return <Navigate to="/404" replace />;
-  }
-
   const slides = parseSlides(post.content);
 
   return (
-    <div className="talk-deck-wrapper">
-      <div className="reveal" ref={deckRef}>
-        <div className="slides">
-          {slides.map((hGroup, hIdx) =>
-            hGroup.length === 1 ? (
-              <section key={hIdx}>
-                <Slide markdown={hGroup[0]} />
-              </section>
-            ) : (
-              <section key={hIdx}>
-                {hGroup.map((vSlide, vIdx) => (
-                  <section key={vIdx}>
-                    <Slide markdown={vSlide} />
-                  </section>
-                ))}
-              </section>
-            )
-          )}
+    <>
+      <div className="talk-deck-wrapper">
+        <div className="reveal" ref={deckRef}>
+          <div className="slides">
+            {slides.map((hGroup, hIdx) =>
+              hGroup.length === 1 ? (
+                <section key={hIdx}>
+                  <Slide markdown={hGroup[0]} />
+                </section>
+              ) : (
+                <section key={hIdx}>
+                  {hGroup.map((vSlide, vIdx) => (
+                    <section key={vIdx}>
+                      <Slide markdown={vSlide} />
+                    </section>
+                  ))}
+                </section>
+              ),
+            )}
+          </div>
         </div>
       </div>
 
-      <Link
-        to={`/posts/${post.slug}`}
+      <a
+        href={`/posts/${post.slug}`}
         className={`talk-back-btn${backVisible ? "" : " hidden"}`}
       >
         ← Back to site
-      </Link>
-    </div>
+      </a>
+    </>
   );
 }

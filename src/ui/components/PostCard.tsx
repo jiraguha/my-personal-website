@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { TagChip } from "./TagChip";
 import { ShortBadge } from "./ShortBadge";
 import type { PostCard as PostCardType } from "@shared/schemas/site.schema";
@@ -32,9 +31,9 @@ export function PostCard({ post }: PostCardProps) {
         {children}
       </a>
     ) : (
-      <Link to={href} className="block group">
+      <a href={href} className="block group">
         {children}
-      </Link>
+      </a>
     );
 
   if (isShort) {

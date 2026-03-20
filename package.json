@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"bun run dev:api\" \"bun run dev:ui\"",
-    "dev:api": "bun run --watch src/api/index.ts",
-    "dev:ui": "vite",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
     "infra:up": "docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down",
     "infra:reset": "docker compose -f infra/docker-compose.yml down -v && docker compose -f infra/docker-compose.yml up -d",
@@ -22,10 +22,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.13.1",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "reveal.js": "^6.0.0",
+    "vike": "^0.4.255",
+    "vike-react": "^0.6.21",
     "zod": "^3.24.0"
   },
   "devDependencies": {

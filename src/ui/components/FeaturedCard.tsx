@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { TagChip } from "./TagChip";
 import type { PostCard } from "@shared/schemas/site.schema";
 
@@ -64,12 +63,12 @@ export function FeaturedCard({ post }: FeaturedCardProps) {
               Read →
             </a>
           ) : (
-            <Link
-              to={href}
+            <a
+              href={href}
               className="text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline"
             >
               Read →
-            </Link>
+            </a>
           )}
         </div>
       </div>

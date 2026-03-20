@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 interface TagChipProps {
   tag: string;
   clickable?: boolean;
@@ -14,8 +12,8 @@ export function TagChip({ tag, clickable = true }: TagChipProps) {
   }
 
   return (
-    <Link to={`/tags/${tag}`} className={classes}>
+    <a href={`/tags/${tag}`} className={classes}>
       {tag}
-    </Link>
+    </a>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import type { SiteProfile } from "@shared/schemas/site.schema";
 
@@ -13,12 +12,12 @@ export function Nav({ profile }: NavProps) {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-        <Link
-          to="/"
+        <a
+          href="/"
           className="font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           {profile.name}
-        </Link>
+        </a>
 
         {/* Desktop nav */}
         <div className="hidden sm:flex items-center gap-4">

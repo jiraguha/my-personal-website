@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import vike from "vike/plugin";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -49,15 +50,14 @@ function markdownRawPlugin(): Plugin {
 const contentDir = process.env.CONTENT_DIR || "src/content";
 
 export default defineConfig({
-  plugins: [markdownRawPlugin(), tailwindcss(), react()],
+  plugins: [
+    markdownRawPlugin(),
+    tailwindcss(),
+    react(),
+    vike(),
+  ],
   server: {
     port: 5173,
-    proxy: {
-      "/api": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-    },
   },
   resolve: {
     alias: {

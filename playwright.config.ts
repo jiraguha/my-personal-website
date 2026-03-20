@@ -18,16 +18,9 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: [
-    {
-      command: "bun run dev:api",
-      port: 3000,
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: "CONTENT_DIR=test/content NODE_ENV=development bun run dev:ui -- --port 5174",
-      port: 5174,
-      reuseExistingServer: !process.env.CI,
-    },
-  ],
+  webServer: {
+    command: "CONTENT_DIR=test/content NODE_ENV=development bun run dev -- --port 5174",
+    port: 5174,
+    reuseExistingServer: !process.env.CI,
+  },
 });
