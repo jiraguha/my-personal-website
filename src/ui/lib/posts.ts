@@ -8,6 +8,8 @@ import {
 
 export interface Post extends PostFrontmatter {
   content: string;
+  /** True if `cover` was auto-resolved from generated covers, not set in frontmatter */
+  coverAutoResolved?: boolean;
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
@@ -77,13 +79,14 @@ function loadPosts(): Post[] {
         console.warn(`Invalid frontmatter in ${filePath}:`, result.error.format());
         return null;
       }
-      const post = { ...result.data, content };
+      const post: Post = { ...result.data, content };
       // Convention-based cover auto-resolve (spec 011):
       // If cover is empty, check for a generated cover at the known path
       if (!post.cover) {
         const generatedCover = path.resolve(process.cwd(), "public/assets/covers", post.slug, "cover.png");
         if (fs.existsSync(generatedCover)) {
           post.cover = `/assets/covers/${post.slug}/cover.png`;
+          post.coverAutoResolved = true;
         }
       }
       return post;

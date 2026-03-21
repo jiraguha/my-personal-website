@@ -15,10 +15,9 @@ export const PostFrontmatterSchema = z.object({
   featured: z.boolean().optional().default(false),
   draft: z.boolean().optional().default(false),
   // Cover generation fields (spec 011)
-  autocover: z.boolean().optional().default(true),
+  coverNone: z.boolean().optional().default(false),
   coverKeywords: z.array(z.string()).optional(),
   coverHint: z.string().optional(),
-  coverManual: z.boolean().optional().default(false),
   coverSeed: z.coerce.number().optional(),
   coverText: z.enum(["none", "minimal", "moderate", "heavy"]).optional(),
   coverDa: z.string().optional(),

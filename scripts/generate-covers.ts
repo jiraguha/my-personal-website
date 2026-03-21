@@ -2,10 +2,17 @@
 /**
  * Batch cover generation: bun run covers [--force] [--dry-run]
  * Generates missing covers for all posts across all categories.
+ *
+ * Decision tree per post:
+ *   coverNone: true   → SKIP (explicit opt-out)
+ *   cover is set       → SKIP (already has one)
+ *   cover is empty     → GENERATE
+ *   --force            → regenerate even if generated cover file exists
  */
 import { getAllPosts } from "../src/ui/lib/posts";
 import { generateCover } from "../src/ui/lib/cover-generator";
-import { readManifest, writeManifest, upsertCover, getCoverBySlug } from "../src/ui/lib/cover-manifest";
+import { readManifest, writeManifest, upsertCover } from "../src/ui/lib/cover-manifest";
+import { shouldSkipCover, skipReasonLabel } from "../src/ui/lib/cover-skip";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -37,24 +44,16 @@ async function main(): Promise<void> {
   let failed = 0;
 
   for (const post of posts) {
-    // Skip manual covers
-    if (post.coverManual) {
-      console.log(`  SKIP (manual): ${post.slug}`);
+    const skipReason = shouldSkipCover(post);
+    if (skipReason) {
+      console.log(`  SKIP (${skipReasonLabel(skipReason)}): ${post.slug}`);
       skipped++;
       continue;
     }
 
-    // Skip if autocover is false
-    if (post.autocover === false) {
-      console.log(`  SKIP (autocover=false): ${post.slug}`);
-      skipped++;
-      continue;
-    }
-
-    // Skip if cover already exists (unless --force)
-    const existing = getCoverBySlug(manifest, post.slug);
+    // Skip if generated cover file already exists on disk (unless --force)
     const coverFile = path.resolve(process.cwd(), `public/assets/covers/${post.slug}/cover.png`);
-    if (!force && existing && fs.existsSync(coverFile)) {
+    if (!force && fs.existsSync(coverFile)) {
       console.log(`  SKIP (exists): ${post.slug}`);
       skipped++;
       continue;

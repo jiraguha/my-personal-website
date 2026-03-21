@@ -1,14 +1,19 @@
 #!/usr/bin/env bun
 /**
  * Single-post cover generation: bun run cover <slug>
- * Always regenerates, even if a cover already exists.
+ * Generates (or regenerates) the cover for one specific post.
+ *
+ * Skips if coverNone: true or cover is explicitly set in frontmatter.
+ * Use --force to regenerate even if a generated cover already exists.
  */
 import { getPostBySlug } from "../src/ui/lib/posts";
 import { generateCover } from "../src/ui/lib/cover-generator";
 import { readManifest, writeManifest, upsertCover } from "../src/ui/lib/cover-manifest";
+import { shouldSkipCover, skipReasonLabel } from "../src/ui/lib/cover-skip";
 
 async function main(): Promise<void> {
-  const slug = process.argv[2];
+  const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+  const slug = args[0];
 
   if (!slug) {
     console.error("Usage: bun run cover <slug>");
@@ -26,6 +31,12 @@ async function main(): Promise<void> {
   if (!post) {
     console.error(`Error: No post found with slug "${slug}"`);
     process.exit(1);
+  }
+
+  const skipReason = shouldSkipCover(post);
+  if (skipReason) {
+    console.log(`SKIP (${skipReasonLabel(skipReason)}): ${post.slug}`);
+    return;
   }
 
   console.log(`Generating cover for "${post.title}" (${post.category})\n`);

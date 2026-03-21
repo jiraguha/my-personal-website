@@ -95,13 +95,17 @@ New cover fields are added to the existing `PostFrontmatterSchema` in `src/share
 // Added to PostFrontmatterSchema in src/shared/schemas/site.schema.ts
 
 // --- Cover generation fields (spec 011) ---
-autocover: z.boolean().optional().default(true),
+coverNone: z.boolean().optional().default(false),  // explicit opt-out: no cover at all
 coverKeywords: z.array(z.string()).optional(),
 coverHint: z.string().optional(),
-coverManual: z.boolean().optional().default(false),
 coverSeed: z.number().optional(),
 coverText: z.enum(["none", "minimal", "moderate", "heavy"]).optional(), // default: "minimal"
 coverDa: z.string().optional(),
+
+// Decision tree (no coverManual / autocover needed):
+//   coverNone: true          → SKIP (no cover wanted)
+//   cover: "something"       → SKIP (already has a cover)
+//   cover: "" (or absent)    → GENERATE
 ```
 
 The generator script uses a separate manifest schema:
