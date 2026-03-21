@@ -9,7 +9,7 @@ export function Footer({ profile }: FooterProps) {
 
   return (
     <footer className="mt-24 border-t border-gray-200 dark:border-gray-800">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 dark:text-gray-500">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
         <span>© {year} {profile.name}</span>
         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <span>Built with</span>

@@ -42,13 +42,13 @@ export function PostCard({ post }: PostCardProps) {
         <article className="rounded-xl border border-violet-200 dark:border-violet-900/50 bg-white dark:bg-gray-900/80 hover:border-violet-400 dark:hover:border-violet-700 transition-colors flex flex-col p-4">
           <div className="flex items-center justify-between mb-2">
             <ShortBadge />
-            <time className="text-xs text-gray-400 dark:text-gray-600">{formatDate(post.date)}</time>
+            <time className="text-xs text-gray-500 dark:text-gray-400">{formatDate(post.date)}</time>
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1.5 text-sm sm:text-base line-clamp-2">
             {post.title}
           </h3>
           {post.summary && (
-            <p className="text-gray-500 dark:text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">
+            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-2 flex-1">
               {post.summary}
             </p>
           )}
@@ -87,11 +87,11 @@ export function PostCard({ post }: PostCardProps) {
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1 line-clamp-2 text-sm sm:text-base">
             {post.title}
           </h3>
-          <p className="text-gray-500 dark:text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-2 flex-1">
             {post.summary}
           </p>
           <div className="mt-3 flex items-center justify-between">
-            <time className="text-xs text-gray-400 dark:text-gray-600">
+            <time className="text-xs text-gray-500 dark:text-gray-400">
               {formatDate(post.date)}
             </time>
             <div className="flex items-center gap-2">

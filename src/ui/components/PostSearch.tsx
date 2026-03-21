@@ -136,7 +136,7 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
         onClick={expand}
         aria-label="Open search"
         className="p-2 rounded-md
-          text-gray-400 dark:text-slate-500
+          text-gray-500 dark:text-slate-400
           hover:text-gray-600 dark:hover:text-slate-300
           hover:bg-gray-100 dark:hover:bg-gray-800
           transition-colors"
@@ -168,7 +168,7 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
             focus:border-indigo-500 dark:focus:border-indigo-500
             focus:outline-none focus:ring-1 focus:ring-indigo-500
             text-gray-900 dark:text-slate-200
-            placeholder:text-gray-500 dark:placeholder:text-slate-500
+            placeholder:text-gray-500 dark:placeholder:text-slate-400
             transition-colors"
         />
         {hasQuery && (
@@ -176,7 +176,7 @@ export function PostSearch({ query, onChange, resultCount }: PostSearchProps) {
             onClick={handleClear}
             aria-label="Clear search"
             className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5
-              text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300
+              text-gray-500 dark:text-slate-400 hover:text-gray-600 dark:hover:text-slate-300
               transition-colors"
           >
             <svg

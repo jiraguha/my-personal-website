@@ -86,7 +86,7 @@ export function Hero({ profile }: HeroProps) {
                 {profile.socials.email && (
                   <a
                     href={profile.socials.email}
-                    className="flex items-center gap-1.5 text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
+                    className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
                   >
                     <MailIcon />
                     email
@@ -97,7 +97,7 @@ export function Hero({ profile }: HeroProps) {
                     href={profile.socials.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
+                    className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
                   >
                     <GitHubIcon />
                     github
@@ -108,7 +108,7 @@ export function Hero({ profile }: HeroProps) {
                     href={profile.socials.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
+                    className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
                   >
                     <LinkedInIcon />
                     linkedin
@@ -120,7 +120,7 @@ export function Hero({ profile }: HeroProps) {
                     download="jean-paul-iraguha-resume.pdf"
                     aria-label="Download resume as PDF"
                     title="Download resume"
-                    className="flex items-center gap-1.5 text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
+                    className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-sm"
                   >
                     <ResumeIcon />
                     resume
