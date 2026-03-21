@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import {
   readFaviconLetter,
   generateSvg,
@@ -10,7 +11,7 @@ import {
   SIZES,
 } from "../../scripts/generate-favicon";
 
-const TMP = join(import.meta.dirname, "..", ".tmp-favicon-test");
+const TMP = join(tmpdir(), "favicon-test-" + process.pid);
 const PROFILE = join(TMP, "profile.json");
 const OUTPUT = join(TMP, "output");
 const HASH = join(OUTPUT, ".favicon-hash");
