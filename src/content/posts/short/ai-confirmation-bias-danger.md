@@ -1,7 +1,7 @@
 ---
 title: "AI Tools Amplify Confirmation Bias"
 slug: ai-confirmation-bias-danger
-date: 2026-03-22
+date: 2026-01-21
 summary: ""
 tags: ["ai", "critical-thinking"]
 category: short
