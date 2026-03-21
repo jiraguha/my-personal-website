@@ -53,7 +53,7 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
               ].join(" ")}
             >
               # {t.displayName}
-              <span className="text-xs opacity-50 font-normal">×{t.count}</span>
+              <span className="text-xs font-normal text-gray-500 dark:text-gray-400">×{t.count}</span>
             </a>
           ))}
         </div>

@@ -50,7 +50,7 @@ export function FeaturedCard({ post }: FeaturedCardProps) {
           {post.summary}
         </p>
         <div className="flex items-center justify-between">
-          <time className="text-sm text-gray-500 dark:text-gray-500">
+          <time className="text-sm text-gray-600 dark:text-gray-400">
             {formatDate(post.date)}
           </time>
           {isExternal ? (
