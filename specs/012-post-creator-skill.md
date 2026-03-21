@@ -1,6 +1,6 @@
 # 012 — Post Creator Skill (Claude)
 
-> Status: `implementing`
+> Status: `prototype`
 > Mode: `prototype`
 > Date: 2026-03-21
 
