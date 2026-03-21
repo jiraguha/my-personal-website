@@ -1,4 +1,4 @@
-# 002 — AI-Powered Cover Image Generation (Nano Banana Pro)
+# 011 — AI-Powered Cover Image Generation (Nano Banana Pro)
 
 > Status: `draft`
 > Mode: `full`
@@ -18,7 +18,7 @@ All generated covers must conform to this DA. The DA lives in an external file �
 
 - **Location**: `da.md` in the project root (Git-tracked)
 - **Format**: Plain markdown. The generator reads the raw text content and uses it as-is in the system prompt. The markdown structure (headings, tables, lists) is preserved — LLMs parse it well.
-- **Workflow**: Edit `da.md` → run `npm run covers --force` → all covers regenerate with the new aesthetic.
+- **Workflow**: Edit `da.md` → run `bun run covers --force` → all covers regenerate with the new aesthetic.
 - **Versioning**: Since `da.md` is Git-tracked, every DA change is in the commit history. No need for a separate versioning scheme — `git log da.md` shows the full evolution.
 - **Validation**: The generator checks that `da.md` exists and is non-empty before proceeding. If missing, it exits with a clear error: `"Missing da.md — the design aesthetic file is required for cover generation."`
 - **Override per post**: A post can set `coverDa: path/to/custom-da.md` in its frontmatter to use a different DA for that specific cover (e.g., for a special series with a different visual identity). If omitted, the root `da.md` is used.
@@ -89,69 +89,68 @@ precise, glowing, technical, and visually striking with cyan-red contrast.
 
 ## Shared Schema
 
+New cover fields are added to the existing `PostFrontmatterSchema` in `src/shared/schemas/site.schema.ts`. The custom frontmatter parser in `src/ui/lib/posts.ts` already handles booleans, arrays, and strings. It will need a small extension to parse numeric values (for `coverSeed`) — currently all non-boolean, non-array values are stored as strings. Zod's `z.coerce.number()` can handle this at the schema level.
+
 ```typescript
-// src/shared/schemas/cover.schema.ts
+// Added to PostFrontmatterSchema in src/shared/schemas/site.schema.ts
 
-/** Frontmatter extension — merged into PostFrontmatter from spec 001 */
-export interface CoverGenConfig {
-  /** When true, auto-generate cover at build time if none exists (default: true) */
-  autocover?: boolean;
+// --- Cover generation fields (spec 011) ---
+autocover: z.boolean().optional().default(true),
+coverKeywords: z.array(z.string()).optional(),
+coverHint: z.string().optional(),
+coverManual: z.boolean().optional().default(false),
+coverSeed: z.number().optional(),
+coverDa: z.string().optional(),
+```
 
-  /** Key concepts to visualize as labeled nodes — extracted from tags if omitted */
-  coverKeywords?: string[];
+The generator script uses a separate manifest schema:
 
-  /** Optional one-line description of the diagram's story / flow direction */
-  coverHint?: string;
+```typescript
+// src/shared/schemas/cover-manifest.schema.ts
 
-  /** Set to true to lock a manually-placed cover and skip generation */
-  coverManual?: boolean;
+import { z } from "zod";
 
-  /** Seed for deterministic regeneration — change to re-roll a layout */
-  coverSeed?: number;
+export const GeneratedCoverSchema = z.object({
+  slug: z.string(),
+  category: z.string(),                // "blog" | "project" | "talk" | "short"
+  imagePath: z.string(),                // "public/assets/covers/<slug>/cover.png"
+  ogImagePath: z.string(),              // "public/assets/covers/<slug>/og.png"
+  width: z.number(),
+  height: z.number(),
+  prompt: z.string(),                  // Full prompt — stored for reproducibility
+  model: z.string(),                   // "gemini-3-pro-image-preview"
+  generatedAt: z.string(),             // ISO 8601
+  seed: z.number().optional(),
+});
+export type GeneratedCover = z.infer<typeof GeneratedCoverSchema>;
 
-  /** Path to a custom DA file for this post (default: da.md in project root) */
-  coverDa?: string;
-}
-
-/** Output manifest entry per generated cover */
-export interface GeneratedCover {
-  slug: string;
-  imagePath: string;          // "public/assets/blog/<slug>/cover.png"
-  ogImagePath: string;        // "public/assets/blog/<slug>/og.png" (1200x630)
-  width: number;
-  height: number;
-  prompt: string;             // Full prompt used — stored for reproducibility
-  model: string;              // "gemini-3-pro-image-preview"
-  generatedAt: string;        // ISO 8601
-  seed?: number;
-}
-
-/** Cover generation manifest — tracks all generated covers */
-export interface CoverManifest {
-  generatedAt: string;
-  covers: GeneratedCover[];
-}
+export const CoverManifestSchema = z.object({
+  generatedAt: z.string(),
+  covers: z.array(GeneratedCoverSchema),
+});
+export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 ```
 
 ## API Acceptance Criteria
 
-- [ ] API-1: A CLI script (`npm run covers`) reads all posts from `content/posts/`, identifies those needing cover generation (`autocover !== false` AND no existing `coverManual: true` file), and generates missing covers via the Nano Banana Pro API.
+- [ ] API-1: A CLI script (`bun run covers`) reads all posts from the content directory (resolved via `CONTENT_DIR` env var, defaulting to `src/content/posts/`), identifies those needing cover generation (`autocover !== false` AND no existing `coverManual: true` file), and generates missing covers via the Nano Banana Pro API. Posts across all categories (blog, project, talk, short) are processed.
 - [ ] API-2: Every API call reads the DA from `da.md` (or the post's `coverDa` frontmatter override) and uses it as a system-level prefix, appending the post-specific context (title, summary, keywords, optional hint) as the user prompt.
 - [ ] API-3: The user prompt per post follows this structure:
   ```
-  Generate a cover image for a blog post.
+  Generate a cover image for a {category} post.
   Title: "{title}"
   Keywords to visualize as labeled nodes: {coverKeywords || tags}
   Diagram hint: {coverHint || "show relationships between the keywords"}
   ```
 - [ ] API-4: The API call targets `gemini-3-pro-image-preview` via the `@google/genai` SDK (`generateContent` with image output enabled).
-- [ ] API-5: Generated images are saved as PNG to `public/assets/blog/<slug>/cover.png`. A second 1200×630 crop/resize is saved as `og.png` for social cards.
-- [ ] API-6: A `covers.manifest.json` file is written to `public/assets/` tracking every generated cover (slug, path, prompt, timestamp, seed). This enables auditing, cache-busting, and selective regeneration.
-- [ ] API-7: Running `npm run covers -- --force` regenerates all non-manual covers. Running `npm run covers -- --slug=my-post` regenerates a single post's cover.
-- [ ] API-8: Running `npm run covers -- --dry-run` logs what would be generated without making API calls or writing files.
+- [ ] API-5: Generated images are saved as PNG to `public/assets/covers/<slug>/cover.png`. A second 1200×630 crop/resize is saved as `og.png` for social cards.
+- [ ] API-6: A `covers.manifest.json` file is written to `public/assets/` tracking every generated cover (slug, category, path, prompt, timestamp, seed). This enables auditing, cache-busting, and selective regeneration.
+- [ ] API-7: Running `bun run covers --force` regenerates all non-manual covers. Running `bun run covers --slug=my-post` regenerates a single post's cover.
+- [ ] API-8: Running `bun run covers --dry-run` logs what would be generated without making API calls or writing files.
 - [ ] API-9: The script respects a `GEMINI_API_KEY` environment variable. If missing, it exits with a clear error message and a link to Google AI Studio.
 - [ ] API-10: Rate limiting: the script processes posts sequentially with a configurable delay (default 2s) between API calls to stay within Gemini API free-tier limits.
 - [ ] API-11: If generation fails for a post (API error, safety filter, timeout), the script logs the error, skips that post, and continues. The build does not break.
+- [ ] API-12: The script reuses the existing frontmatter parser from `src/ui/lib/posts.ts` and validates against the extended `PostFrontmatterSchema` (with cover fields from this spec).
 
 ## UI Acceptance Criteria
 
@@ -164,13 +163,14 @@ export interface CoverManifest {
 
 ## Integration Acceptance Criteria
 
-- [ ] E2E-1: Running `npm run covers && npm run build` produces a site where every non-draft post card displays a cover — either manually provided or Nano Banana Pro–generated.
-- [ ] E2E-2: Adding a new post with `coverKeywords: ["kubernetes", "agents", "guardrails"]` and `coverHint: "show agents being evaluated by guardrails before deployment to kubernetes"` and running `npm run covers` produces a coherent cover matching the DA.
+- [ ] E2E-1: Running `bun run covers && bun run build` produces a site where every non-draft post card displays a cover — either manually provided or Nano Banana Pro–generated.
+- [ ] E2E-2: Adding a new blog post with `coverKeywords: ["bun", "typescript", "runtime"]` and `coverHint: "show Bun runtime replacing Node.js in a backend architecture"` and running `bun run covers` produces a coherent cover matching the DA.
 - [ ] E2E-3: Setting `coverManual: true` on a post with a hand-placed cover causes the generator to skip it, even with `--force`.
 - [ ] E2E-4: The `og.png` passes through the Facebook Sharing Debugger and Twitter Card Validator without errors.
-- [ ] E2E-5: Running `npm run covers` on a repo with 20 posts completes in < 90 seconds (sequential with 2s delay = ~40s generation + overhead).
-- [ ] E2E-6: Deleting `covers.manifest.json` and re-running `npm run covers` regenerates all covers from scratch with identical results for the same seed values.
+- [ ] E2E-5: Running `bun run covers` on a repo with 20 posts completes in < 90 seconds (sequential with 2s delay = ~40s generation + overhead).
+- [ ] E2E-6: Deleting `covers.manifest.json` and re-running `bun run covers` regenerates all covers from scratch with identical results for the same seed values.
 - [ ] E2E-7: The `--dry-run` output correctly identifies which posts need generation and which are skipped (manual, already exists, draft).
+- [ ] E2E-8: Covers are generated for all categories (blog, project, talk, short) — the generator does not filter by category.
 
 ## Component States
 
@@ -188,7 +188,7 @@ export interface CoverManifest {
 - No runtime/client-side cover generation — everything happens at build time via CLI.
 - No interactive editor or GUI for tweaking covers in v1 — re-roll by changing `coverSeed` or `coverHint` and re-running.
 - No SVG output — Nano Banana Pro outputs raster PNGs. If SVGs are needed later, a post-processing vectorization step can be added.
-- No per-post palette overrides in v1 — all covers share the DA palette for consistency.
+- No per-post palette overrides in v1 — all covers share the DA palette for consistency (though `coverDa` allows a completely different DA file per post if needed).
 - No animated covers or video thumbnails.
 - No automatic keyword extraction via NLP — if `coverKeywords` is omitted, `tags` are used directly.
 
@@ -202,7 +202,7 @@ export interface CoverManifest {
 | API returns a safety filter block | Generator | Logs the blocked slug and reason. Suggests rewording `coverHint`. Fallback used. |
 | Two sequential runs with the same inputs | Generator | Nano Banana Pro is not deterministic by default. To get consistent results, the `coverSeed` field is passed as part of the prompt context (not a true API seed — noted as limitation). |
 | `GEMINI_API_KEY` has expired or hit quota | Generator | API returns 429/401. Script logs the error with a link to the billing page and exits gracefully. |
-| Post is a "talk" with `externalUrl` | Generator | Cover still generated normally — category doesn't affect visual style. |
+| Post has `category: "talk"` or `category: "short"` | Generator | Cover still generated normally — category is passed in the prompt but doesn't affect visual style. |
 | Very long title (> 120 chars) | Prompt | Title truncated at 120 chars in the prompt to avoid diluting the instruction. |
 | Network failure mid-batch | Generator | Already-generated covers are preserved (written to disk immediately). Only the failed + remaining posts are skipped. Re-running picks up where it left off (checks manifest). |
 | `da.md` is missing | Generator | Script exits with error: `"Missing da.md"`. No API calls made, no partial writes. |
@@ -210,32 +210,37 @@ export interface CoverManifest {
 | Post has `coverDa: custom-da.md` but file doesn't exist | Generator | Logs warning for that post, falls back to root `da.md`. |
 | `da.md` is very large (> 10KB) | Generator | Logs a warning (large DA may dilute the prompt), but proceeds. |
 
-## Directory Structure (additions to spec 001)
+## Directory Structure (additions to existing project)
 
 ```
-├── da.md                        # Design Aesthetic — the visual contract (read by generator)
+├── da.md                              # Design Aesthetic — the visual contract (read by generator)
 ├── scripts/
-│   └── generate-covers.ts     # CLI entry point
-├── lib/
-│   ├── cover-da.ts             # Reads & validates da.md, resolves per-post overrides
-│   ├── cover-generator.ts      # Gemini API integration
-│   └── cover-manifest.ts       # Read/write covers.manifest.json
+│   ├── generate-favicon.ts            # (existing) Favicon generation
+│   └── generate-covers.ts             # CLI entry point for cover generation
+├── src/
+│   ├── shared/schemas/
+│   │   ├── site.schema.ts             # (existing) Extended with cover frontmatter fields
+│   │   └── cover-manifest.schema.ts   # Manifest Zod schema
+│   └── ui/lib/
+│       ├── posts.ts                   # (existing) Frontmatter parser — reused by generator
+│       ├── cover-da.ts                # Reads & validates da.md, resolves per-post overrides
+│       ├── cover-generator.ts         # Gemini API integration
+│       └── cover-manifest.ts          # Read/write covers.manifest.json
 ├── public/
 │   └── assets/
 │       ├── covers.manifest.json
-│       └── blog/
+│       └── covers/
 │           └── <slug>/
 │               ├── cover.png          # Primary cover (1200x675)
-│               ├── og.png             # Social card (1200x630)
-│               └── .manual            # Marker file (only for hand-placed covers)
+│               └── og.png             # Social card (1200x630)
 ```
 
 ## External Dependencies
 
-- **`@google/genai`** — Official Google Generative AI SDK for Node.js. Used to call `gemini-3-pro-image-preview` via `generateContent` with image output.
-- **`sharp`** — Image resizing/cropping for the 1200×630 OG image variant.
-- **`gray-matter`** — Already in spec 001. Reads `coverKeywords`, `coverHint`, `coverManual`, `coverSeed` from frontmatter.
-- **`Zod`** — Already in spec 001. Extended to validate `CoverGenConfig` fields.
+- **`@google/genai`** — (new) Official Google Generative AI SDK for Node.js. Used to call `gemini-3-pro-image-preview` via `generateContent` with image output.
+- **`sharp`** — (new) Image resizing/cropping for the 1200×630 OG image variant.
+- **`zod`** — (existing) Extended `PostFrontmatterSchema` with cover generation fields.
+- **Custom frontmatter parser** — (existing, `src/ui/lib/posts.ts`) Already handles YAML frontmatter with booleans, arrays, and strings. No `gray-matter` dependency needed.
 - **Google AI Studio account** — Free tier provides limited daily image generation. Paid tier recommended for batches > 10 posts.
 
 ## Cost Estimate
@@ -255,6 +260,26 @@ _Costs are approximate and based on preview pricing as of March 2026. Only appli
 - [x] ~~Should the DA be versioned?~~ — Resolved: `da.md` is Git-tracked, so version history comes from `git log da.md`. A palette refresh means editing `da.md` + running `--force`.
 - [ ] Preference for the `@google/genai` SDK directly, or use Vertex AI for potentially higher rate limits?
 - [ ] Should the generator also produce a tiny blurred placeholder (16×9 px) for blur-up loading transitions?
+
+## Package.json Changes
+
+```jsonc
+// New script entry:
+"covers": "bun run scripts/generate-covers.ts"
+
+// Build script updated to include covers (optional — can run separately):
+// "build": "bun run scripts/generate-favicon.ts && bun run scripts/generate-covers.ts && vite build"
+```
+
+## Testing
+
+Tests use **Vitest** (matching the existing test setup in `test/lib/`).
+
+- `test/lib/cover-da.test.ts` — DA file loading, validation, per-post override resolution
+- `test/lib/cover-manifest.test.ts` — Manifest read/write, schema validation
+- `test/lib/cover-generator.test.ts` — Prompt construction, CLI flag parsing, dry-run behavior (Gemini API calls mocked)
+
+Test content in `test/content/posts/` provides realistic posts across all categories for integration testing.
 
 ## Post-Implementation Notes
 
