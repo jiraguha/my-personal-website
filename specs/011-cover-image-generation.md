@@ -1,7 +1,7 @@
 # 011 — AI-Powered Cover Image Generation (Nano Banana Pro)
 
-> Status: `prototype`
-> Mode: `prototype`
+> Status: `implementing`
+> Mode: `full`
 > Date: 2026-03-18
 
 ## Intent
@@ -123,6 +123,7 @@ export const GeneratedCoverSchema = z.object({
   width: z.number(),
   height: z.number(),
   prompt: z.string(),                  // Full prompt — stored for reproducibility
+  promptHash: z.string().optional(),   // SHA256 hash (first 16 chars) for cache validation
   model: z.string(),                   // "gemini-3-pro-image-preview"
   generatedAt: z.string(),             // ISO 8601
   seed: z.number().optional(),
@@ -138,7 +139,7 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 
 ## API Acceptance Criteria
 
-- [ ] API-1: A CLI script (`bun run covers`) reads all posts from the content directory (resolved via `CONTENT_DIR` env var, defaulting to `src/content/posts/`), identifies those needing cover generation (`autocover !== false` AND no existing `coverManual: true` file), and generates missing covers via the Nano Banana Pro API. Posts across all categories (blog, project, talk, short) are processed.
+- [ ] API-1: A CLI script (`bun run covers`) reads all posts from the content directory (resolved via `CONTENT_DIR` env var, defaulting to `src/content/posts/`), identifies those needing cover generation via the decision tree (`coverNone: true` → skip, `cover` set in frontmatter → skip, `cover` empty → generate), and generates missing covers via the Nano Banana Pro API. Posts across all categories (blog, project, talk, short) are processed.
 - [ ] API-2: Every API call reads the DA from `da.md` (or the post's `coverDa` frontmatter override) and uses it as a system-level prefix, appending the post-specific context (title, summary, keywords, optional hint) as the user prompt.
 - [ ] API-3: The user prompt per post uses one of two strategies based on whether `coverHint` is present:
 
@@ -163,13 +164,17 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 - [ ] API-5: Generated images are saved as PNG to `public/assets/covers/<slug>/cover.png`. A second 1200×630 crop/resize is saved as `og.png` for social cards.
 - [ ] API-6: A `covers.manifest.json` file is written to `public/assets/` tracking every generated cover (slug, category, path, prompt, timestamp, seed). This enables auditing, cache-busting, and selective regeneration.
 - [ ] API-7: Two CLI entry points:
-  - `bun run covers` — batch mode, generates missing covers for all posts. `--force` regenerates all non-manual covers. `--dry-run` previews without writing.
-  - `bun run cover <slug>` — single-post mode, generates (or regenerates) the cover for one specific post. Always runs, even if a cover already exists. Example: `bun run cover bun-for-backend`.
+  - `bun run covers` — batch mode, generates missing covers for all posts. `--force` bypasses cache. `--dry-run` previews without writing.
+  - `bun run cover <slug>` — single-post mode, generates the cover for one specific post. Respects `shouldSkipCover()` (skips if `coverNone` or cover already set in frontmatter). Example: `bun run cover bun-for-backend`.
 - [ ] API-8: Running `bun run covers --dry-run` logs what would be generated without making API calls or writing files. `bun run cover <slug>` with a non-existent slug exits with a clear error.
 - [ ] API-9: The script respects a `GEMINI_API_KEY` environment variable. If missing, it exits with a clear error message and a link to Google AI Studio.
 - [ ] API-10: Rate limiting: the script processes posts sequentially with a configurable delay (default 2s) between API calls to stay within Gemini API free-tier limits.
 - [ ] API-11: If generation fails for a post (API error, safety filter, timeout), the script logs the error, skips that post, and continues. The build does not break.
 - [ ] API-12: The script reuses the existing frontmatter parser from `src/ui/lib/posts.ts` and validates against the extended `PostFrontmatterSchema` (with cover fields from this spec).
+- [ ] API-13: Prompt-hash caching — `bun run covers` stores a SHA256 hash of the full prompt (DA + post context) in the manifest. On subsequent runs, if the hash matches and the cover file exists, the post is skipped. Any input change (DA edit, title change, tag change, coverHint change, coverText change) invalidates the cache automatically.
+- [ ] API-14: Text density presets — `coverText` field accepts `"none"`, `"minimal"`, `"moderate"`, or `"heavy"`. Each maps to a concrete prompt instruction appended to the generation call. Default is `"minimal"`.
+- [ ] API-15: Convention-based cover auto-resolve — when loading posts, if `cover` is empty in frontmatter but `public/assets/covers/<slug>/cover.png` exists, `cover` is automatically set to `/assets/covers/<slug>/cover.png`. A `coverAutoResolved` flag distinguishes this from manually-set covers.
+- [ ] API-16: Env-configurable model and dimensions — `COVER_MODEL`, `COVER_WIDTH`, `COVER_HEIGHT`, `OG_WIDTH`, `OG_HEIGHT` are all read from `.env` with sensible defaults.
 
 ## UI Acceptance Criteria
 
@@ -184,12 +189,13 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 
 - [ ] E2E-1: Running `bun run covers && bun run build` produces a site where every non-draft post card displays a cover — either manually provided or Nano Banana Pro–generated.
 - [ ] E2E-2: Adding a new blog post with `coverKeywords: ["bun", "typescript", "runtime"]` and `coverHint: "show Bun runtime replacing Node.js in a backend architecture"` and running `bun run covers` produces a coherent cover matching the DA.
-- [ ] E2E-3: Setting `coverManual: true` on a post with a hand-placed cover causes the generator to skip it, even with `--force`.
+- [ ] E2E-3: Setting `coverNone: true` on a post causes the generator to skip it, even with `--force`. A post with `cover:` explicitly set in frontmatter is also skipped.
 - [ ] E2E-4: The `og.png` passes through the Facebook Sharing Debugger and Twitter Card Validator without errors.
 - [ ] E2E-5: Running `bun run covers` on a repo with 20 posts completes in < 90 seconds (sequential with 2s delay = ~40s generation + overhead).
 - [ ] E2E-6: Deleting `covers.manifest.json` and re-running `bun run covers` regenerates all covers from scratch with identical results for the same seed values.
-- [ ] E2E-7: The `--dry-run` output correctly identifies which posts need generation and which are skipped (manual, already exists, draft).
+- [ ] E2E-7: The `--dry-run` output correctly identifies which posts need generation and which are skipped (coverNone, cover set, cached, draft).
 - [ ] E2E-8: Covers are generated for all categories (blog, project, talk, short) — the generator does not filter by category.
+- [ ] E2E-9: Editing `da.md` and running `bun run covers` causes all previously-cached covers to show as `STALE` and regenerate (prompt hash changed).
 
 ## Component States
 
@@ -198,7 +204,8 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 | Empty | Post has no cover, generator hasn't run | Gradient fallback (`#0B1120` → `#1A2744`) with title in monospace. |
 | Loading | N/A (build-time generation, not runtime) | N/A — covers are static assets. |
 | Populated | Cover PNG exists at expected path | Dark, minimal, diagrammatic cover matching the DA. |
-| Populated (manual) | `coverManual: true` + hand-placed file | The hand-made cover, untouched by the generator. |
+| Populated (manual) | `cover` set explicitly in frontmatter | The hand-placed cover, untouched by the generator. |
+| Opted out | `coverNone: true` | No cover at all — no generation, no fallback. |
 | Error (gen failure) | Nano Banana Pro API returned an error or safety block | Warning logged; fallback gradient used. Build continues. |
 | Error (no API key) | `GEMINI_API_KEY` not set | CLI exits immediately with setup instructions. No partial writes. |
 
@@ -244,8 +251,9 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 │   └── ui/lib/
 │       ├── posts.ts                   # (existing) Frontmatter parser — reused by generator
 │       ├── cover-da.ts                # Reads & validates da.md, resolves per-post overrides
-│       ├── cover-generator.ts         # Gemini API integration
-│       └── cover-manifest.ts          # Read/write covers.manifest.json
+│       ├── cover-generator.ts         # Gemini API integration, prompt construction, hashing
+│       ├── cover-manifest.ts          # Read/write covers.manifest.json
+│       └── cover-skip.ts              # Skip decision logic (shouldSkipCover)
 ├── public/
 │   └── assets/
 │       ├── covers.manifest.json
@@ -306,7 +314,8 @@ Tests use **Vitest** (matching the existing test setup in `test/lib/`).
 
 - `test/lib/cover-da.test.ts` — DA file loading, validation, per-post override resolution
 - `test/lib/cover-manifest.test.ts` — Manifest read/write, schema validation
-- `test/lib/cover-generator.test.ts` — Prompt construction, CLI flag parsing, dry-run behavior (Gemini API calls mocked)
+- `test/lib/cover-generator.test.ts` — Prompt construction, text density presets, hashing, keyword fallback
+- `test/lib/cover-skip.test.ts` — Skip decision logic (coverNone, cover set, auto-resolved)
 
 Test content in `test/content/posts/` provides realistic posts across all categories for integration testing.
 
