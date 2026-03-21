@@ -8,6 +8,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 import { existsSync } from "fs";
 import { join } from "path";
 
@@ -19,7 +20,7 @@ const hasPdf = existsSync(RESUME_PATH);
 // ---------------------------------------------------------------------------
 test.describe("UI-1 / E2E-1: resume link in hero", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("resume link is visible in the hero social row", async ({ page }) => {
@@ -70,7 +71,7 @@ test.describe("E2E-2: resume file download", () => {
   test(`download initiates when PDF exists ${hasPdf ? "" : "(SKIP — no PDF)"}`, async ({ page }) => {
     test.skip(!hasPdf, "No PDF at public/assets/resume/ — drop one to enable this test");
 
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
     const [download] = await Promise.all([
       page.waitForEvent("download"),
       page.getByRole("link", { name: /download resume/i }).click(),

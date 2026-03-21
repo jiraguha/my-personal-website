@@ -6,10 +6,11 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 
 test.describe("003-mermaid: mermaid-demo post", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/posts/mermaid-demo");
+    await gotoAndHydrate(page, "/posts/mermaid-demo");
     // Wait for mermaid to finish — all figures must settle (SVG or error card)
     await page.waitForSelector("figure", { timeout: 10000 });
     await page.waitForTimeout(2000); // allow async renders to complete
@@ -57,7 +58,7 @@ test.describe("003-mermaid: mermaid-demo post", () => {
 // E2E-3: post with no mermaid blocks is unaffected
 test.describe("003-mermaid: non-mermaid post regression", () => {
   test("E2E-3: post without mermaid blocks renders normally", async ({ page }) => {
-    await page.goto("/posts/spec-driven-development");
+    await gotoAndHydrate(page, "/posts/spec-driven-development");
     await expect(page.locator("h1").first()).toBeVisible();
     const mermaidFigures = page.locator("figure svg");
     await expect(mermaidFigures).toHaveCount(0);

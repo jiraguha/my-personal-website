@@ -8,13 +8,14 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 
 // ---------------------------------------------------------------------------
 // E2E-1: "Shorts" tab is visible and filters the grid
 // ---------------------------------------------------------------------------
 test.describe("E2E-1: Shorts filter tab", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("'Shorts' tab is visible in the category filter bar", async ({ page }) => {
@@ -54,7 +55,7 @@ test.describe("E2E-1: Shorts filter tab", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-2: Short card appearance", () => {
   test("short card shows the ⚡ SHORT badge", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
     await page.getByRole("button", { name: "Shorts" }).click();
 
     const firstCard = page.locator("article").first();
@@ -62,7 +63,7 @@ test.describe("E2E-2: Short card appearance", () => {
   });
 
   test("short card has no gradient cover image area", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
     await page.getByRole("button", { name: "Shorts" }).click();
 
     const firstCard = page.locator("article").first();
@@ -72,7 +73,7 @@ test.describe("E2E-2: Short card appearance", () => {
   });
 
   test("short card title is visible", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
     await page.getByRole("button", { name: "Shorts" }).click();
 
     const firstCard = page.locator("article").first();
@@ -85,7 +86,7 @@ test.describe("E2E-2: Short card appearance", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-3: Short detail page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/posts/til-kubectl-debug");
+    await gotoAndHydrate(page, "/posts/til-kubectl-debug");
   });
 
   test("detail page renders without 404", async ({ page }) => {
@@ -118,7 +119,7 @@ test.describe("E2E-3: Short detail page", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-4: Featured short is excluded from hero", () => {
   test("hero FeaturedCard is not a short (no ⚡ SHORT badge in featured section)", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // The Posts section divider confirms the grid has loaded
     await expect(page.getByText("Posts", { exact: true })).toBeVisible();

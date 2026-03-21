@@ -9,6 +9,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 
 const TALK_SLUG = "securing-agentic-systems";
 const EXTERNAL_SLUG = "external-talk-demo";
@@ -19,7 +20,7 @@ const EXTERNAL_SLUG = "external-talk-demo";
 
 test.describe("E2E-1: Talk card in home grid", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("talk card shows ▶ Slides badge", async ({ page }) => {
@@ -42,7 +43,7 @@ test.describe("E2E-1: Talk card in home grid", () => {
 
 test.describe("E2E-2: Talk landing page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`/posts/${TALK_SLUG}`);
+    await gotoAndHydrate(page, `/posts/${TALK_SLUG}`);
   });
 
   test("renders the talk title", async ({ page }) => {
@@ -74,7 +75,7 @@ test.describe("E2E-2: Talk landing page", () => {
 
 test.describe("E2E-3: Presentation is full-viewport (no nav/footer)", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`/talks/${TALK_SLUG}`);
+    await gotoAndHydrate(page, `/talks/${TALK_SLUG}`);
   });
 
   test("nav element is absent from the DOM", async ({ page }) => {
@@ -92,7 +93,7 @@ test.describe("E2E-3: Presentation is full-viewport (no nav/footer)", () => {
 
 test.describe("E2E-4: Presentation has multiple slides", () => {
   test("renders more than one section inside .slides", async ({ page }) => {
-    await page.goto(`/talks/${TALK_SLUG}`);
+    await gotoAndHydrate(page, `/talks/${TALK_SLUG}`);
     // Reveal wraps all content in .slides > section elements
     const sections = page.locator(".reveal .slides > section");
     await expect(sections).toHaveCount(await sections.count());
@@ -107,14 +108,14 @@ test.describe("E2E-4: Presentation has multiple slides", () => {
 
 test.describe("E2E-5: Back to site overlay", () => {
   test("back link is visible on load and points to landing page", async ({ page }) => {
-    await page.goto(`/talks/${TALK_SLUG}`);
+    await gotoAndHydrate(page, `/talks/${TALK_SLUG}`);
     const backLink = page.locator(".talk-back-btn");
     await expect(backLink).toBeVisible();
     await expect(backLink).toHaveAttribute("href", `/posts/${TALK_SLUG}`);
   });
 
   test("clicking back link navigates to landing page", async ({ page }) => {
-    await page.goto(`/talks/${TALK_SLUG}`);
+    await gotoAndHydrate(page, `/talks/${TALK_SLUG}`);
     await page.locator(".talk-back-btn").click();
     await expect(page).toHaveURL(`/posts/${TALK_SLUG}`);
   });
@@ -126,19 +127,19 @@ test.describe("E2E-5: Back to site overlay", () => {
 
 test.describe("E2E-6: External slides talk", () => {
   test("landing page shows 'View External Slides →' button", async ({ page }) => {
-    await page.goto(`/posts/${EXTERNAL_SLUG}`);
+    await gotoAndHydrate(page, `/posts/${EXTERNAL_SLUG}`);
     await expect(page.getByRole("link", { name: /View External Slides/i })).toBeVisible();
   });
 
   test("landing page has no 'View Slides →' (internal deck) button", async ({ page }) => {
-    await page.goto(`/posts/${EXTERNAL_SLUG}`);
+    await gotoAndHydrate(page, `/posts/${EXTERNAL_SLUG}`);
     // Should NOT have a link pointing to /talks/...
     const internalLink = page.getByRole("link", { name: /^▶ View Slides →$/ });
     await expect(internalLink).toHaveCount(0);
   });
 
   test("/talks/:slug for external talk redirects to 404", async ({ page }) => {
-    await page.goto(`/talks/${EXTERNAL_SLUG}`);
+    await gotoAndHydrate(page, `/talks/${EXTERNAL_SLUG}`);
     await expect(page).toHaveURL("/404");
   });
 });

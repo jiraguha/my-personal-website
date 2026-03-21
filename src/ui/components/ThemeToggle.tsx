@@ -1,21 +1,27 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const stored = localStorage.getItem("theme");
-    if (stored) return stored === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [dark, setDark] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
+  // On mount, read theme from DOM (already set by inline script in index.html)
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  }, [dark]);
+    setDark(document.documentElement.classList.contains("dark"));
+    setHydrated(true);
+  }, []);
+
+  const toggle = useCallback(() => {
+    setDark((prev) => {
+      const next = !prev;
+      document.documentElement.classList.toggle("dark", next);
+      localStorage.setItem("theme", next ? "dark" : "light");
+      return next;
+    });
+  }, []);
 
   return (
     <button
-      onClick={() => setDark((d) => !d)}
+      onClick={toggle}
       aria-label="Toggle dark mode"
       className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
     >

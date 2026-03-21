@@ -5,6 +5,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 
 // Helper to expand the search bar and type a query
 async function openSearchAndType(page: import("@playwright/test").Page, query: string) {
@@ -28,7 +29,7 @@ async function openSearchAndType(page: import("@playwright/test").Page, query: s
 // ---------------------------------------------------------------------------
 test.describe("E2E-1: Search filtering", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("search icon button is visible on the home page", async ({ page }) => {
@@ -63,7 +64,7 @@ test.describe("E2E-1: Search filtering", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-2: Search + category filter", () => {
   test("typing a query while 'Talks' is selected filters only within talks", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // Select the Talks category
     await page.getByRole("button", { name: "Talks" }).click();
@@ -90,7 +91,7 @@ test.describe("E2E-2: Search + category filter", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-3: Clear search", () => {
   test("clicking the clear button restores the full grid", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     const allCardsBefore = await page.locator("article").count();
 
@@ -108,7 +109,7 @@ test.describe("E2E-3: Clear search", () => {
   });
 
   test("clearing search while category is active restores that category's grid", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // Select Blog category
     await page.getByRole("button", { name: "Blog" }).click();
@@ -134,7 +135,7 @@ test.describe("E2E-3: Clear search", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-4: Keyboard shortcuts", () => {
   test("pressing / expands and focuses the search bar", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // Ensure no input is focused by clicking on the body
     await page.locator("body").click();
@@ -149,7 +150,7 @@ test.describe("E2E-4: Keyboard shortcuts", () => {
   });
 
   test("pressing Escape clears and collapses the search bar", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // Expand and type
     await openSearchAndType(page, "kubernetes");
@@ -170,7 +171,7 @@ test.describe("E2E-4: Keyboard shortcuts", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-5: No results empty state", () => {
   test("shows 'No posts matching' message for zero matches", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     await openSearchAndType(page, "xyzzyplugh");
 
@@ -178,7 +179,7 @@ test.describe("E2E-5: No results empty state", () => {
   });
 
   test("shows 'Clear search' link in empty state", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     await openSearchAndType(page, "xyzzyplugh");
 
@@ -187,7 +188,7 @@ test.describe("E2E-5: No results empty state", () => {
   });
 
   test("clicking 'Clear search' in empty state restores the grid", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     const allCardsBefore = await page.locator("article").count();
 

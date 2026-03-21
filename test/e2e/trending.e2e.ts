@@ -7,13 +7,14 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { gotoAndHydrate } from "./helpers";
 
 // ---------------------------------------------------------------------------
 // E2E-1: — TRENDING — section is visible on the home page
 // ---------------------------------------------------------------------------
 test.describe("E2E-1: Trending section visible", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("the TRENDING divider label is visible", async ({ page }) => {
@@ -31,7 +32,7 @@ test.describe("E2E-1: Trending section visible", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-2: Chip content format", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
   });
 
   test("each chip starts with #", async ({ page }) => {
@@ -67,7 +68,7 @@ test.describe("E2E-2: Chip content format", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-3: Chip navigation", () => {
   test("clicking a trending chip navigates to the correct tag page", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     const firstChip = page.locator("section[aria-label='Trending tags'] a").first();
     await expect(firstChip).toBeVisible();
@@ -83,7 +84,7 @@ test.describe("E2E-3: Chip navigation", () => {
   });
 
   test("tag page reached via chip shows post count", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     const firstChip = page.locator("section[aria-label='Trending tags'] a").first();
     const href = await firstChip.getAttribute("href");
@@ -99,7 +100,7 @@ test.describe("E2E-3: Chip navigation", () => {
 // ---------------------------------------------------------------------------
 test.describe("E2E-4: Trending badge on tag page", () => {
   test("a trending tag's detail page shows the 🔥 Trending badge", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     // Navigate to the first trending chip's tag page
     const firstChip = page.locator("section[aria-label='Trending tags'] a").first();
@@ -110,11 +111,11 @@ test.describe("E2E-4: Trending badge on tag page", () => {
   });
 
   test("the trending badge appears next to the tag heading", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndHydrate(page, "/");
 
     const firstChip = page.locator("section[aria-label='Trending tags'] a").first();
     const href = await firstChip.getAttribute("href");
-    await page.goto(href!);
+    await gotoAndHydrate(page, href!);
 
     const heading = page.locator("h1");
     await expect(heading).toBeVisible();
