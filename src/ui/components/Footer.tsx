@@ -49,14 +49,10 @@ export function Footer({ profile }: FooterProps) {
             </a>
           )}
         </nav>
-        <div className="text-center space-y-1">
-          <p>
-            © {year} {profile.name} · Built with React + Vike + Bun
-          </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500">
-            Images powered by Nano Banana Pro 🍌
-          </p>
-        </div>
+        <p>© {year} {profile.name}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          Built with React + Vike + Bun · Images powered by Nano Banana Pro 🍌
+        </p>
       </div>
     </footer>
   );
