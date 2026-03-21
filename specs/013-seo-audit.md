@@ -1,7 +1,7 @@
 # 013 — SEO Audit (Lighthouse CI + Sitemap + Robots)
 
-> Status: `draft`
-> Mode: `full`
+> Status: `implementing`
+> Mode: `prototype`
 > Date: 2026-03-21
 
 ## Intent
