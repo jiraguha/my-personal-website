@@ -58,6 +58,9 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
+    watch: {
+      ignored: ["**/test/.tmp-*/**"],
+    },
   },
   resolve: {
     alias: {
