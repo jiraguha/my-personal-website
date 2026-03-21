@@ -25,7 +25,7 @@ The skill accepts input in two ways:
 The user provides text directly. Proceed to Step 1.
 
 ### Mode B — File reference (user points to an existing file)
-The user says something like "polish content/posts/blog/my-draft.md" or "fix the draft in content/posts/short/til-bun.md".
+The user says something like "polish src/content/posts/blog/my-draft.md" or "fix the draft in src/content/posts/short/til-bun.md".
 
 When the user points to a file:
 1. Read the file
@@ -35,10 +35,10 @@ When the user points to a file:
    - Complete frontmatter but messy body
    - A fully structured post that just needs polish
 3. **Infer category from the folder path** if not in frontmatter:
-   - `content/posts/blog/` → `blog`
-   - `content/posts/project/` → `project`
-   - `content/posts/short/` → `short`
-   - `content/posts/talk/` → `talk`
+   - `src/content/posts/blog/` → `blog`
+   - `src/content/posts/project/` → `project`
+   - `src/content/posts/short/` → `short`
+   - `src/content/posts/talk/` → `talk`
 4. **Derive the slug from the filename** if not in frontmatter:
    - `my-rough-draft.md` → slug: `my-rough-draft`
 5. **Preserve any frontmatter that exists** — only fill in missing fields, don't overwrite what the user already set
@@ -154,7 +154,7 @@ Tell the user: "I added a Mermaid diagram to illustrate the [flow/architecture/l
 - Use `Note:` after slide content for speaker notes
 - Code blocks use stepped highlighting where useful: ` ```python [1-3|5-7] `
 - Keep slides sparse — 1 idea per slide, embrace whitespace
-- Include frontmatter fields: `event`, `eventDate`, `reveal.transition`
+- Include frontmatter fields: `event`, `eventDate`, `eventUrl`, `videoUrl`
 
 ## Step 3: Generate Frontmatter
 
@@ -170,25 +170,23 @@ tags: ["tag-one", "tag-two"]                  # 2–4 tags, lowercase, kebab-cas
 category: blog                                # blog | project | short | talk
 draft: false                                  # set true if user says it's not ready
 featured: false                               # user can set to true later
-autocover: true                               # triggers cover generation (spec 002)
-coverKeywords: ["keyword-one", "keyword-two"] # 3–5 concepts for the cover image
-coverHint: "brief description of the visual"  # guides Nano Banana Pro generation
+coverKeywords: ["keyword-one", "keyword-two"] # 3–5 concepts for the cover image (spec 011)
+coverHint: "brief description of the visual"  # guides Nano Banana Pro generation (spec 011)
 ---
 ```
 
 **For talks, also include:**
 ```yaml
 event: "Event Name"
+eventUrl: "https://..."                       # optional link to event page
 eventDate: YYYY-MM-DD
-videoUrl: ""
-reveal:
-  transition: fade
-  slideNumber: true
+videoUrl: ""                                  # optional recording URL
+externalSlides: ""                            # optional link to external slides
 ```
 
 **For shorts:**
 - `summary` can be `""` (empty)
-- `autocover` should be `false`
+- `coverNone: true` (no cover generation)
 - `coverKeywords` and `coverHint` should be omitted
 
 ## Step 4: Write the File
@@ -196,13 +194,13 @@ reveal:
 Save the finished post to the correct path:
 
 ```
-content/posts/blog/<slug>.md
-content/posts/project/<slug>.md
-content/posts/short/<slug>.md
-content/posts/talk/<slug>.md
+src/content/posts/blog/<slug>.md
+src/content/posts/project/<slug>.md
+src/content/posts/short/<slug>.md
+src/content/posts/talk/<slug>.md
 ```
 
-Use `getContentDir()` from `lib/content-path.ts` if available, otherwise default to `content/`.
+Content lives in `src/content/posts/` — this is the canonical location.
 
 ## Step 5: Present and Iterate
 
@@ -248,7 +246,7 @@ tags: ["bun", "testing", "devtools"]
 category: short
 draft: false
 featured: false
-autocover: false
+coverNone: true
 ---
 
 `bun test` ships a built-in test runner that's surprisingly capable. The `expect` API is Jest-compatible, watch mode is near-instant, and it automatically loads `.env` files — no `dotenv` setup required.

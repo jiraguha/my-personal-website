@@ -21,7 +21,7 @@ Jean-Paul can paste a raw draft, rough notes, bullet points, or just a topic ide
 
 _These replace the usual API/UI split since this is a Claude skill, not application code._
 
-- [ ] SK-1: The skill is defined in `specs/post-creator-SKILL.md` with YAML frontmatter (`name`, `description`) and Markdown instructions.
+- [ ] SK-1: The skill instructions are in `specs/post-creator-SKILL.md` (YAML frontmatter + Markdown). The slash command `.claude/commands/post-creator.md` loads and executes them via `/post-creator`.
 - [ ] SK-2: The skill triggers when the user provides raw content and asks to create, write, polish, or format a post for the site. Trigger phrases include: "write a post about...", "turn this into a blog post", "new short", "new talk", "polish this draft", "create a post from these notes", or pasting raw text with a request to format it.
 - [ ] SK-3: The skill determines the correct content category (`blog`, `project`, `short`, `talk`) from context, or asks the user if ambiguous.
 - [ ] SK-4: **Language polish** — the output has zero spelling errors, correct grammar, and consistent punctuation. The author's voice is preserved (technically precise, not corporate).
@@ -81,10 +81,12 @@ _These replace the usual API/UI split since this is a Claude skill, not applicat
 
 ```
 specs/
-└── post-creator-SKILL.md   # The skill definition (Claude Code skill)
+└── post-creator-SKILL.md       # The skill instructions
+.claude/commands/
+└── post-creator.md             # Slash command that loads the skill
 ```
 
-The skill is defined in `specs/post-creator-SKILL.md` and registered in `.claude/settings.json` as a Claude Code skill.
+The skill instructions live in `specs/post-creator-SKILL.md`. The slash command `.claude/commands/post-creator.md` loads and executes them via `/post-creator`.
 
 ## External Dependencies
 
