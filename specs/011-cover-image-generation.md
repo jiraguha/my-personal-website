@@ -157,8 +157,10 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 - [ ] API-4: The API call targets `gemini-3-pro-image-preview` via the `@google/genai` SDK (`generateContent` with image output enabled).
 - [ ] API-5: Generated images are saved as PNG to `public/assets/covers/<slug>/cover.png`. A second 1200×630 crop/resize is saved as `og.png` for social cards.
 - [ ] API-6: A `covers.manifest.json` file is written to `public/assets/` tracking every generated cover (slug, category, path, prompt, timestamp, seed). This enables auditing, cache-busting, and selective regeneration.
-- [ ] API-7: Running `bun run covers --force` regenerates all non-manual covers. Running `bun run covers --slug=my-post` regenerates a single post's cover.
-- [ ] API-8: Running `bun run covers --dry-run` logs what would be generated without making API calls or writing files.
+- [ ] API-7: Two CLI entry points:
+  - `bun run covers` — batch mode, generates missing covers for all posts. `--force` regenerates all non-manual covers. `--dry-run` previews without writing.
+  - `bun run cover <slug>` — single-post mode, generates (or regenerates) the cover for one specific post. Always runs, even if a cover already exists. Example: `bun run cover bun-for-backend`.
+- [ ] API-8: Running `bun run covers --dry-run` logs what would be generated without making API calls or writing files. `bun run cover <slug>` with a non-existent slug exits with a clear error.
 - [ ] API-9: The script respects a `GEMINI_API_KEY` environment variable. If missing, it exits with a clear error message and a link to Google AI Studio.
 - [ ] API-10: Rate limiting: the script processes posts sequentially with a configurable delay (default 2s) between API calls to stay within Gemini API free-tier limits.
 - [ ] API-11: If generation fails for a post (API error, safety filter, timeout), the script logs the error, skips that post, and continues. The build does not break.
@@ -228,7 +230,8 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 ├── da.md                              # Design Aesthetic — the visual contract (read by generator)
 ├── scripts/
 │   ├── generate-favicon.ts            # (existing) Favicon generation
-│   └── generate-covers.ts             # CLI entry point for cover generation
+│   ├── generate-covers.ts             # Batch: all missing covers
+│   └── generate-cover.ts              # Single: one post by slug
 ├── src/
 │   ├── shared/schemas/
 │   │   ├── site.schema.ts             # (existing) Extended with cover frontmatter fields
@@ -276,11 +279,20 @@ _Costs are approximate and based on preview pricing as of March 2026. Only appli
 ## Package.json Changes
 
 ```jsonc
-// New script entry:
-"covers": "bun run scripts/generate-covers.ts"
+// New script entries:
+"covers": "bun run scripts/generate-covers.ts",
+"cover": "bun run scripts/generate-cover.ts"
 
 // Build script updated to include covers (optional — can run separately):
 // "build": "bun run scripts/generate-favicon.ts && bun run scripts/generate-covers.ts && vite build"
+```
+
+Usage:
+```bash
+bun run covers              # generate all missing covers
+bun run covers --force      # regenerate all non-manual covers
+bun run covers --dry-run    # preview what would be generated
+bun run cover bun-for-backend   # generate cover for a single post
 ```
 
 ## Testing
