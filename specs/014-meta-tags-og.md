@@ -1,6 +1,6 @@
 # 014 — Per-Post Meta Tags & Category-Aware OG Images
 
-> Status: `implementing`
+> Status: `prototype`
 > Mode: `prototype`
 > Date: 2026-03-19
 
