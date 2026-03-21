@@ -1,9 +1,9 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "bun run dev --port 4174",
-      "startServerReadyPattern": "Local",
-      "startServerReadyTimeout": 30000,
+      "startServerCommand": "bun run scripts/serve-production.ts",
+      "startServerReadyPattern": "Production server listening",
+      "startServerReadyTimeout": 15000,
       "settings": {
         "onlyCategories": ["seo", "performance", "accessibility"]
       },
