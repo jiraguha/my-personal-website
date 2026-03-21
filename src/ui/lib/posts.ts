@@ -99,7 +99,8 @@ function loadPosts(): Post[] {
 let _posts: Post[] | null = null;
 
 export function getAllPosts(): Post[] {
-  if (!_posts) _posts = loadPosts();
+  const isDev = typeof process !== "undefined" && process.env.NODE_ENV === "development";
+  if (isDev || !_posts) _posts = loadPosts();
   return _posts;
 }
 
