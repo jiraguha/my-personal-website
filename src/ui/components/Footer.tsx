@@ -9,10 +9,9 @@ export function Footer({ profile }: FooterProps) {
 
   return (
     <footer className="mt-24 border-t border-gray-200 dark:border-gray-800">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-        <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-gray-400 dark:text-gray-500">
-          <span>© {year} {profile.name}</span>
-          <span>·</span>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 dark:text-gray-500">
+        <span>© {year} {profile.name}</span>
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <span>Built with</span>
           <span className="inline-flex items-center gap-1" title="React">
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
