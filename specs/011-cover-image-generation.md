@@ -1,6 +1,6 @@
 # 011 — AI-Powered Cover Image Generation (Nano Banana Pro)
 
-> Status: `implementing`
+> Status: `prototype`
 > Mode: `prototype`
 > Date: 2026-03-18
 
