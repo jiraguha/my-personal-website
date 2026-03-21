@@ -26,7 +26,10 @@ export function FeaturedCard({ post }: FeaturedCardProps) {
       {/* Cover */}
       <div className="h-48 sm:h-64 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-600 relative overflow-hidden">
         {post.cover && (
-          <img src={post.cover} alt="" className="w-full h-full object-cover" />
+          <picture>
+            <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
+            <img src={post.cover} alt="" className="w-full h-full object-cover" />
+          </picture>
         )}
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute top-4 left-4">

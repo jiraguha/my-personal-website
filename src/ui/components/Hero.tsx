@@ -59,12 +59,15 @@ export function Hero({ profile }: HeroProps) {
                   {profile.name.charAt(0)}
                 </span>
               ) : (
-                <img
-                  src={profile.avatar}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                  onError={() => setImgFailed(true)}
-                />
+                <picture>
+                  <source srcSet={profile.avatar.replace(/\.png$/, ".webp")} type="image/webp" />
+                  <img
+                    src={profile.avatar}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                    onError={() => setImgFailed(true)}
+                  />
+                </picture>
               )}
             </div>
 

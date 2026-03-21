@@ -68,7 +68,10 @@ export function PostCard({ post }: PostCardProps) {
         {/* Cover */}
         <div className="h-32 bg-gradient-to-br from-indigo-400 via-violet-400 to-purple-500 relative overflow-hidden">
           {post.cover && (
-            <img src={post.cover} alt="" className="w-full h-full object-cover" />
+            <picture>
+              <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
+              <img src={post.cover} alt="" className="w-full h-full object-cover" />
+            </picture>
           )}
           <div className="absolute top-2 right-2">
             <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${categoryColors[post.category] ?? ""}`}>

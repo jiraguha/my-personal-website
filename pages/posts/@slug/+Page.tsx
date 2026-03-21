@@ -47,7 +47,10 @@ function TalkLanding({
 
       {post.cover && (
         <div className="mb-8 rounded-xl overflow-hidden">
-          <img src={post.cover} alt="" className="w-full" />
+          <picture>
+            <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
+            <img src={post.cover} alt="" className="w-full" />
+          </picture>
         </div>
       )}
 
@@ -194,7 +197,10 @@ export function Page() {
 
       {post.cover && post.category !== "short" && (
         <div className="mb-10 rounded-xl overflow-hidden">
-          <img src={post.cover} alt="" className="w-full" />
+          <picture>
+            <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
+            <img src={post.cover} alt="" className="w-full" />
+          </picture>
         </div>
       )}
 

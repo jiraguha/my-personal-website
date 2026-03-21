@@ -106,21 +106,22 @@ export async function generateCover(post: PostFrontmatter): Promise<GeneratedCov
   }
 
   const coverPath = path.join(outputDir, "cover.png");
+  const coverWebpPath = path.join(outputDir, "cover.webp");
   const ogPath = path.join(outputDir, "og.png");
 
-  // Save cover at target dimensions
-  await sharp(imageBuffer)
-    .resize(COVER_WIDTH, COVER_HEIGHT, { fit: "cover" })
-    .png()
-    .toFile(coverPath);
+  // Save cover at target dimensions (PNG + WebP)
+  const resizedCover = sharp(imageBuffer).resize(COVER_WIDTH, COVER_HEIGHT, { fit: "cover" });
+  await resizedCover.clone().png().toFile(coverPath);
+  await resizedCover.clone().webp({ quality: 80 }).toFile(coverWebpPath);
 
-  // Save OG image at 1200x630
+  // Save OG image at 1200x630 (PNG only — social platforms need PNG)
   await sharp(imageBuffer)
     .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover" })
     .png()
     .toFile(ogPath);
 
   console.log(`  Saved: ${coverPath}`);
+  console.log(`  Saved: ${coverWebpPath}`);
   console.log(`  Saved: ${ogPath}`);
 
   return {
