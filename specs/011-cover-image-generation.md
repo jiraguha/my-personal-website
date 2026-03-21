@@ -12,7 +12,16 @@ Jean-Paul can generate consistent, minimalistic, professional cover images for e
 
 ## Design Aesthetic (DA) — The Visual Contract
 
-All generated covers must conform to this DA. The DA is encoded as a reusable system prompt prefix injected into every Nano Banana Pro API call.
+All generated covers must conform to this DA. The DA lives in an external file — `da.md` — at the project root. The generator reads `da.md` at runtime and injects its content as the system prompt prefix for every Nano Banana Pro API call. This means the visual contract can be changed by editing a single markdown file — no code changes, no redeployment of the generator script.
+
+### DA as an External File
+
+- **Location**: `da.md` in the project root (Git-tracked)
+- **Format**: Plain markdown. The generator reads the raw text content and uses it as-is in the system prompt. The markdown structure (headings, tables, lists) is preserved — LLMs parse it well.
+- **Workflow**: Edit `da.md` → run `npm run covers --force` → all covers regenerate with the new aesthetic.
+- **Versioning**: Since `da.md` is Git-tracked, every DA change is in the commit history. No need for a separate versioning scheme — `git log da.md` shows the full evolution.
+- **Validation**: The generator checks that `da.md` exists and is non-empty before proceeding. If missing, it exits with a clear error: `"Missing da.md — the design aesthetic file is required for cover generation."`
+- **Override per post**: A post can set `coverDa: path/to/custom-da.md` in its frontmatter to use a different DA for that specific cover (e.g., for a special series with a different visual identity). If omitted, the root `da.md` is used.
 
 ### Principles
 
@@ -99,6 +108,9 @@ export interface CoverGenConfig {
 
   /** Seed for deterministic regeneration — change to re-roll a layout */
   coverSeed?: number;
+
+  /** Path to a custom DA file for this post (default: da.md in project root) */
+  coverDa?: string;
 }
 
 /** Output manifest entry per generated cover */
@@ -124,7 +136,7 @@ export interface CoverManifest {
 ## API Acceptance Criteria
 
 - [ ] API-1: A CLI script (`npm run covers`) reads all posts from `content/posts/`, identifies those needing cover generation (`autocover !== false` AND no existing `coverManual: true` file), and generates missing covers via the Nano Banana Pro API.
-- [ ] API-2: Every API call uses the DA prompt template (above) as a system-level prefix, appending the post-specific context (title, summary, keywords, optional hint) as the user prompt.
+- [ ] API-2: Every API call reads the DA from `da.md` (or the post's `coverDa` frontmatter override) and uses it as a system-level prefix, appending the post-specific context (title, summary, keywords, optional hint) as the user prompt.
 - [ ] API-3: The user prompt per post follows this structure:
   ```
   Generate a cover image for a blog post.
@@ -193,14 +205,19 @@ export interface CoverManifest {
 | Post is a "talk" with `externalUrl` | Generator | Cover still generated normally — category doesn't affect visual style. |
 | Very long title (> 120 chars) | Prompt | Title truncated at 120 chars in the prompt to avoid diluting the instruction. |
 | Network failure mid-batch | Generator | Already-generated covers are preserved (written to disk immediately). Only the failed + remaining posts are skipped. Re-running picks up where it left off (checks manifest). |
+| `da.md` is missing | Generator | Script exits with error: `"Missing da.md"`. No API calls made, no partial writes. |
+| `da.md` is empty | Generator | Script exits with error: `"da.md is empty"`. Same behavior as missing. |
+| Post has `coverDa: custom-da.md` but file doesn't exist | Generator | Logs warning for that post, falls back to root `da.md`. |
+| `da.md` is very large (> 10KB) | Generator | Logs a warning (large DA may dilute the prompt), but proceeds. |
 
 ## Directory Structure (additions to spec 001)
 
 ```
+├── da.md                        # Design Aesthetic — the visual contract (read by generator)
 ├── scripts/
 │   └── generate-covers.ts     # CLI entry point
 ├── lib/
-│   ├── cover-da.ts             # DA prompt template + theme tokens
+│   ├── cover-da.ts             # Reads & validates da.md, resolves per-post overrides
 │   ├── cover-generator.ts      # Gemini API integration
 │   └── cover-manifest.ts       # Read/write covers.manifest.json
 ├── public/
@@ -235,7 +252,7 @@ _Costs are approximate and based on preview pricing as of March 2026. Only appli
 
 - [ ] Should we store generated prompts in a Git-tracked file (for reproducibility) or `.gitignore` the manifest?
 - [ ] Is a `coverSeed` mechanism worth implementing given that Nano Banana Pro doesn't expose a native seed parameter — would a prompt-variation strategy (e.g. appending `"variation: 3"`) be sufficient for re-rolling?
-- [ ] Should the DA be versioned (e.g. `da-v1`) so that a future palette refresh can coexist with older covers, or should a refresh trigger a full `--force` regeneration?
+- [x] ~~Should the DA be versioned?~~ — Resolved: `da.md` is Git-tracked, so version history comes from `git log da.md`. A palette refresh means editing `da.md` + running `--force`.
 - [ ] Preference for the `@google/genai` SDK directly, or use Vertex AI for potentially higher rate limits?
 - [ ] Should the generator also produce a tiny blurred placeholder (16×9 px) for blur-up loading transitions?
 
