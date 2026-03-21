@@ -49,8 +49,9 @@ export function Footer({ profile }: FooterProps) {
             </a>
           )}
         </nav>
-        <p>© {year} {profile.name}</p>
         <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-gray-400 dark:text-gray-500">
+          <span>© {year} {profile.name}</span>
+          <span>·</span>
           <span>Built with</span>
           <span className="inline-flex items-center gap-1" title="React">
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
