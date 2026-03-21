@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-21T23:25:43.273Z",
+  "generatedAt": "2026-03-21T23:33:18.550Z",
   "covers": [
     {
       "slug": "bun-for-backend",
@@ -93,8 +93,8 @@
       "width": 1200,
       "height": 675,
       "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a project post.\nTitle: \"Building a Portfolio That Builds Itself\"\nKeywords to visualize: spec-driven, portfolio-engine, ai-covers, fork-adapt, developer-brand\nDiagram hint: A cyberpunk HUD showing a blueprint/schematic of a portfolio site being assembled by automated systems — specs flowing into tested components, AI generating cover art, slides rendering in a holographic preview panel\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
-      "promptHash": "4dd68d6eca80303b",
       "model": "gemini-3-pro-image-preview",
+      "promptHash": "4dd68d6eca80303b",
       "generatedAt": "2026-03-21T23:25:43.273Z"
     },
     {
@@ -117,9 +117,21 @@
       "width": 1200,
       "height": 675,
       "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a blog post.\nTitle: \"'Anyone Can Code' Is a Misleading Narrative\"\nKeywords to visualize: formal-languages, abstraction-layers, ambiguity, code, foundation\nDiagram hint: layered architectural cross-section showing deep foundations beneath a polished surface, blueprint style with warm accents\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
-      "promptHash": "b4bf9a216b041db8",
       "model": "gemini-3-pro-image-preview",
+      "promptHash": "b4bf9a216b041db8",
       "generatedAt": "2026-03-21T23:25:21.509Z"
+    },
+    {
+      "slug": "dock",
+      "category": "project",
+      "imagePath": "public/assets/covers/dock/cover.png",
+      "ogImagePath": "public/assets/covers/dock/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a project post.\nTitle: \"dock — Disposable Remote Dev Environments From Your Terminal\"\nKeywords to visualize: cloud-terminal, remote-dev, disposable-environments, cli-tool, infrastructure\nDiagram hint: A cyberpunk HUD showing a terminal launching a remote machine in the cloud — SSH tunnels connecting a lightweight laptop to a powerful remote server, with Docker containers and Kubernetes pods visualized as holographic elements\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "d4b009301a96eeb3",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T23:33:18.550Z"
     }
   ]
 }
