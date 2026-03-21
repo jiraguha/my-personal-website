@@ -7,3 +7,4 @@ bun.lockb
 test-results/
 playwright-report/
 public/.favicon-hash
+.lighthouseci/

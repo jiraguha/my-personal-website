@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "bun run scripts/generate-favicon.ts && vite build",
+    "build": "bun run scripts/generate-favicon.ts && vite build && bun run scripts/generate-sitemap.ts",
     "preview": "vite preview",
     "infra:up": "docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down",
@@ -14,6 +14,7 @@
     "test:e2e": "playwright test test/e2e/",
     "test:all": "bun run test:lib && bun run test:e2e",
     "typecheck": "bunx tsc --noEmit",
+    "test:seo": "bun run scripts/run-seo-audit.ts",
     "covers": "bun run scripts/generate-covers.ts",
     "cover": "bun run scripts/generate-cover.ts"
   },
@@ -34,6 +35,7 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.50.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
