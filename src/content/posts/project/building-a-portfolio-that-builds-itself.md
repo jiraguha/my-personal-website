@@ -4,7 +4,7 @@ slug: building-a-portfolio-that-builds-itself
 date: 2026-03-21
 summary: "How I built a spec-driven personal site with AI-generated covers, Reveal.js talks, fuzzy search, and a Claude skill that writes posts for me — and why you should fork it."
 tags: ["spec-driven-development", "portfolio", "claude", "open-source"]
-category: blog
+category: project
 draft: false
 featured: true
 coverKeywords: ["spec-driven", "portfolio-engine", "ai-covers", "fork-adapt", "developer-brand"]
