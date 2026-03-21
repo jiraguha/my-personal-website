@@ -3,7 +3,10 @@
     "allow": [
       "Bash(bun run:*)",
       "Bash(node -e \":*)",
-      "Bash(find /Users/jpiraguha/dev/my-personal-website/test/content -name *.md)"
+      "Bash(find /Users/jpiraguha/dev/my-personal-website/test/content -name *.md)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   },
   "hooks": {}

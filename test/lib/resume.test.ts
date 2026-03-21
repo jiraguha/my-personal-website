@@ -7,6 +7,7 @@ import { describe, it, expect } from "vitest";
 import { SiteProfileSchema } from "../../src/shared/schemas/site.schema";
 
 const baseProfile = {
+  siteUrl: "http://localhost:4173",
   name: "Jean-Paul Iraguha",
   role: "Software Engineer",
   org: "SingularFlow",

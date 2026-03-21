@@ -1,4 +1,4 @@
-# 011 — Post Creator Skill (Claude)
+# 012 — Post Creator Skill (Claude)
 
 > Status: `draft`
 > Mode: `full`
@@ -12,22 +12,23 @@ Jean-Paul can paste a raw draft, rough notes, bullet points, or just a topic ide
 
 ```typescript
 // No new runtime types. The skill produces files conforming to the existing
-// PostFrontmatter (spec 001), TalkFrontmatter (spec 007), and CoverGenConfig
-// (spec 002) schemas. The skill itself is a Claude SKILL.md file, not application code.
+// PostFrontmatter (spec 001), TalkFrontmatter (spec 006), and cover generation
+// fields (spec 011) schemas. The skill itself is a Claude SKILL.md file, not
+// application code. The skill instructions live in specs/post-creator-SKILL.md.
 ```
 
 ## Skill Acceptance Criteria
 
 _These replace the usual API/UI split since this is a Claude skill, not application code._
 
-- [ ] SK-1: The skill is a valid Claude skill with a `SKILL.md` file containing YAML frontmatter (`name`, `description`) and Markdown instructions.
+- [ ] SK-1: The skill is defined in `specs/post-creator-SKILL.md` with YAML frontmatter (`name`, `description`) and Markdown instructions.
 - [ ] SK-2: The skill triggers when the user provides raw content and asks to create, write, polish, or format a post for the site. Trigger phrases include: "write a post about...", "turn this into a blog post", "new short", "new talk", "polish this draft", "create a post from these notes", or pasting raw text with a request to format it.
 - [ ] SK-3: The skill determines the correct content category (`blog`, `project`, `short`, `talk`) from context, or asks the user if ambiguous.
 - [ ] SK-4: **Language polish** — the output has zero spelling errors, correct grammar, and consistent punctuation. The author's voice is preserved (technically precise, not corporate).
 - [ ] SK-5: **Structure** — the output has clear headings, logical flow, focused paragraphs, and a scannable outline. The lede is not buried. The post has a clear ending.
 - [ ] SK-6: **Formatting** — code blocks have correct language identifiers, key terms are bolded on first use, CLI commands and paths use `inline code`, blockquotes are used for callouts, and Mermaid diagrams are added where a flow or architecture is described.
-- [ ] SK-7: **Frontmatter** — complete and valid YAML frontmatter is generated, including: `title`, `slug` (kebab-case), `date`, `summary`, `tags` (2–4, lowercase kebab-case), `category`, `draft`, `featured`, `autocover`, `coverKeywords`, and `coverHint`.
-- [ ] SK-8: **Shorts** — short posts omit `autocover`, `coverKeywords`, and `coverHint`. Summary can be empty. No section headings unless the content warrants them.
+- [ ] SK-7: **Frontmatter** — complete and valid YAML frontmatter is generated, including: `title`, `slug` (kebab-case), `date`, `summary`, `tags` (2–4, lowercase kebab-case), `category`, `draft`, `featured`, `coverKeywords`, and `coverHint`. Cover generation is implicit (spec 011): posts without a `cover` value and without `coverNone: true` are eligible for generation.
+- [ ] SK-8: **Shorts** — short posts omit `coverKeywords` and `coverHint`, and set `coverNone: true` (no cover generation). Summary can be empty. No section headings unless the content warrants them.
 - [ ] SK-9: **Talks** — output is Reveal.js Markdown with `---` slide separators, `Note:` speaker notes, stepped code highlighting, and additional frontmatter (`event`, `eventDate`, `reveal`). If the user provides talk content as a continuous document without `---` separators, the skill splits it into slides automatically (each `##` heading = new slide, each `###` = vertical slide, long code blocks and Mermaid diagrams get their own slides).
 - [ ] SK-10: The finished file is saved to `content/posts/<category>/<slug>.md`.
 - [ ] SK-11: After writing the file, the skill presents it for review and asks if adjustments are needed (tone, length, structure, formatting). Feedback is applied in-place.
@@ -38,7 +39,7 @@ _These replace the usual API/UI split since this is a Claude skill, not applicat
 ## Integration Acceptance Criteria
 
 - [ ] E2E-1: Pasting a raw 200-word draft with typos and asking "turn this into a blog post" produces a polished `.md` file in `content/posts/blog/` with valid frontmatter, zero spelling errors, and clear structure.
-- [ ] E2E-2: Saying "new short: TIL kubectl debug lets you attach ephemeral containers" produces a concise `.md` file in `content/posts/short/` with appropriate frontmatter (no `autocover`, no `coverKeywords`).
+- [ ] E2E-2: Saying "new short: TIL kubectl debug lets you attach ephemeral containers" produces a concise `.md` file in `content/posts/short/` with appropriate frontmatter (`coverNone: true`, no `coverKeywords`).
 - [ ] E2E-3: Providing bullet points about a conference talk and saying "make this a talk" produces a Reveal.js Markdown file with slides, speaker notes, and talk-specific frontmatter.
 - [ ] E2E-4: Providing a project description and saying "create a project post" produces a writeup with tech stack section, architecture overview, and code snippet.
 - [ ] E2E-5: The generated file passes Zod frontmatter validation at build time (no missing or invalid fields).
@@ -59,7 +60,7 @@ _These replace the usual API/UI split since this is a Claude skill, not applicat
 
 ## Non-goals
 
-- The skill does not create cover images — it sets `autocover: true` and `coverKeywords` so that the cover generation pipeline (spec 002) handles it on the next `bun run covers`.
+- The skill does not create cover images — it sets `coverKeywords` and `coverHint` so that the cover generation pipeline (spec 011) handles it on the next `bun run covers`. Cover eligibility is implicit: no `cover` value + no `coverNone: true` = generate.
 - The skill does not publish or deploy — it writes a file. The user commits and pushes.
 - The skill does not manage existing posts (no bulk editing, no migration). It creates new posts or rewrites a single draft.
 - No translation or multi-language support.
@@ -79,12 +80,11 @@ _These replace the usual API/UI split since this is a Claude skill, not applicat
 ## Skill File Location
 
 ```
-skills/
-└── post-creator/
-    └── SKILL.md        # The skill definition
+specs/
+└── post-creator-SKILL.md   # The skill definition (Claude Code skill)
 ```
 
-Install by placing in the Claude skills directory or importing as a `.skill` package.
+The skill is defined in `specs/post-creator-SKILL.md` and registered in `.claude/settings.json` as a Claude Code skill.
 
 ## External Dependencies
 
@@ -92,9 +92,9 @@ _None. The skill is pure instructions — no scripts, no packages, no API calls.
 
 ## Open Questions
 
-- [ ] Should the skill also generate a `coverHint` that's optimized for Nano Banana Pro (e.g., describing the visual as a technical diagram), or keep it as a simple content description?
-- [ ] Should the skill support an "outline mode" where it produces just the structure (headings + bullet points) for user approval before writing the full post?
-- [ ] Worth adding a `references/style-guide.md` to the skill with Jean-Paul's writing preferences (word choice, banned phrases, preferred patterns)?
+- [x] Should the skill also generate a `coverHint` that's optimized for Nano Banana Pro (e.g., describing the visual as a technical diagram), or keep it as a simple content description? yes
+- [x] Should the skill support an "outline mode" where it produces just the structure (headings + bullet points) for user approval before writing the full post? yes
+- [x] Worth adding a `references/style-guide.md` to the skill with Jean-Paul's writing preferences (word choice, banned phrases, preferred patterns)? yes
 
 ## Post-Implementation Notes
 
