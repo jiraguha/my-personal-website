@@ -77,7 +77,16 @@ function loadPosts(): Post[] {
         console.warn(`Invalid frontmatter in ${filePath}:`, result.error.format());
         return null;
       }
-      return { ...result.data, content };
+      const post = { ...result.data, content };
+      // Convention-based cover auto-resolve (spec 011):
+      // If cover is empty, check for a generated cover at the known path
+      if (!post.cover) {
+        const generatedCover = path.resolve(process.cwd(), "public/assets/covers", post.slug, "cover.png");
+        if (fs.existsSync(generatedCover)) {
+          post.cover = `/assets/covers/${post.slug}/cover.png`;
+        }
+      }
+      return post;
     })
     .filter((p): p is Post => p !== null)
     .filter((p) => isDev || (!p.draft && new Date(p.date) <= new Date()))
