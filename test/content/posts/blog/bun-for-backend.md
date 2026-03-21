@@ -4,6 +4,7 @@ slug: "bun-for-backend"
 date: "2025-12-05"
 summary: "Bun is fast, ships native TypeScript, and has a test runner built in. Here's why it's my default runtime for new backend projects."
 cover: ""
+coverText: "none"
 tags: [bun, typescript, dx]
 category: blog
 featured: false

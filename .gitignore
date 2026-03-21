@@ -7,5 +7,3 @@ bun.lockb
 test-results/
 playwright-report/
 public/.favicon-hash
-public/assets/covers/
-public/assets/covers.manifest.json

@@ -1,0 +1,77 @@
+{
+  "generatedAt": "2026-03-21T12:17:04.283Z",
+  "covers": [
+    {
+      "slug": "bun-for-backend",
+      "category": "blog",
+      "imagePath": "public/assets/covers/bun-for-backend/cover.png",
+      "ogImagePath": "public/assets/covers/bun-for-backend/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a blog post.\nTitle: \"Why I Replaced Node.js with Bun for Every New Project\"\nSummary: \"Bun is fast, ships native TypeScript, and has a test runner built in. Here's why it's my default runtime for new backend projects.\"\nKeywords to visualize: bun, typescript, dx\nTEXT DENSITY: No text whatsoever — purely visual, no labels, no titles, no status bars. The image communicates entirely through shapes, colors, and composition.",
+      "model": "gemini-3-pro-image-preview",
+      "promptHash": "9df16ebb0b10f834",
+      "generatedAt": "2026-03-21T12:14:23.092Z"
+    },
+    {
+      "slug": "securing-agentic-systems",
+      "category": "talk",
+      "imagePath": "public/assets/covers/securing-agentic-systems/cover.png",
+      "ogImagePath": "public/assets/covers/securing-agentic-systems/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a talk post.\nTitle: \"Securing Agentic Systems: Guardrails in Production\"\nSummary: \"A deep dive into benchmarking frameworks and deployment patterns for building autonomous agents you can actually trust in production.\"\nKeywords to visualize: ai-safety, agents, guardrails, production\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "a8e507f51ab78ce6",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T12:15:22.865Z"
+    },
+    {
+      "slug": "til-kubectl-debug",
+      "category": "short",
+      "imagePath": "public/assets/covers/til-kubectl-debug/cover.png",
+      "ogImagePath": "public/assets/covers/til-kubectl-debug/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a short post.\nTitle: \"TIL: kubectl debug lets you attach ephemeral containers\"\nSummary: \"\"\nKeywords to visualize: kubernetes, devtools\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "57cc75d106ba0864",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T12:15:45.540Z"
+    },
+    {
+      "slug": "spec-driven-development",
+      "category": "blog",
+      "imagePath": "public/assets/covers/spec-driven-development/cover.png",
+      "ogImagePath": "public/assets/covers/spec-driven-development/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a blog post.\nTitle: \"Spec-Driven Development: Ship Faster by Writing First\"\nSummary: \"How writing a tight spec before touching code has cut our rework rate in half and made AI coding assistants dramatically more effective.\"\nKeywords to visualize: sdd, engineering-process, dx\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "530f65fe2c0c13ea",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T12:16:13.707Z"
+    },
+    {
+      "slug": "singularflow-platform",
+      "category": "project",
+      "imagePath": "public/assets/covers/singularflow-platform/cover.png",
+      "ogImagePath": "public/assets/covers/singularflow-platform/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a project post.\nTitle: \"SingularFlow: A Platform for Agentic Workflows\"\nSummary: \"An overview of what we're building at SingularFlow — infrastructure for teams that want to ship AI-powered products without the complexity.\"\nKeywords to visualize: singularflow, product, agentic-systems\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "9648eddaad6b6875",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T12:16:33.995Z"
+    },
+    {
+      "slug": "ai-safety-engineering",
+      "category": "talk",
+      "imagePath": "public/assets/covers/ai-safety-engineering/cover.png",
+      "ogImagePath": "public/assets/covers/ai-safety-engineering/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a talk post.\nTitle: \"AI Safety as an Engineering Discipline\"\nSummary: \"AI safety isn't just a research problem — it's a product engineering problem. Here's how teams building with LLMs can approach it practically.\"\nKeywords to visualize: ai-safety, ai, engineering-process\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "29869efaff91cf3e",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-03-21T12:17:04.283Z"
+    }
+  ]
+}

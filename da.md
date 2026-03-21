@@ -11,9 +11,7 @@ STRICT STYLE RULES — do not deviate:
   ops console or command center display, NOT flat diagrams or stock art
 - Circuit-board traces: thin (1-2px) lines with right-angle bends running along
   panel edges, corners, and between elements — a signature visual motif
-- Framed panels: content organized inside bordered frames with glowing edges
-  (cyan for information, red for warnings/risk). Panels have corner accents
-  (small squares or bracket shapes at corners)
+
 - Elements: wireframe 3D shapes, holographic objects, schematic diagrams,
   network graphs, flow visualizations — rendered with a glowing neon quality
 - Text labels: JetBrains Mono or monospace font. Default text density is
