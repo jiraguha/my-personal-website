@@ -6,7 +6,8 @@
       "Bash(find /Users/jpiraguha/dev/my-personal-website/test/content -name *.md)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)"
     ]
   },
   "hooks": {}
