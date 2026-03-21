@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="50" fill="#000"/>
+  <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+    fill="#fff" font-size="60" font-weight="600"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">I</text>
+</svg>
