@@ -1,7 +1,7 @@
 # 014 — Per-Post Meta Tags & Category-Aware OG Images
 
-> Status: `prototype`
-> Mode: `prototype`
+> Status: `complete`
+> Mode: `full`
 > Date: 2026-03-19
 
 ## Intent
@@ -216,6 +216,11 @@ pages/
 
 ## Post-Implementation Notes
 
-_Filled when status → complete. Not required for prototypes._
-
-- ...
+- All meta tag infrastructure implemented: `buildPageMeta()`, `<MetaTags />`, Zod schemas
+- OG image generation script (`scripts/generate-og.ts`) produces:
+  - `og-default.png` — site-wide fallback with DA cyberpunk HUD styling
+  - Short text-cards — title on dark background with ⚡ SHORT badge
+  - Talk badge overlays — ▶ SLIDES composited on existing cover via sharp
+- Description fallback chain: summary → stripped markdown body → site bio
+- 64 unit tests covering all acceptance criteria in `test/lib/meta.test.ts`
+- All 5 page types have `+Head.tsx` with full OG/Twitter/canonical/JSON-LD output
