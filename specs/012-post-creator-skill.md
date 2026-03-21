@@ -1,8 +1,8 @@
 # 012 — Post Creator Skill (Claude)
 
-> Status: `draft`
-> Mode: `full`
-> Date: 2026-03-19
+> Status: `implementing`
+> Mode: `prototype`
+> Date: 2026-03-21
 
 ## Intent
 
