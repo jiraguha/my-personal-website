@@ -1,7 +1,7 @@
 # 010 — Dynamic Favicon from Profile Letter
 
-> Status: `prototype`
-> Mode: `prototype`
+> Status: `complete`
+> Mode: `full`
 > Date: 2026-03-21
 
 ## Intent
