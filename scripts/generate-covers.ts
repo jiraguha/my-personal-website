@@ -3,15 +3,13 @@
  * Batch cover generation: bun run covers [--force] [--dry-run]
  * Generates missing covers for all posts across all categories.
  *
- * Decision tree per post:
- *   coverNone: true   → SKIP (explicit opt-out)
- *   cover is set       → SKIP (already has one)
- *   cover is empty     → GENERATE
- *   --force            → regenerate even if generated cover file exists
+ * Cache: prompt hash stored in manifest. If inputs haven't changed
+ * (DA, title, summary, tags, coverHint, coverText), the post is skipped.
+ * --force bypasses the cache entirely.
  */
 import { getAllPosts } from "../src/ui/lib/posts";
-import { generateCover } from "../src/ui/lib/cover-generator";
-import { readManifest, writeManifest, upsertCover } from "../src/ui/lib/cover-manifest";
+import { generateCover, buildFullPrompt, hashPrompt } from "../src/ui/lib/cover-generator";
+import { readManifest, writeManifest, upsertCover, getCoverBySlug } from "../src/ui/lib/cover-manifest";
 import { shouldSkipCover, skipReasonLabel } from "../src/ui/lib/cover-skip";
 import fs from "node:fs";
 import path from "node:path";
@@ -51,12 +49,19 @@ async function main(): Promise<void> {
       continue;
     }
 
-    // Skip if generated cover file already exists on disk (unless --force)
-    const coverFile = path.resolve(process.cwd(), `public/assets/covers/${post.slug}/cover.png`);
-    if (!force && fs.existsSync(coverFile)) {
-      console.log(`  SKIP (exists): ${post.slug}`);
-      skipped++;
-      continue;
+    if (!force) {
+      // Cache check: compare prompt hash with manifest entry
+      const existing = getCoverBySlug(manifest, post.slug);
+      const coverFile = path.resolve(process.cwd(), `public/assets/covers/${post.slug}/cover.png`);
+      if (existing && fs.existsSync(coverFile)) {
+        const currentHash = hashPrompt(buildFullPrompt(post));
+        if (existing.promptHash === currentHash) {
+          console.log(`  SKIP (cached): ${post.slug}`);
+          skipped++;
+          continue;
+        }
+        console.log(`  STALE (inputs changed): ${post.slug}`);
+      }
     }
 
     if (dryRun) {

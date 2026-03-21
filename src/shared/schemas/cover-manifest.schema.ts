@@ -9,6 +9,7 @@ export const GeneratedCoverSchema = z.object({
   height: z.number(),
   prompt: z.string(),
   model: z.string(),
+  promptHash: z.string().optional(),
   generatedAt: z.string(),
   seed: z.number().optional(),
 });

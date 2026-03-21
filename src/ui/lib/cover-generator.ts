@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { GoogleGenAI } from "@google/genai";
 import sharp from "sharp";
 import type { PostFrontmatter } from "@shared/schemas/site.schema";
@@ -55,6 +56,16 @@ function getOutputDir(slug: string): string {
   return path.resolve(process.cwd(), "public/assets/covers", slug);
 }
 
+export function buildFullPrompt(post: PostFrontmatter): string {
+  const da = loadDa(post.coverDa);
+  const userPrompt = buildPrompt(post);
+  return `${da}\n\n---\n\n${userPrompt}`;
+}
+
+export function hashPrompt(prompt: string): string {
+  return crypto.createHash("sha256").update(prompt).digest("hex").slice(0, 16);
+}
+
 export async function generateCover(post: PostFrontmatter): Promise<GeneratedCover> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -63,9 +74,7 @@ export async function generateCover(post: PostFrontmatter): Promise<GeneratedCov
     );
   }
 
-  const da = loadDa(post.coverDa);
-  const userPrompt = buildPrompt(post);
-  const fullPrompt = `${da}\n\n---\n\n${userPrompt}`;
+  const fullPrompt = buildFullPrompt(post);
 
   const genai = new GoogleGenAI({ apiKey });
 
@@ -122,6 +131,7 @@ export async function generateCover(post: PostFrontmatter): Promise<GeneratedCov
     width: COVER_WIDTH,
     height: COVER_HEIGHT,
     prompt: fullPrompt,
+    promptHash: hashPrompt(fullPrompt),
     model: MODEL,
     generatedAt: new Date().toISOString(),
     seed: post.coverSeed,
