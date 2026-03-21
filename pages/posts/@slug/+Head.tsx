@@ -5,6 +5,6 @@ import { MetaTags } from "../../../src/ui/components/meta-tags";
 
 export function Head() {
   const { post } = useData<Data>();
-  const meta = buildPageMeta({ page: "post", post });
+  const meta = buildPageMeta({ page: "post", post, content: post.content });
   return <MetaTags meta={meta} />;
 }

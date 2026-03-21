@@ -11,13 +11,44 @@ const MAX_DESCRIPTION_LENGTH = 160;
 
 type PageType = "home" | "post" | "tag" | "404";
 
-function truncate(text: string, max: number): string {
+export function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
   return text.slice(0, max - 1) + "…";
 }
 
-function absUrl(pathname: string): string {
+export function absUrl(pathname: string): string {
   return `${SITE_URL}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
+}
+
+/** Strip markdown formatting to extract plain text for descriptions */
+export function stripMarkdown(md: string): string {
+  return md
+    .replace(/^#{1,6}\s+/gm, "")       // headings
+    .replace(/\*\*(.+?)\*\*/g, "$1")    // bold
+    .replace(/__(.+?)__/g, "$1")        // bold alt
+    .replace(/\*(.+?)\*/g, "$1")        // italic
+    .replace(/_(.+?)_/g, "$1")          // italic alt
+    .replace(/`{1,3}[^`]*`{1,3}/g, "") // inline code / code blocks
+    .replace(/```[\s\S]*?```/g, "")     // fenced code blocks
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // links
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1") // images
+    .replace(/^\s*[-*+]\s+/gm, "")     // list markers
+    .replace(/^\s*\d+\.\s+/gm, "")     // numbered lists
+    .replace(/^\s*>\s+/gm, "")         // blockquotes
+    .replace(/---+/g, "")              // horizontal rules
+    .replace(/\n{2,}/g, " ")           // collapse newlines
+    .replace(/\n/g, " ")               // remaining newlines
+    .replace(/\s{2,}/g, " ")           // collapse spaces
+    .trim();
+}
+
+function resolveDescription(summary: string, content?: string): string {
+  if (summary) return truncate(summary, MAX_DESCRIPTION_LENGTH);
+  if (content) {
+    const plain = stripMarkdown(content);
+    if (plain) return truncate(plain, MAX_DESCRIPTION_LENGTH);
+  }
+  return truncate(siteProfile.bio, MAX_DESCRIPTION_LENGTH);
 }
 
 function resolveOgImage(post?: PostFrontmatter): OGImage {
@@ -44,12 +75,12 @@ function resolveOgImage(post?: PostFrontmatter): OGImage {
   };
 }
 
-function buildArticleJsonLd(post: PostFrontmatter, image: OGImage): Record<string, unknown> {
+function buildArticleJsonLd(post: PostFrontmatter, image: OGImage, description: string): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description: truncate(post.summary, MAX_DESCRIPTION_LENGTH),
+    description,
     image: image.url,
     datePublished: post.date,
     ...(post.updated ? { dateModified: post.updated } : {}),
@@ -82,11 +113,13 @@ function buildPersonJsonLd(): Record<string, unknown> {
 interface BuildPageMetaOptions {
   page: PageType;
   post?: PostFrontmatter;
+  /** Raw markdown body — used as description fallback when summary is empty */
+  content?: string;
   tag?: string;
   tagCount?: number;
 }
 
-export function buildPageMeta({ page, post, tag, tagCount }: BuildPageMetaOptions): PageMeta {
+export function buildPageMeta({ page, post, content, tag, tagCount }: BuildPageMetaOptions): PageMeta {
   const image = resolveOgImage(post);
   const twitterSite = siteProfile.socials.twitter || undefined;
 
@@ -107,7 +140,7 @@ export function buildPageMeta({ page, post, tag, tagCount }: BuildPageMetaOption
 
     case "post": {
       if (!post) throw new Error("buildPageMeta: post required for page type 'post'");
-      const description = truncate(post.summary || siteProfile.bio, MAX_DESCRIPTION_LENGTH);
+      const description = resolveDescription(post.summary, content);
       const urlPath = post.category === "talk" ? `/talks/${post.slug}` : `/posts/${post.slug}`;
       return {
         title: `${post.title} | ${siteProfile.name}`,
@@ -126,7 +159,7 @@ export function buildPageMeta({ page, post, tag, tagCount }: BuildPageMetaOption
           tags: post.tags,
           section: post.category,
         },
-        jsonLd: buildArticleJsonLd(post, image),
+        jsonLd: buildArticleJsonLd(post, image, description),
       };
     }
 
