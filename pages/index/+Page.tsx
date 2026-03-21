@@ -15,7 +15,7 @@ export function Page() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16 space-y-12">
         <section className="space-y-6">
-          <SectionDivider label="Featured" />
+          <SectionDivider label="Featured Article" />
           {featuredPost ? (
             <FeaturedCard post={featuredPost} />
           ) : (
@@ -29,7 +29,7 @@ export function Page() {
 
         {gridPosts.length > 0 && (
           <section className="space-y-6">
-            <SectionDivider label="Posts" />
+            <SectionDivider label="Latest Posts" />
             <ContentGrid posts={gridPosts} />
           </section>
         )}

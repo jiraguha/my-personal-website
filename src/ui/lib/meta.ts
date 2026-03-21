@@ -126,8 +126,11 @@ export function buildPageMeta({ page, post, content, tag, tagCount }: BuildPageM
   switch (page) {
     case "home":
       return {
-        title: siteProfile.name,
-        description: truncate(siteProfile.bio, MAX_DESCRIPTION_LENGTH),
+        title: `${siteProfile.name} — ${siteProfile.role}`,
+        description: truncate(
+          `${siteProfile.role} building agentic systems, developer tooling, and resilient infrastructure. ${siteProfile.bio}`,
+          MAX_DESCRIPTION_LENGTH,
+        ),
         url: SITE_URL,
         type: "website",
         image,

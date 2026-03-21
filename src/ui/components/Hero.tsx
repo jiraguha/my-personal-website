@@ -72,10 +72,10 @@ export function Hero({ profile }: HeroProps) {
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
                 {profile.name}
+                <span className="block mt-1 text-sm sm:text-base font-medium text-indigo-600 dark:text-indigo-400">
+                  {profile.role} · {profile.org}
+                </span>
               </h1>
-              <p className="mt-1 text-sm sm:text-base text-indigo-600 dark:text-indigo-400 font-medium">
-                {profile.role} · {profile.org}
-              </p>
 
               <p className="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed text-sm sm:text-base">
                 {profile.bio}
