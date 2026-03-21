@@ -6,11 +6,11 @@ import type { PostFrontmatter } from "@shared/schemas/site.schema";
 import type { GeneratedCover } from "@shared/schemas/cover-manifest.schema";
 import { loadDa } from "./cover-da";
 
-const MODEL = "gemini-3-pro-image-preview";
-const COVER_WIDTH = 1200;
-const COVER_HEIGHT = 675;
-const OG_WIDTH = 1200;
-const OG_HEIGHT = 630;
+const MODEL = process.env.COVER_MODEL ?? "gemini-3-pro-image-preview";
+const COVER_WIDTH = parseInt(process.env.COVER_WIDTH ?? "1200", 10);
+const COVER_HEIGHT = parseInt(process.env.COVER_HEIGHT ?? "675", 10);
+const OG_WIDTH = parseInt(process.env.OG_WIDTH ?? "1200", 10);
+const OG_HEIGHT = parseInt(process.env.OG_HEIGHT ?? "630", 10);
 
 const TEXT_LEVEL_INSTRUCTIONS: Record<string, string> = {
   none: "TEXT DENSITY: No text whatsoever — purely visual, no labels, no titles, no status bars. The image communicates entirely through shapes, colors, and composition.",
