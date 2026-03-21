@@ -46,6 +46,7 @@ export const PostCardSchema = PostFrontmatterSchema.pick({
 export type PostCard = z.infer<typeof PostCardSchema>;
 
 export const SiteProfileSchema = z.object({
+  siteUrl: z.string().url(),
   name: z.string(),
   role: z.string(),
   org: z.string(),

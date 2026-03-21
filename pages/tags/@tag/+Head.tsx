@@ -1,15 +1,10 @@
 import { useData } from "vike-react/useData";
 import type { Data } from "./+data";
+import { buildPageMeta } from "../../../src/ui/lib/meta";
+import { MetaTags } from "../../../src/ui/components/meta-tags";
 
 export function Head() {
   const { tag, posts } = useData<Data>();
-  return (
-    <>
-      <title>#{tag} — Jean-Paul Iraguha</title>
-      <meta
-        name="description"
-        content={`${posts.length} post${posts.length !== 1 ? "s" : ""} tagged with "${tag}"`}
-      />
-    </>
-  );
+  const meta = buildPageMeta({ page: "tag", tag, tagCount: posts.length });
+  return <MetaTags meta={meta} />;
 }
