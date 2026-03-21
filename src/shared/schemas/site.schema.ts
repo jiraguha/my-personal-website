@@ -20,6 +20,7 @@ export const PostFrontmatterSchema = z.object({
   coverHint: z.string().optional(),
   coverManual: z.boolean().optional().default(false),
   coverSeed: z.coerce.number().optional(),
+  coverText: z.enum(["none", "minimal", "moderate", "heavy"]).optional(),
   coverDa: z.string().optional(),
   externalUrl: z.string().optional(),
   // Talk-specific fields

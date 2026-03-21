@@ -16,8 +16,9 @@ STRICT STYLE RULES — do not deviate:
   (small squares or bracket shapes at corners)
 - Elements: wireframe 3D shapes, holographic objects, schematic diagrams,
   network graphs, flow visualizations — rendered with a glowing neon quality
-- Text labels: JetBrains Mono or monospace font, short labels, status text,
-  or axis labels — sparse and purposeful
+- Text labels: JetBrains Mono or monospace font. Default text density is
+  MINIMAL — at most 1-3 very short labels (1-2 words each), no title
+  rendered in the image. This default can be overridden per post.
 - Glow effects: neon glow on primary elements (cyan and red), subtle bloom
   on borders and active nodes
 - Composition: left-right panel split or centered content with flanking info panels

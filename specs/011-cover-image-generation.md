@@ -100,6 +100,7 @@ coverKeywords: z.array(z.string()).optional(),
 coverHint: z.string().optional(),
 coverManual: z.boolean().optional().default(false),
 coverSeed: z.number().optional(),
+coverText: z.enum(["none", "minimal", "moderate", "heavy"]).optional(), // default: "minimal"
 coverDa: z.string().optional(),
 ```
 

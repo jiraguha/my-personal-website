@@ -12,6 +12,15 @@ const COVER_HEIGHT = 675;
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 
+const TEXT_LEVEL_INSTRUCTIONS: Record<string, string> = {
+  none: "TEXT DENSITY: No text whatsoever — purely visual, no labels, no titles, no status bars. The image communicates entirely through shapes, colors, and composition.",
+  minimal: "TEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+  moderate: "TEXT DENSITY: Short labels plus an optional brief title, maximum 5 text elements total. Text supports the visual, not the other way around.",
+  heavy: "TEXT DENSITY: Title, labels, and status bar text are all welcome — text is a key visual element of this cover. Think full HUD with readouts.",
+};
+
+const DEFAULT_TEXT_LEVEL = "minimal";
+
 function buildPrompt(post: PostFrontmatter): string {
   const keywords = post.coverKeywords?.length
     ? post.coverKeywords
@@ -20,6 +29,8 @@ function buildPrompt(post: PostFrontmatter): string {
       : post.title.split(/\s+/).filter((w) => w.length > 3).slice(0, 5);
 
   const keywordsStr = keywords.join(", ");
+  const textLevel = post.coverText ?? DEFAULT_TEXT_LEVEL;
+  const textInstruction = TEXT_LEVEL_INSTRUCTIONS[textLevel];
 
   if (post.coverHint) {
     return [
@@ -27,6 +38,7 @@ function buildPrompt(post: PostFrontmatter): string {
       `Title: "${post.title.slice(0, 120)}"`,
       `Keywords to visualize: ${keywordsStr}`,
       `Diagram hint: ${post.coverHint}`,
+      textInstruction,
     ].join("\n");
   }
 
@@ -35,6 +47,7 @@ function buildPrompt(post: PostFrontmatter): string {
     `Title: "${post.title.slice(0, 120)}"`,
     `Summary: "${post.summary}"`,
     `Keywords to visualize: ${keywordsStr}`,
+    textInstruction,
   ].join("\n");
 }
 
