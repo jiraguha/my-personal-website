@@ -75,3 +75,9 @@ _None — no Docker services needed. Uses Bun APIs for file I/O and `@resvg/resv
 ## Post-Implementation Notes
 
 _Filled when status → complete._
+
+## How to Change the Favicon
+
+1. Edit `faviconLetter` in `src/content/profile.json`
+2. Run `bun run scripts/generate-favicon.ts` (or it runs automatically on `bun run build`)
+3. Hard-refresh the browser tab (`Cmd+Shift+R` on macOS, `Ctrl+Shift+R` on Windows/Linux) — browsers cache favicons aggressively
