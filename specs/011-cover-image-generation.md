@@ -1,6 +1,6 @@
 # 011 — AI-Powered Cover Image Generation (Nano Banana Pro)
 
-> Status: `implementing`
+> Status: `complete`
 > Mode: `full`
 > Date: 2026-03-18
 
@@ -321,6 +321,10 @@ Test content in `test/content/posts/` provides realistic posts across all catego
 
 ## Post-Implementation Notes
 
-_Filled when status → complete. Not required for prototypes._
-
-- ...
+- Promoted from prototype to full on 2026-03-21
+- `coverManual` and `autocover` fields were removed during prototype — replaced by implicit logic: `coverNone` for opt-out, `cover` presence for skip
+- Prompt-hash caching added during prototype — avoids redundant API calls when inputs haven't changed
+- `coverText` presets (none/minimal/moderate/heavy) added during prototype for text density control
+- Convention-based auto-resolve: posts.ts auto-fills `cover` from generated covers directory
+- Model and dimensions configurable via `.env` (COVER_MODEL, COVER_WIDTH, etc.)
+- All 178 tests pass (12 test files), typecheck clean
