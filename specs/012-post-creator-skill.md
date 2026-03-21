@@ -13,15 +13,15 @@ Jean-Paul can paste a raw draft, rough notes, bullet points, or just a topic ide
 ```typescript
 // No new runtime types. The skill produces files conforming to the existing
 // PostFrontmatter (spec 001), TalkFrontmatter (spec 006), and cover generation
-// fields (spec 011) schemas. The skill itself is a Claude SKILL.md file, not
-// application code. The skill instructions live in specs/post-creator-SKILL.md.
+// fields (spec 011) schemas. The skill itself is a Claude Code command, not
+// application code. The skill instructions live in .claude/commands/post-creator.md.
 ```
 
 ## Skill Acceptance Criteria
 
 _These replace the usual API/UI split since this is a Claude skill, not application code._
 
-- [ ] SK-1: The skill instructions are in `specs/post-creator-SKILL.md` (YAML frontmatter + Markdown). The slash command `.claude/commands/post-creator.md` loads and executes them via `/post-creator`.
+- [ ] SK-1: The skill is defined as a Claude Code command in `.claude/commands/post-creator.md`, invocable via `/post-creator`.
 - [ ] SK-2: The skill triggers when the user provides raw content and asks to create, write, polish, or format a post for the site. Trigger phrases include: "write a post about...", "turn this into a blog post", "new short", "new talk", "polish this draft", "create a post from these notes", or pasting raw text with a request to format it.
 - [ ] SK-3: The skill determines the correct content category (`blog`, `project`, `short`, `talk`) from context, or asks the user if ambiguous.
 - [ ] SK-4: **Language polish** — the output has zero spelling errors, correct grammar, and consistent punctuation. The author's voice is preserved (technically precise, not corporate).
@@ -80,13 +80,9 @@ _These replace the usual API/UI split since this is a Claude skill, not applicat
 ## Skill File Location
 
 ```
-specs/
-└── post-creator-SKILL.md       # The skill instructions
 .claude/commands/
-└── post-creator.md             # Slash command that loads the skill
+└── post-creator.md             # The skill definition, invocable via /post-creator
 ```
-
-The skill instructions live in `specs/post-creator-SKILL.md`. The slash command `.claude/commands/post-creator.md` loads and executes them via `/post-creator`.
 
 ## External Dependencies
 
