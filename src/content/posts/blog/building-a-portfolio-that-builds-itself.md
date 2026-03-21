@@ -132,13 +132,13 @@ The key insight is...
 
 ## Slide Two
 
-```python
+'''python
 def proof():
     return "it works"
-```
+'''
 
 Note: Demo the live version here
-
+```
 
 The talk gets a landing page at `/posts/my-talk` with metadata and links, and a full-screen presentation at `/talks/my-talk`.
 

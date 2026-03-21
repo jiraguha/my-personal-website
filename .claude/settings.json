@@ -7,7 +7,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(grep -r \"import.*css\\\\|import.*style\" /Users/jpiraguha/dev/my-personal-website/src/ui --include=*.tsx --include=*.ts)"
     ]
   },
   "hooks": {}
