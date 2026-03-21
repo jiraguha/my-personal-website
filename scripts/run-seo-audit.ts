@@ -7,6 +7,8 @@
  * With test content: CONTENT_DIR=test/content bun run test:seo
  */
 import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import { getAllPosts, getAllTags } from "../src/ui/lib/posts";
 
 const PORT = 4174;
@@ -49,10 +51,28 @@ function main(): void {
 
   console.log(`\nRunning Lighthouse CI (dev server on port ${PORT})...\n`);
 
+  let failed = false;
   try {
     execSync(cmd, { stdio: "inherit", env: { ...process.env } });
   } catch {
-    console.error("\nLighthouse CI failed — check the report above.");
+    failed = true;
+  }
+
+  // Step 4: Open the HTML report in the browser
+  const reportsDir = path.resolve(process.cwd(), ".lighthouseci/reports");
+  if (fs.existsSync(reportsDir)) {
+    const htmlFiles = fs.readdirSync(reportsDir).filter((f) => f.endsWith(".html"));
+    if (htmlFiles.length > 0) {
+      const manifest = path.join(reportsDir, "manifest.json");
+      // Open the latest HTML report
+      const latest = path.join(reportsDir, htmlFiles[htmlFiles.length - 1]);
+      console.log(`\nOpening report: ${latest}`);
+      execSync(`open "${latest}"`, { stdio: "inherit" });
+    }
+  }
+
+  if (failed) {
+    console.error("\nLighthouse CI assertions failed — check the report.");
     process.exit(1);
   }
 }
