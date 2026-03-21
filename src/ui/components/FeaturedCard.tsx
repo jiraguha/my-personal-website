@@ -28,7 +28,7 @@ export function FeaturedCard({ post }: FeaturedCardProps) {
         {post.cover && (
           <picture>
             <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
-            <img src={post.cover} alt="" className="w-full h-full object-cover" />
+            <img src={post.cover} alt={`Cover image for ${post.title}`} className="w-full h-full object-cover" />
           </picture>
         )}
         <div className="absolute inset-0 bg-black/20" />

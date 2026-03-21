@@ -49,7 +49,7 @@ function TalkLanding({
         <div className="mb-8 rounded-xl overflow-hidden">
           <picture>
             <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
-            <img src={post.cover} alt="" className="w-full" />
+            <img src={post.cover} alt={`Cover image for ${post.title}`} className="w-full" />
           </picture>
         </div>
       )}
@@ -199,7 +199,7 @@ export function Page() {
         <div className="mb-10 rounded-xl overflow-hidden">
           <picture>
             <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
-            <img src={post.cover} alt="" className="w-full" />
+            <img src={post.cover} alt={`Cover image for ${post.title}`} className="w-full" />
           </picture>
         </div>
       )}

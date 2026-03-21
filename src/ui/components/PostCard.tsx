@@ -70,7 +70,7 @@ export function PostCard({ post }: PostCardProps) {
           {post.cover && (
             <picture>
               <source srcSet={post.cover.replace(/\.png$/, ".webp")} type="image/webp" />
-              <img src={post.cover} alt="" className="w-full h-full object-cover" />
+              <img src={post.cover} alt={`Cover image for ${post.title}`} className="w-full h-full object-cover" />
             </picture>
           )}
           <div className="absolute top-2 right-2">
