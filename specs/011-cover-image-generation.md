@@ -135,13 +135,25 @@ export type CoverManifest = z.infer<typeof CoverManifestSchema>;
 
 - [ ] API-1: A CLI script (`bun run covers`) reads all posts from the content directory (resolved via `CONTENT_DIR` env var, defaulting to `src/content/posts/`), identifies those needing cover generation (`autocover !== false` AND no existing `coverManual: true` file), and generates missing covers via the Nano Banana Pro API. Posts across all categories (blog, project, talk, short) are processed.
 - [ ] API-2: Every API call reads the DA from `da.md` (or the post's `coverDa` frontmatter override) and uses it as a system-level prefix, appending the post-specific context (title, summary, keywords, optional hint) as the user prompt.
-- [ ] API-3: The user prompt per post follows this structure:
+- [ ] API-3: The user prompt per post uses one of two strategies based on whether `coverHint` is present:
+
+  **Strategy 1 — explicit hint (preferred, ~150 tokens):** Used when `coverHint` is set in frontmatter. The author's intent is clear, no extra context needed.
   ```
   Generate a cover image for a {category} post.
   Title: "{title}"
-  Keywords to visualize as labeled nodes: {coverKeywords || tags}
-  Diagram hint: {coverHint || "show relationships between the keywords"}
+  Keywords to visualize: {coverKeywords || tags}
+  Diagram hint: {coverHint}
   ```
+
+  **Strategy 2 — summary fallback (~200 tokens):** Used when `coverHint` is omitted. The `summary` field provides enough semantic context for the model to produce a relevant image without sending the full markdown body.
+  ```
+  Generate a cover image for a {category} post.
+  Title: "{title}"
+  Summary: "{summary}"
+  Keywords to visualize: {coverKeywords || tags}
+  ```
+
+  This keeps token consumption low (~150-200 tokens per post vs ~500-2000 for full body) while the DA prompt (~300 tokens) does the heavy lifting on style.
 - [ ] API-4: The API call targets `gemini-3-pro-image-preview` via the `@google/genai` SDK (`generateContent` with image output enabled).
 - [ ] API-5: Generated images are saved as PNG to `public/assets/covers/<slug>/cover.png`. A second 1200×630 crop/resize is saved as `og.png` for social cards.
 - [ ] API-6: A `covers.manifest.json` file is written to `public/assets/` tracking every generated cover (slug, category, path, prompt, timestamp, seed). This enables auditing, cache-busting, and selective regeneration.
