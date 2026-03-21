@@ -13,6 +13,7 @@ export function Footer({ profile }: FooterProps) {
         <p>
           © {year} {profile.name} · Built with React + Vike + Bun ❤️
         </p>
+        <p>Images powered by Nano Banana Pro 🍌</p>
         <div className="flex gap-4">
           {profile.socials.github && (
             <a
