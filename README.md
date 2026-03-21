@@ -1,4 +1,4 @@
-# iraguha.dev
+# my-personal-website
 
 [![Live](https://img.shields.io/badge/live-iraguha.dev-brightgreen)](https://iraguha.dev)
 ![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun&logoColor=white)
