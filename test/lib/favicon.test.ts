@@ -131,7 +131,7 @@ describe("generateFavicon", () => {
     expect(svg).toContain(">X</text>");
   });
 
-  it("generates all three PNG files (E2E-2)", () => {
+  it("generates all four PNG files (E2E-2)", () => {
     writeProfile({ faviconLetter: "A" });
     generateFavicon(OUTPUT, PROFILE, HASH);
 
@@ -198,8 +198,8 @@ describe("Head and manifest integration", () => {
     expect(headContent).toContain('rel="icon" type="image/svg+xml" href="/favicon.svg"');
   });
 
-  it("UI-2: Head includes PNG favicon link", () => {
-    expect(headContent).toContain('rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"');
+  it("UI-2: Head includes PNG favicon link (48px for Google)", () => {
+    expect(headContent).toContain('rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png"');
   });
 
   it("UI-3: Head includes apple-touch-icon", () => {

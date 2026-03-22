@@ -7,7 +7,8 @@ export function Head() {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+      <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
       <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192x192.png" />
       <link rel="manifest" href="/site.webmanifest" />
       <link

@@ -9,7 +9,7 @@ const PUBLIC = join(ROOT, "public");
 const PROFILE_PATH = join(ROOT, "src/content/profile.json");
 const HASH_PATH = join(PUBLIC, ".favicon-hash");
 
-export const SIZES = [32, 192, 512] as const;
+export const SIZES = [32, 48, 192, 512] as const;
 
 interface Profile {
   faviconLetter: string;
