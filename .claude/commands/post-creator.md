@@ -59,6 +59,24 @@ Read the user's input and determine:
 
 If the category is ambiguous, suggest one and ask the user to confirm.
 
+<!-- tone-of-voice:integration -->
+
+## Step 1.5: Select the Voice Profile
+
+Before polishing the content, pick which voice profile to apply.
+
+1. List the files in `./voice/` (at the repo root). Each file is a named profile produced by the `/tone-of-voice` skill (spec 015).
+2. If `./voice/` is missing or empty, skip this step and note in chat: `"No voice profiles found. Proceeding with default voice. Run /tone-of-voice to create one."`
+3. Otherwise, look at the draft's category and content and suggest the best-fitting profile. Examples of fit cues:
+   - Project write-up with heavy technical detail → `voice/technical.md` if present.
+   - Short TIL or hot take → `voice/casual.md` if present.
+   - Otherwise → `voice/default.md`.
+4. Ask the user to confirm: `"I'd use voice/<name>.md for this post. Ok, or pick another? (options: <list>)"`
+5. Read the chosen profile file. Treat its rules as hard constraints during Step 2 (Polish the Content): match sentence patterns, word choices, opening/closing moves, punctuation tendencies, formatting habits. Avoid every phrase listed under "Banned Phrases". Favor phrasings in "Loved Phrases".
+6. If the user picks a profile that no longer exists, fall back to suggesting from the current `./voice/` contents and warn.
+
+<!-- /tone-of-voice:integration -->
+
 ## Step 2: Polish the Content
 
 Apply these transformations to the raw input:

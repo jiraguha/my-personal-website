@@ -1,0 +1,1 @@
+Like da I want to to be able to create a ton of voice all the content I might create! delivrable is a skill that I will give a n'example and will extract the exact ton of voice.md that will be used post-creator
