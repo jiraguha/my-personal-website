@@ -93,6 +93,10 @@ Produce a Markdown profile with the following sections, in this order. Every rul
 > Extracted: YYYY-MM-DD
 > Corpus: <short description — e.g. "12 blog posts from src/content/posts/blog/, ~14000 words">
 
+## How to Read This Profile
+
+The **rules** (bold lines) are the constraints. The **quotes** under each rule are evidence that the pattern exists in the corpus — they are about old topics and included only to calibrate rhythm, structure, or tone. When writing a new post, extract the pattern from each rule and apply it to the current topic with fresh wording. Do not paste quoted phrases into the new draft.
+
 ## Voice Descriptors
 
 2–5 adjectives describing the overall voice, each with a one-line justification.

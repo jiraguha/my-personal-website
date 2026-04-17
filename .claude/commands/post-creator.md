@@ -72,8 +72,9 @@ Before polishing the content, pick which voice profile to apply.
    - Short TIL or hot take → `voice/casual.md` if present.
    - Otherwise → `voice/default.md`.
 4. Ask the user to confirm: `"I'd use voice/<name>.md for this post. Ok, or pick another? (options: <list>)"`
-5. Read the chosen profile file. Treat its rules as hard constraints during Step 2 (Polish the Content): match sentence patterns, word choices, opening/closing moves, punctuation tendencies, formatting habits. Avoid every phrase listed under "Banned Phrases". Favor phrasings in "Loved Phrases".
-6. If the user picks a profile that no longer exists, fall back to suggesting from the current `./voice/` contents and warn.
+5. Read the chosen profile file. Treat its **rules** as hard constraints during Step 2 (Polish the Content): match sentence patterns, word choices, opening/closing moves, punctuation tendencies, formatting habits.
+6. **Quotes in the profile are evidence of a pattern, not text to reuse.** Each rule is followed by a verbatim quote from the original corpus — the quote is about an old topic, included only to calibrate rhythm, structure, or tone. When drafting, extract the pattern and apply it to the current topic with fresh wording. Never paste quoted phrases into the new draft.
+7. If the user picks a profile that no longer exists, fall back to suggesting from the current `./voice/` contents and warn.
 
 <!-- /tone-of-voice:integration -->
 
