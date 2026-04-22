@@ -27,6 +27,14 @@ And the triangle model surfaced a practical truth the first wave missed: **tests
 
 These are the constraints I tried to internalize when I built my own SDD workflow. Here is what it looks like after 15 specs.
 
+## Curating the stack for short feedback loops
+
+Before writing a single spec, there is a decision that most SDD discussions skip: **choosing a stack that makes the feedback loop as short and clean as possible.** The stack is not a neutral background choice. It determines how fast tests run, how quickly the agent gets a signal, and how much review overhead each cycle carries.
+
+A compelling example is Lovable. They deliberately chose React + Vite + Supabase — not because it is the best stack in the abstract, but because it gives their AI agent the shortest path from prompt to working application. No separate server to generate. The frontend connects directly to Supabase, which provides the database, authentication, and storage layer. The tradeoff is real — complex backend logic requires Edge Functions or exporting the code — but for their use case, the tradeoff is worth it. The stack is curated for the agent, not just the developer.
+
+The same principle applies to any SDD workflow. For a full-stack TypeScript project, that might mean a runtime with sub-second test startup, a test runner with watch mode that re-runs only affected tests, and external services on localhost via Docker Compose — no mocks at the service boundary, no abstractions over infrastructure. For a Python data pipeline, it might be `pytest` + `httpx`. For a Rust CLI, `cargo test` with its built-in harness. **The tools change for every project. The principle does not: shortest feedback loop, cleanest eval, lowest review overhead.** An agent that runs tests after every code change needs those tests to execute fast and return clear signals. If the test suite takes four minutes to start, it does not matter how good the spec is.
+
 ## The four-phase workflow
 
 Every feature moves through four phases. Each phase is gated — you cannot skip ahead.
@@ -138,3 +146,4 @@ The ideas in this post are informed by these pieces — each worth reading in fu
 - [Drew Breunig — The Rise of Spec-Driven Development](https://www.dbreunig.com/2026/02/06/the-rise-of-spec-driven-development.html) — The triangle model: specs, tests, and structural choices as complexity grows.
 - [Drew Breunig — The SDD Triangle](https://www.dbreunig.com/2026/03/04/the-spec-driven-development-triangle.html) — Why systemic changes require systemic thinking, not local patches.
 - [Addy Osmani — Writing Good Specs](https://addyosmani.com/blog/good-spec/) — Practical spec writing: gated workflows, checkpoints, and subagents with isolated context windows.
+- [Lovable — Tech Stack & Exports](https://lovable.dev/faq/capabilities/tech-stack) — Why Lovable chose React + Vite + Supabase: a stack curated for the agent's feedback loop, not just the developer's preference.
