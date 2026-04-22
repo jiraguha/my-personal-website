@@ -7,8 +7,8 @@ tags: ["sdd", "tdd", "ai-agents", "developer-workflow"]
 category: blog
 draft: false
 featured: true
-coverKeywords: ["spec-driven-development", "feedback-loop", "vibe-coding", "context-engineering", "lovable"]
-coverHint: "Split-screen cyberpunk HUD: left side shows chaotic vibe-coding — tangled glowing lines, scattered code fragments, a heart/love icon pulsing red, no structure. Right side shows disciplined SDD — four glowing cyan gate nodes in sequence labeled SPEC TEST IMPL VERIFY connected by clean circuit traces, with a feedback arrow looping back. A bright dividing line separates chaos from order. The contrast tells the story."
+coverKeywords: ["spec-driven-development", "feedback-loop", "test-driven", "context-engineering", "developer-workflow"]
+coverHint: "A methodical engineering workbench showing numbered spec documents flowing through gates labeled test, implement, verify, and learn — with a feedback arrow looping back to the beginning"
 ---
 
 ## Where the serious conversation actually is
