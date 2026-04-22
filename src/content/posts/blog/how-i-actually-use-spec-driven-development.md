@@ -25,7 +25,7 @@ The question that sits underneath all of this: **where do humans sit relative to
 
 And the triangle model surfaced a practical truth the first wave missed: **tests and specs are not free.** The first successful SDD projects all had large existing test suites to lean on. That was the low-hanging fruit. As complexity grows, structural choices become more important — one team's C compiler got to 1% failing tests, but every bug fix broke something else because systemic changes required systemic thinking, not local patches.
 
-These are the constraints I tried to internalize when I built my own SDD workflow. Here is what it looks like after 15 specs.
+These are the constraints I tried to internalize when I built my own SDD workflow. The entire system — specs, commands, templates, project instructions, learnings — is open and available at [github.com/jiraguha/my-personal-website](https://github.com/jiraguha/my-personal-website). Here is what it looks like after 15 specs.
 
 ## Curating the stack for short feedback loops
 
@@ -133,6 +133,51 @@ After 15 specs — some through the full workflow, some through prototype mode a
 **Agents drift — and that is manageable.** Agents do not always follow instructions, and larger context windows do not guarantee better adherence. But drift is not a fatal flaw. It is an engineering problem. Deterministic guardrails catch the easy drift. Failing tests catch the semantic drift. The learning loop captures the patterns of drift so you can prevent them in the next session.
 
 **The end state is not "AI writes all the code."** It is engineers spending their time on the highest-leverage work — defining what to build (specs), defining what correct means (tests), and improving the environment that keeps the system honest (context engineering). The code is the implementation detail. The spec, the tests, and the context are the product.
+
+## Try it yourself: bootstrapping a different project
+
+The workflow described in this post is not tied to a specific stack or domain. To show that, here is how you would set it up for a completely different project — say, a Python CLI tool that monitors Kubernetes pod health and alerts on anomalies.
+
+**1. Curate the stack for your feedback loop.**
+
+The problem is a CLI that talks to the Kubernetes API, processes metrics, and sends alerts. The shortest feedback loop here is `pytest` with `click.testing.CliRunner` for CLI invocation tests, `responses` or `respx` for mocking HTTP calls to the K8s API, and a local Redis via Docker Compose for alert deduplication state. No cluster needed for the test suite — the K8s API responses are recorded fixtures.
+
+```
+pyproject.toml
+CLAUDE.md
+specs/
+  TEMPLATE.md
+src/
+  k8s_monitor/
+    cli.py
+    collector.py
+    alerter.py
+    schemas.py          # Pydantic — the contract
+tests/
+  test_collector.py
+  test_alerter.py
+  test_cli.py
+infra/
+  docker-compose.yml    # Redis on localhost:6379
+```
+
+**2. Write `CLAUDE.md` — the project instructions.**
+
+Define the two modes (full and prototype), the gate rules, the code conventions (`pydantic` at system boundaries, `typing` everywhere, no `Any`), and the anti-patterns. This file is the context the agent reads on every session. Adapt the conventions to Python idioms — `snake_case`, `import` over dynamic imports, `dataclasses` or `pydantic` for structured data.
+
+**3. Create your spec template.**
+
+Same structure as any SDD project — intent, shared schemas (Pydantic models instead of Zod), acceptance criteria split by layer (CLI, collector, alerter), edge cases, non-goals. The template enforces completeness.
+
+**4. Run the workflow.**
+
+`/spec-create` → define the first feature (e.g., "collect pod CPU metrics and alert when p95 exceeds threshold"). `/spec-test` → write failing `pytest` tests from acceptance criteria. `/spec-implement` → agent generates the implementation; tests verify it. `/spec-verify` → `mypy` passes, all tests pass, spec is complete.
+
+**5. Start the learning loop.**
+
+After the first session, document what the agent got wrong. Did it ignore the Pydantic schema and use raw dicts? Add that to `CLAUDE.md`: "always use Pydantic models at system boundaries, never raw dicts." Did it mock the Redis client instead of hitting the real one in Docker? Add that too. Each learning makes the next session better.
+
+The repo at [github.com/jiraguha/my-personal-website](https://github.com/jiraguha/my-personal-website) is a concrete, working example of this workflow on a TypeScript web project. The `CLAUDE.md`, `specs/TEMPLATE.md`, and `.claude/commands/` directory are the pieces you would adapt to your own stack and domain. The workflow is the constant; the tools are the variable.
 
 ## Source material
 
