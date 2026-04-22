@@ -7,9 +7,21 @@ Extract a named voice profile from one or more pieces of writing and save it und
 ## What This Skill Does
 
 1. Reads a corpus — inline pasted text, a file, a glob, or a directory.
-2. Extracts a structured voice profile (rules + verbatim quotes from the corpus).
+2. Extracts a structured voice profile — **patterns only, no verbatim text from the source**.
 3. Saves it to `./voice/<name>.md` after a preview-and-approve step.
 4. Updates `.claude/commands/post-creator.md` (idempotent, one-time) so post-creator scans `./voice/` and asks which profile to use on every run.
+
+## The Plagiarism Firewall (SK-0, critical)
+
+**The profile must never contain text copied from the source material.** This rule overrides every other instruction in this file. Specifically:
+
+- **No verbatim quotes.** Do not include `> "sentence from source"` blocks under any rule. The profile is for pattern extraction, not citation.
+- **No author or source attribution.** The corpus header describes corpus *type* only (category, word count, format). Never name the author, article title, publication, URL, or byline — even if the user pasted the text and the attribution is obvious.
+- **No "lightly-edited" source sentences.** Paraphrasing a source sentence by swapping one word still leaks the author's rhythm and phrasing. Examples in the profile must be *synthetic* — invented by you about a generic, unrelated topic.
+- **Loved Phrases must be common idioms**, not unique-to-source turns of phrase. If a phrase would only come up if the reader had read the source, it does not belong in the profile.
+- **Do / Don't tables** — both columns are invented by you. The "Do" column demonstrates the pattern; it is not sampled from the source.
+
+This matters because the profile feeds into generated posts via `post-creator`. Any source text that lives in the profile will eventually leak into a draft attributed to the user.
 
 ## Step 0: Parse the Invocation
 
@@ -31,14 +43,14 @@ Extract from the user's input:
 
 ## Step 2: Read the Corpus
 
-- Inline text → use verbatim.
+- Inline text → use verbatim as analysis input (but never copy it into the profile).
 - File path → read the file.
 - Directory or glob → expand, read each matching file.
 - For files under `src/content/posts/**`:
   - Strip YAML frontmatter before extraction (it's metadata, not prose).
   - Exclude posts with `draft: true` **unless** `--include-drafts` was given (SK-14).
   - Report how many drafts were skipped.
-- Exclude fenced code blocks from prose voice extraction (they're not prose). If code-comment style is distinctive, note it separately in "Formatting habits".
+- Exclude fenced code blocks from prose voice extraction (they're not prose). If code-comment style is distinctive, note it separately in "Formatting habits" — again, as a pattern, not a quote.
 - After reading, report: `Read N files, ~M words total. K drafts excluded.`
 
 ## Step 3: Determine the Profile Name (SK-5)
@@ -75,11 +87,11 @@ If fewer than 3 distinct examples, or under ~1500 words total prose (after strip
 
 ## Step 6: Extract the Profile (SK-6, SK-7, SK-8)
 
-Produce a Markdown profile with the following sections, in this order. Every rule must be followed by at least one verbatim quote from the corpus.
+Produce a Markdown profile with the following sections, in this order. **Every rule is followed by an abstract pattern description. A synthetic example is optional — include one only when the pattern is hard to grasp from the description alone. Never paste or paraphrase source text.**
 
-**Citation length rule (SK-7):**
-- **Short** (one sentence or phrase) for local rules: punctuation, word choice, loved phrases, banned phrases.
-- **Paragraph-level** for structural rules: opening moves, closing moves, rhythm — but only when the pattern actually requires a paragraph to show itself.
+**Example-length rule (SK-7):**
+- **Short** (one invented phrase or sentence) for local rules: punctuation, word choice, loved phrases, banned phrases.
+- **Short template block** (showing the shape, not the content) for structural rules: opening moves, closing moves. Use placeholder markers like `[setup]`, `[claim]`, `[punchline]` rather than fleshed-out prose when the shape is the point.
 
 **Per-category subsections (SK-8):** If the corpus spans multiple post categories (blog / short / talk / project), and the voice differs meaningfully between them, record those differences as subsections inside each extraction heading rather than splitting into multiple files.
 
@@ -91,17 +103,17 @@ Produce a Markdown profile with the following sections, in this order. Every rul
 # Voice Profile: <name>
 
 > Extracted: YYYY-MM-DD
-> Corpus: <short description — e.g. "12 blog posts from src/content/posts/blog/, ~14000 words">
+> Corpus type: <generic descriptor — e.g. "long-form tech essays, ~14000 words across ~12 posts". DO NOT name authors, article titles, publications, or URLs.>
 
 ## How to Read This Profile
 
-The **rules** (bold lines) are the constraints. The **quotes** under each rule are evidence that the pattern exists in the corpus — they are about old topics and included only to calibrate rhythm, structure, or tone. When writing a new post, extract the pattern from each rule and apply it to the current topic with fresh wording. Do not paste quoted phrases into the new draft.
+The rules (bold lines) are the constraints. Each rule is followed by an abstract pattern description and may include a synthetic example — an invented sentence about a generic topic, written only to illustrate the pattern. No text in this profile has been copied from the source material. When writing a new post, apply the patterns to the current topic with fresh wording.
 
 ## Voice Descriptors
 
-2–5 adjectives describing the overall voice, each with a one-line justification.
+2–5 adjectives describing the overall voice, each with a one-line justification that describes the *behavior*, not a quoted example.
 
-- **<adjective>** — why this fits, drawn from the corpus.
+- **<adjective>** — why this fits, described abstractly.
 
 ## Sentence Patterns
 
@@ -109,27 +121,29 @@ Typical sentence length, common rhythms, use of fragments, run-on tolerance.
 
 **<Rule about sentence structure.>**
 
-> <short quote demonstrating the rule>
+Pattern: `[describe the shape using placeholders like [anchor], [clause], [landing]]`
+
+*Synthetic example (optional):* an invented sentence about a generic topic that demonstrates the rule.
 
 ## Word Choices
 
-Characteristic verbs, nouns, connective phrases the author uses.
+Characteristic verbs, nouns, connective phrases the voice uses — described by *kind*, not by quoting specific sentences.
 
 **<Rule about word choice.>**
 
-> <short quote>
+Vocabulary: list of words or categories (e.g. "hedging verbs: probably, seems, likely") the voice reaches for.
 
 ## Loved Phrases
 
-Recurring expressions or constructions worth preserving.
+Common idiomatic constructions the voice returns to. Only include phrases that are widely-used English idioms, not unique-to-source turns of phrase.
 
-- `<phrase>` — <short quote showing it in use>
+- `<common idiom>` — when/why the voice uses it (described abstractly).
 
 ## Banned Phrases / Anti-patterns
 
 Patterns notably absent from the corpus — inferred from absence, not prompted. Examples: corporate fluff, AI-ish hedges, buzzwords, filler.
 
-- `<banned phrase>` — why it would feel off (contrast with the corpus).
+- `<banned phrase>` — why it would feel off.
 
 ## Formatting Habits
 
@@ -137,7 +151,7 @@ Bold/italic usage, inline code conventions, blockquote style, heading depth, lis
 
 **<Rule.>**
 
-> <short quote>
+Pattern: describe the formatting behavior. For templates, show the shape with placeholders.
 
 ## Punctuation Tendencies
 
@@ -145,7 +159,7 @@ Em-dash, semicolon, parenthetical, ellipsis frequency and function.
 
 **<Rule.>**
 
-> <short quote>
+Pattern / synthetic example using invented content.
 
 ## Opening Moves
 
@@ -153,7 +167,7 @@ How posts typically start — hook style, concession, anecdote, direct claim.
 
 **<Rule.>**
 
-> <paragraph-level quote if needed to show the opening arc>
+Pattern: a numbered or bulleted skeleton of what the opening does, step by step. Use placeholder prose, not copied prose.
 
 ## Closing Moves
 
@@ -161,47 +175,28 @@ How posts typically end — takeaway, question, call to reflection, fade.
 
 **<Rule.>**
 
-> <paragraph-level quote if needed>
+Pattern as above.
 
 ## Do / Don't Examples
 
-Short before/after pairs showing in-voice vs out-of-voice rewrites.
+Short before/after pairs showing in-voice vs out-of-voice rewrites. **Both columns are invented by you.** The "Do" column is a synthetic demonstration of the voice applied to an unrelated, generic topic — it is not drawn from or paraphrased off the source.
 
 | Don't | Do |
 |-------|----|
-| <generic/out-of-voice rewrite> | <in-voice phrasing from or derived from the corpus> |
+| <generic/out-of-voice sentence> | <in-voice sentence, invented, about a topic unrelated to the source> |
 ```
 
-When the corpus spans categories, each section above can have subsections:
-
-```markdown
-## Sentence Patterns
-
-**<Rule that holds across all categories.>**
-
-> <quote>
-
-### Blog
-
-**<Category-specific rule for blog posts.>**
-
-> <quote>
-
-### Short
-
-**<Category-specific rule for shorts.>**
-
-> <quote>
-```
+When the corpus spans categories, each section above can have subsections (`### Blog`, `### Short`, etc.) for category-specific rules. Same rule: patterns only, no quoted source text.
 
 ## Step 7: Preview Before Write (SK-10, SK-12)
 
 - Print the full extracted profile in chat.
+- **Self-check before presenting:** scan your own draft for (a) blockquote lines starting with `> "`, (b) proper nouns that could identify the source, (c) sentences that feel too specific to a particular topic from the corpus. Remove or rewrite before presenting.
 - **Re-run diff (SK-12)** — if the file already exists and the mode is overwrite or adapt, also print a full unified diff of the current file vs the proposed new content.
 - Ask: `"Approve, edit, or re-extract?"`
   - **Approve** → proceed to Step 8.
   - **Edit** → apply the user's in-chat corrections to the proposed content and re-present. Loop until approved.
-  - **Re-extract** → go back to Step 6 with different emphasis or a different citation strategy if the user asks.
+  - **Re-extract** → go back to Step 6 with different emphasis if the user asks.
 
 Only proceed to the write after explicit approval.
 
@@ -212,7 +207,7 @@ Only proceed to the write after explicit approval.
 - Confirm:
 
   > Wrote ./voice/<name>.md.
-  > Profiles available: default.md, casual.md, technical.md.
+  > Profiles available: <list>.
 
 ## Step 9: Wire Into post-creator (SK-9, idempotent)
 
@@ -243,7 +238,7 @@ Before polishing the content, pick which voice profile to apply.
    - Short TIL or hot take → `voice/casual.md` if present.
    - Otherwise → `voice/default.md`.
 4. Ask the user to confirm: `"I'd use voice/<name>.md for this post. Ok, or pick another? (options: <list>)"`
-5. Read the chosen profile file. Treat its rules as hard constraints during Step 2 (Polish the Content): match sentence patterns, word choices, opening/closing moves, punctuation tendencies, formatting habits. Avoid every phrase listed under "Banned Phrases". Favor phrasings in "Loved Phrases".
+5. Read the chosen profile file. Treat its rules as hard constraints during Step 2 (Polish the Content): match sentence patterns, word choices, opening/closing moves, punctuation tendencies, formatting habits. Avoid every phrase listed under "Banned Phrases". Favor phrasings in "Loved Phrases". **The profile contains patterns, not sample sentences — do not paste any text from the profile into the draft.**
 6. If the user picks a profile that no longer exists, fall back to suggesting from the current `./voice/` contents and warn.
 
 <!-- /tone-of-voice:integration -->
@@ -262,8 +257,11 @@ or
 Before finishing, verify:
 
 - [ ] The profile file lives at `./voice/<name>.md` (kebab-case, at the repo root).
-- [ ] Every rule in the profile has a verbatim quote from the corpus.
-- [ ] Citation length matches the rule type (short for local, paragraph for structural).
+- [ ] **Zero verbatim text from the source.** No `> "quoted sentence"` blocks. No paraphrased sentences where the topic matches the source.
+- [ ] **Zero source attribution.** No author name, article title, publication, or URL in the corpus header or anywhere else.
+- [ ] Every rule has a pattern description (and optionally a synthetic example about a generic topic).
+- [ ] Loved Phrases are common English idioms, not unique-to-source phrasings.
+- [ ] Do / Don't rows are both invented; the "Do" column does not share topics with the source.
 - [ ] If the corpus spanned categories, subsections were added where voice differs.
 - [ ] The file is valid Markdown (renders when opened).
 - [ ] `post-creator.md` contains the voice-selection block exactly once, between the opening and closing `<!-- tone-of-voice:integration -->` markers.

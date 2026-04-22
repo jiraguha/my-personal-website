@@ -2,7 +2,7 @@
 title: "Building a Portfolio That Builds Itself"
 slug: building-a-portfolio-that-builds-itself
 date: 2026-03-21
-summary: "How I built a spec-driven personal site with AI-generated covers, Reveal.js talks, fuzzy search, and a Claude skill that writes posts for me — and why you should fork it."
+summary: "A portfolio that is also a small publishing system – spec-driven, AI-augmented, Markdown-native. Fork it, point Claude at it, and the scaffolding is already there."
 tags: ["spec-driven-development", "portfolio", "claude", "open-source"]
 category: project
 draft: false
@@ -11,92 +11,64 @@ coverKeywords: ["spec-driven", "portfolio-engine", "ai-covers", "fork-adapt", "d
 coverHint: "A cyberpunk HUD showing a blueprint/schematic of a portfolio site being assembled by automated systems — specs flowing into tested components, AI generating cover art, slides rendering in a holographic preview panel"
 ---
 
-Most developer portfolios are static pages with a list of links. Mine writes its own blog posts.
+Over the past few months, I stopped treating my personal site as a static artefact and started treating it as a small production system – with specs, tests, a content pipeline, and a Claude skill that drafts posts for me. The change was quieter than I expected, but the effect on how often I actually publish has been the most obvious shift.
 
-This is the story of how I built [iraguha.dev](https://iraguha.dev) — a personal site that's equal parts portfolio, content engine, and engineering playground. It's spec-driven, AI-augmented, thoroughly tested, and designed so you can fork it, point Claude at it, and make it yours in an afternoon.
+What surprised me was how little of the work was the site itself. Most of the effort went into the scaffolding around it – the spec workflow, the cover generation pipeline, the skill that turns rough notes into publishable Markdown. The site is almost a by-product of the system that builds it.
 
-## The Problem With Side Projects
+_A caveat before we begin: this is a working system, not a finished one. Several pieces are still prototype-status, and the trade-offs below reflect what has held up so far – not a general prescription._
 
-Every developer has the same abandoned side project: the personal website. You spin up a template, write two posts, get distracted by the CSS, and never touch it again. Six months later it's running an outdated version of Next.js and your "latest" post is from 2024.
+In this article – a tour of what the system does and where it still has gaps – we cover:
 
-I wanted something different. Not just a site — a **system**. One that makes publishing frictionless, keeps the codebase disciplined, and gets better every time I add a feature.
+1. **Why a portfolio needs a system, not a template.** Static starters tend to rot; systems tend to accrete features.
+2. **The stack, in one page.** What I chose, and the trade-off I made in each case.
+3. **The content model.** Four categories, one Markdown layer, one Zod schema.
+4. **AI-generated cover art.** Prompt shape, caching, and what it costs.
+5. **Reveal.js talks from a single Markdown file.** Speaker notes, code highlighting, and a clean split between landing page and presentation.
+6. **The Claude skill that writes posts.** What it reads, what it outputs, and where it still hands off to me.
+7. **Fork-and-adapt mechanics.** What you change, what you keep.
+8. **What's missing.** Honest gaps, loose ends, and the next few specs.
 
-The answer turned out to be treating my portfolio like production software.
+A brief note on SDD: the workflow this site runs on – numbered specs, failing tests before code, a strict promotion path out of prototype mode – gets its own post. Here I mention it where it matters and move on.
 
-## Spec-Driven Development: The Backbone
+## Why a portfolio needs a system
 
-Every feature on this site started as a numbered spec in the `specs/` directory. Not a Jira ticket. Not a sticky note. A real document with acceptance criteria, test plans, and implementation notes.
+**Templates rot; systems compound.** Most developer sites are started on a weekend and never touched again – the CSS is distracting, the content feels exposed, and six months later the framework version is two majors behind. I have retired at least three portfolios for exactly this reason, so the question I started with was not _what should the site look like_, but _what would make me actually maintain it?_
 
-```
-specs/
-  001-Portfolio.md          ✅ complete
-  002-Resume_Download.md    ✅ complete
-  003-mermaid.md            ✅ complete
-  004-short.md              ✅ complete
-  005-trending-tags.md      ✅ complete
-  006-revealjs-talks.md     ✅ complete
-  007-post-search.md        ✅ complete
-  ...
-  014-meta-tags-og.md       ✅ complete
-```
+The answer turned out to be less about the site and more about the surface area around publishing. If writing a post means opening an editor, running one command, and seeing it live, it happens. If it means wrestling with a dashboard or rewriting a template, it does not.
 
-The workflow is strict: **spec → failing tests → implementation → verification**. No code without a spec. No implementation without failing tests. Completed specs are immutable — you don't go back and edit history.
+_In general, the cost of each post – measured in friction, not minutes – probably determines whether the site lives or dies._
 
-```mermaid
-graph LR
-    S["/spec-create"] --> T["/spec-test"]
-    T --> I["/spec-implement"]
-    I --> V["/spec-verify"]
-    V --> C["✅ Complete"]
+## The stack, in one page
 
-    P["/spec-proto"] --> E["🔶 Prototype"]
-    E --> PR["/spec-promote"]
-    PR --> T
+I kept the stack deliberately narrow. Each choice traded flexibility for something concrete – usually speed, sometimes clarity.
 
-    style S stroke:#00E5FF,stroke-width:2px
-    style C stroke:#00E5FF,stroke-width:2px
-    style E stroke:#FF1744,stroke-width:2px
-```
+| Layer | Choice | Why |
+|-------|--------|-----|
+| Runtime | **Bun** | Fast cold starts, batteries-included test runner, reads `.env` without extra setup. |
+| UI | **React 19 + Vite 6** | Familiar; the dev server is quick enough that I rarely notice it. |
+| Routing / SSR | **Vike** | File-based routing without the framework-shaped opinions. Explicit where other options tend to be magical. |
+| Styling | **Tailwind 4** | Utility-first; the new engine compiles fast enough that design iteration is cheap. |
+| Validation | **Zod** | One schema validates frontmatter on load and types the UI components. No drift between data and display. |
+| Content | **Markdown** | No CMS, no database, no vendor. `vim` and `git push` remain the highest-leverage authoring tools I own. |
 
-There's also a **prototype mode** for when you just want to explore an idea without the ceremony. Write code freely, skip the tests — but the deal is clear: prototype code either gets promoted (tested, verified) or deleted. It never stays as-is in production.
+**The trade-off is honest.** This stack is probably wrong if you are optimising for onboarding unfamiliar contributors, and it is definitely wrong if you want a WYSIWYG editor. For a single-author site, the lack of moving parts is the feature.
 
-14 specs. 12 complete. 80+ tests. Zero regressions.
+## The content model
 
-## The Stack: Opinionated and Lightweight
+**Four categories share one unified grid.** Blogs are long-form essays; projects are writeups of tools and systems; talks are Reveal.js decks; shorts are quick TILs. They share the same tag system, the same search index, and the same Zod schema – but diverge on card style, routing, and frontmatter.
 
-No Next.js. No database. No CMS. The stack is deliberately minimal:
+| Category | Purpose | Distinguishing trait |
+|----------|---------|----------------------|
+| **Blog** | Long-form articles | AI-generated cover image |
+| **Project** | Tool / system writeups | AI-generated cover image |
+| **Talk** | Reveal.js slide decks | Full-viewport presentation mode |
+| **Short** | TILs, hot takes | No cover, compact card, lightning badge |
 
-- **Bun** as runtime (fast, batteries-included)
-- **React 19 + Vite 6** for the UI
-- **Vike** for server-side rendering and file-based routing
-- **Tailwind CSS 4** for styling
-- **Zod** as the single source of truth for data shapes
-- **Markdown files** as the content layer
+**The Zod schema is the contract.** Frontmatter is parsed and validated at build time; a malformed post fails loudly rather than rendering silently-broken. This is the single piece of infrastructure I would keep even if I threw the rest of the code away – because it is what makes the rest of the code safe to change.
 
-Everything is a `.md` file with YAML frontmatter. Posts, projects, talks, quick notes — all just Markdown, validated by Zod at the boundary, Git-tracked alongside the code. No vendor lock-in. No API keys required to write a blog post.
+## AI-generated cover art
 
-> The best CMS is `vim` and `git push`.
-
-## Features That Make It Worth Using
-
-### Multi-Category Content
-
-Four content types, one unified grid:
-
-| Category | Purpose | Example |
-|----------|---------|---------|
-| **Blog** | Long-form articles, deep dives | This post |
-| **Project** | Writeups of tools and systems | Portfolio architecture |
-| **Talk** | Reveal.js slide decks | Conference presentations |
-| **Short** | Quick TILs and hot takes | "Bun's test runner is underrated" |
-
-Each has its own card style, routing rules, and frontmatter schema. Shorts get a ⚡ badge and no cover image. Talks get a ▶ button and a full-viewport presentation mode. Everything shares the same tag system and search index.
-
-### AI-Generated Cover Images
-
-Every blog and project post gets a unique cover image — generated by **Gemini 3 Pro** using a cyberpunk HUD aesthetic I defined in a single `da.md` file (Design Aesthetic).
-
-You control the output with frontmatter:
+Every blog and project post gets a unique cover image. The prompt is assembled from three frontmatter fields plus a global aesthetic definition (`da.md`):
 
 ```yaml
 coverKeywords: ["zero-trust", "agent-architecture"]
@@ -104,17 +76,15 @@ coverHint: "A HUD showing trust boundaries and memory compartments"
 coverText: minimal    # none | minimal | moderate | heavy
 ```
 
-One command generates covers for all posts that need them:
+The generator (Gemini 3 Pro, invoked via `bun run covers`) hashes the final prompt, checks a manifest, and only regenerates when the hash changes. Rate limits are respected, failures are retried with backoff, and nothing is committed until the manifest agrees.
 
-```bash
-bun run covers
-```
+**Practically, this means cover art is cheap to iterate on and free to re-run.** If I change the keywords on a draft, the next `bun run covers` picks up only that post. If I change `da.md`, every post regenerates – which is rare, because the aesthetic is intentionally stable.
 
-The system caches by prompt hash, rate-limits API calls, and tracks everything in a manifest. No re-generation unless the prompt changes.
+_Costs, roughly: a few cents per image, a few seconds per generation. Nothing that meaningfully changes the economics of writing._
 
-### Reveal.js Talks
+## Reveal.js talks from a single Markdown file
 
-Write your slides in Markdown. Separate them with `---`. Add speaker notes with `Note:`. Get a full presentation with code highlighting, Mermaid diagrams, and theme support — all from a single `.md` file.
+**Talks are just Markdown with a separator convention.** A `---` line breaks slides; a `Note:` block becomes speaker notes; fenced code blocks get syntax highlighting; Mermaid diagrams render inline.
 
 ```markdown
 ---
@@ -132,53 +102,39 @@ The key insight is...
 
 ## Slide Two
 
-'''python
-def proof():
-    return "it works"
-'''
-
 Note: Demo the live version here
 ```
 
-The talk gets a landing page at `/posts/my-talk` with metadata and links, and a full-screen presentation at `/talks/my-talk`.
+Each talk produces two URLs: a landing page at `/posts/my-talk` with metadata and abstract, and a full-screen presentation at `/talks/my-talk`. The landing page is indexable; the presentation is not. That split seems to be the right one – readers find the talk through search, viewers run it from a projector.
 
-### Fuzzy Search
+## The Claude skill that writes posts
 
-Client-side search powered by **Fuse.js**. Hit `/` to open the search bar, type to filter across titles, summaries, and tags. Debounced, category-aware, with result counts and empty states.
+Here is the part that most changed how I publish. The repo ships with a Claude Code skill (`.claude/commands/post-creator.md`) that turns rough notes into a publish-ready Markdown file.
 
-### Trending Tags
-
-Tags are ranked algorithmically: 40% frequency, 60% recency with exponential decay (~69-day half-life). The top 5 appear as colored chips. It's a small feature, but it makes the site feel alive — the trending section shifts as you publish new content.
-
-### SEO That Actually Works
-
-Full SSR via Vike means real HTML on first load. Every page gets:
-
-- Open Graph and Twitter Card meta tags
-- JSON-LD structured data (`Article` for posts, `Person` for home)
-- Generated `sitemap.xml` and `robots.txt`
-- Lighthouse CI checks: SEO ≥ 90, Accessibility ≥ 90
-
-OG images are category-aware: blog posts use the AI-generated cover, shorts get a text card with the ⚡ badge, talks get a cover with a ▶ overlay.
-
-## The Claude Skill: Posts That Write Themselves
-
-Here's where it gets interesting. The site includes a **Claude Code skill** (`.claude/commands/post-creator.md`) that transforms raw notes into publish-ready Markdown.
-
-You type something like:
+The input is usually a paragraph of unstructured thought:
 
 ```
-/post-creator hey so I discovered that bun's test runner is actually good,
-you don't need jest anymore, watch mode is fast and it reads .env automatically
+/post-creator bun's test runner is actually good – you don't need
+jest, watch mode is fast, and it reads .env automatically. saves a
+dev dependency.
 ```
 
-And you get back a polished short with correct frontmatter, code blocks, and structure. The skill handles all four content types, suggests Mermaid diagrams when it detects flows, and auto-splits talk content into slides.
+The output is a short with correct frontmatter, a plausible slug, a tag list consistent with the rest of the site, and a structure that matches other shorts in the same category. For longer pieces it suggests Mermaid diagrams when it detects flows, and for talks it splits prose into slide boundaries.
 
-It's prototype code right now (spec 012), but it already works. The skill that wrote this post is the same one you'd use after forking.
+**What the skill actually does, step by step:**
 
-## Fork It. Make It Yours.
+- Reads `src/content/profile.json` to keep tone consistent with my bio.
+- Reads a voice profile (like the one at `voice/pragmatic.md`) when asked to match a specific register.
+- Inspects existing posts in the target category to pick up frontmatter conventions.
+- Leaves a draft in the right directory with `draft: true` set, so nothing goes live by accident.
 
-This entire project is open source and designed to be adapted:
+It is not magic. The skill produces a first draft; I edit it. But the cost of the first draft is close to zero, which is the whole point.
+
+_This is still prototype code. The interface is likely to change before I promote it, and fork users should expect some friction here._
+
+## Fork-and-adapt mechanics
+
+The repository is open source and designed for adaptation, not just inspection.
 
 ```bash
 git clone https://github.com/jiraguha/my-personal-website.git
@@ -187,44 +143,35 @@ bun install
 bun run dev
 ```
 
-Here's what you'd change:
+**The things you change:**
 
-1. **`src/content/profile.json`** — your name, role, bio, socials, favicon letter
-2. **`da.md`** — your visual aesthetic for AI covers (or delete it and use static images)
-3. **`src/content/posts/`** — delete my posts, add yours
-4. **`CLAUDE.md`** — the project instructions are already there. Claude knows how to work with this codebase
+1. **`src/content/profile.json`** – your name, role, bio, socials, favicon letter.
+2. **`da.md`** – your visual aesthetic for AI covers, or delete the file and drop in static images instead.
+3. **`src/content/posts/`** – remove my posts, add yours. The four category folders are the schema.
+4. **`CLAUDE.md`** – already wired. Claude knows the conventions, the spec flow, and the skills available.
 
-The SDD workflow, the Claude skills, the cover generation pipeline, the testing infrastructure — it all comes with the repo. You're not forking a template. You're forking a **development system**.
+**The things you keep** – unless you have a strong reason otherwise – are the spec workflow, the Zod schema, the cover pipeline, the search index, and the tests. They are the parts that make the site maintainable, and they are also the parts most people would be tempted to strip out first.
 
-Point Claude at the `CLAUDE.md`, run `/spec-create`, and start building features for your own brand.
+## What's missing
 
-## Decisions I'd Make Again
+Honest gaps, in rough order of how much they bother me:
 
-**Markdown over a CMS.** No API calls to fetch your own content. No dashboard to log into. Just files in a folder, version-controlled with your code.
+- **No RSS feed yet.** The blocker is deciding whether to include shorts or only long-form; both options have a case.
+- **No reading-time estimate on cards.** Trivial to add; I keep forgetting.
+- **No comment system.** Most likely backed by GitHub Discussions, but it's unclear whether reader traffic justifies the moderation surface.
+- **No i18n.** Probably the biggest lift of the open items, and the one with the least certain payoff.
+- **Post-creator skill is prototype-status.** It works, but the spec isn't promoted – meaning tests and verification are pending.
+- **Deploy story is under-documented.** The site runs behind a CDN; the setup is not in the README yet.
+- **Lighthouse budgets are soft.** SEO and accessibility gates are enforced at ≥ 90; performance is not, which will probably bite me the first time I embed a heavy widget.
 
-**Zod as the contract.** One schema definition validates frontmatter on load, types the UI components, and catches errors at build time. No type drift between data and display.
+None of these are blockers – the site works. But the list is the honest answer to _what would I change next?_, and it is the part most portfolio posts seem to skip.
 
-**Vike over Next.js.** Lighter, more explicit, no magic. File-based routing without the framework lock-in. SSR where it matters, static export where it doesn't.
+## A brief note on SDD
 
-**Tests before code.** Not dogma — discipline. Every spec's tests caught at least one assumption I would have shipped without them. The trending tag decay formula? Found a timezone bug in the test phase. Mermaid rendering? Found a race condition. The tests paid for themselves before the features were done.
-
-**Prototype mode.** Not every idea deserves the full ceremony. But every idea that ships deserves tests. The two-track system keeps exploration fast without letting unverified code rot in production.
-
-## What's Next
-
-The site keeps growing spec by spec. Upcoming ideas:
-
-- **RSS feed** for subscribers
-- **Reading time estimates** on post cards
-- **Comment system** (probably GitHub Discussions-backed)
-- **Multi-language support** for broader reach
-
-Each one will be a numbered spec, with tests, with verification. The system scales because the process scales.
+The whole thing runs on a spec-driven workflow – numbered specs, failing tests before code, a promotion path out of prototype mode. Fourteen specs in, twelve complete, eighty-plus tests, no regressions so far. A longer post on how the workflow actually feels from the inside – including the failure modes – is coming next.
 
 ## Takeaway
 
-Your portfolio doesn't have to be a weekend project you abandon. It can be a system that reflects how you actually build software — disciplined, tested, and continuously improving.
+**A portfolio doesn't have to be a project you abandon.** It can be a system that mirrors how you build software at work – disciplined, tested, incrementally better. The friction you remove from publishing is, in my experience, the thing that determines whether the site survives the first six months.
 
-If you're tired of static templates and want a site that's as engineered as the systems you build at work, [fork the repo](https://github.com/jiraguha/my-personal-website.git) and make it yours. The specs are there. The tests are there. Claude knows the codebase. Start building.
-
-> The best portfolio isn't the one with the fanciest design — it's the one you actually maintain.
+If you want to skip the template phase and start with the system, [fork the repo](https://github.com/jiraguha/my-personal-website.git). The specs are there, the tests are there, and Claude already knows how to work with the codebase. Your mileage will vary – but the scaffolding is the part you'd otherwise spend a weekend rebuilding.
