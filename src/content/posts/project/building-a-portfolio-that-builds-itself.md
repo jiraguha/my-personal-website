@@ -6,7 +6,7 @@ summary: "A portfolio that is also a small publishing system – spec-driven, AI
 tags: ["spec-driven-development", "portfolio", "claude", "open-source"]
 category: project
 draft: false
-featured: true
+featured: false
 coverKeywords: ["spec-driven", "portfolio-engine", "ai-covers", "fork-adapt", "developer-brand"]
 coverHint: "A cyberpunk HUD showing a blueprint/schematic of a portfolio site being assembled by automated systems — specs flowing into tested components, AI generating cover art, slides rendering in a holographic preview panel"
 ---
