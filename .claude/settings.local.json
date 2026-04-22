@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:miro.medium.com)",
+      "mcp__claude_ai_firecrawl__firecrawl_scrape"
+    ]
+  }
+}

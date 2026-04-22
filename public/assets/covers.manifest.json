@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T12:11:20.647Z",
+  "generatedAt": "2026-04-22T16:07:46.479Z",
   "covers": [
     {
       "slug": "bun-for-backend",
@@ -153,9 +153,21 @@
       "width": 1200,
       "height": 675,
       "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a blog post.\nTitle: \"How I Actually Use Spec-Driven Development\"\nKeywords to visualize: spec-driven-development, feedback-loop, test-driven, context-engineering, developer-workflow\nDiagram hint: A methodical engineering workbench showing numbered spec documents flowing through gates labeled test, implement, verify, and learn — with a feedback arrow looping back to the beginning\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
-      "promptHash": "4435559a8614b987",
       "model": "gemini-3-pro-image-preview",
+      "promptHash": "4435559a8614b987",
       "generatedAt": "2026-04-22T12:11:20.645Z"
+    },
+    {
+      "slug": "ai-cannot-know-what-it-does-not-understand",
+      "category": "blog",
+      "imagePath": "public/assets/covers/ai-cannot-know-what-it-does-not-understand/cover.png",
+      "ogImagePath": "public/assets/covers/ai-cannot-know-what-it-does-not-understand/og.png",
+      "width": 1200,
+      "height": 675,
+      "prompt": "SYSTEM CONTEXT FOR ALL COVER GENERATIONS:\n\nYou are generating a cover image for a professional software engineering blog.\n\nSTRICT STYLE RULES — do not deviate:\n- Background: deep dark navy (#0B1120) with a subtle faint grid overlay\n- Color palette: bright cyan (#00E5FF) as primary accent for structure/information,\n  bright red (#FF1744) as secondary accent for risk/tension/cost,\n  dark slate-blue (#1A2744) for background panels, light gray (#E0E6ED) for text\n- Style: cyberpunk HUD / technical dashboard — looks like a futuristic engineering\n  ops console or command center display, NOT flat diagrams or stock art\n- Circuit-board traces: thin (1-2px) lines with right-angle bends running along\n  panel edges, corners, and between elements — a signature visual motif\n\n- Elements: wireframe 3D shapes, holographic objects, schematic diagrams,\n  network graphs, flow visualizations — rendered with a glowing neon quality\n- Text labels: JetBrains Mono or monospace font. Default text density is\n  MINIMAL — at most 1-3 very short labels (1-2 words each), no title\n  rendered in the image. This default can be overridden per post.\n- Glow effects: neon glow on primary elements (cyan and red), subtle bloom\n  on borders and active nodes\n- Composition: left-right panel split or centered content with flanking info panels\n- Optional: small bottom status bar with muted metadata text\n- Aspect ratio: 16:9 landscape\n- Resolution: 1200x675 minimum\n\nThe result should feel like a screenshot from a futuristic engineering dashboard —\nprecise, glowing, technical, and visually striking with cyan-red contrast.\n\n---\n\nGenerate a cover image for a blog post.\nTitle: \"AI Cannot Know What It Does Not Understand\"\nKeywords to visualize: knowledge, understanding, validation, chinese-room, epistemology\nDiagram hint: abstract split between a fluent stream of symbols and a human eye discerning meaning — warm tones on the human side, cool and hollow on the machine side\nTEXT DENSITY: At most 1-3 very short labels (1-2 words each), no title rendered in the image. Let the visuals do the talking.",
+      "promptHash": "1ad594d700eb2caf",
+      "model": "gemini-3-pro-image-preview",
+      "generatedAt": "2026-04-22T16:07:46.476Z"
     }
   ]
 }
