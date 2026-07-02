@@ -26,7 +26,7 @@ Today, we cover:
 
 Modern society was built on a slow shift in legitimacy. Across the eighteenth century, with *Les Lumières*, power moved away from lineage, tradition and divine authority toward something else – **reason**.
 
-> *Cogito ergo sum.* — I think, therefore I am.
+> *Cogito ergo sum.* I think, therefore I am.
 
 Thinking was not just a faculty. It became the foundation of identity and authority. The one who could reason, demonstrate coherence and master abstraction earned legitimacy. From this emerged the modern social contract: education produced expertise, expertise produced authority, and authority structured institutions.
 

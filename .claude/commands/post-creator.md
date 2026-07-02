@@ -86,7 +86,15 @@ Apply these transformations to the raw input:
 - Fix all spelling errors and typos
 - Correct grammar and punctuation
 - Normalize inconsistent formatting (e.g., mixed quote styles, inconsistent list markers)
-- Preserve the author's voice — Jean-Paul writes with technical precision and quiet confidence. Don't over-formalize or add corporate fluff
+- Preserve the author's voice. Jean-Paul writes with technical precision and quiet confidence. Don't over-formalize or add corporate fluff
+
+> **HARD RULE — never use the em dash (`—`, U+2014).** It reads as an AI tell and is banned in all generated content: post bodies, titles, summaries, frontmatter values, `coverHint`, callouts, and every other field. Do not use it. When you would reach for an em dash, use one of these instead:
+> - A **colon** (`:`) when introducing an explanation, summary, or restatement.
+> - A **comma** (`,`) for an appositive or a light parenthetical.
+> - **Parentheses** (`( )`) for a true aside.
+> - A **period** (split into two sentences) when the clauses stand alone.
+>
+> This also applies to en dashes (`–`) in prose; only use them inside genuine numeric ranges (e.g. `800–2000`). Before writing any file, scan the full output and confirm it contains zero `—` characters.
 
 ### Structure & Readability
 - Add clear `##` section headings that create a scannable outline
@@ -231,6 +239,7 @@ After writing the file:
 Before presenting the final post, verify:
 
 - [ ] No spelling or grammar errors remain
+- [ ] **Zero em dashes (`—`) anywhere in the output** (body, title, summary, frontmatter, coverHint). En dashes only inside numeric ranges.
 - [ ] Frontmatter is complete with all required fields
 - [ ] Slug is kebab-case and matches the filename
 - [ ] Tags are lowercase kebab-case
@@ -257,7 +266,7 @@ automatically which is nice. been using it on the artisan app for unit tests
 title: "Bun's Built-In Test Runner Is Better Than You Think"
 slug: bun-built-in-test-runner
 date: 2026-03-19
-summary: "Bun ships a fast, Jest-compatible test runner with watch mode and automatic .env loading — no extra dependencies needed."
+summary: "Bun ships a fast, Jest-compatible test runner with watch mode and automatic .env loading, with no extra dependencies needed."
 tags: ["bun", "testing", "devtools"]
 category: short
 draft: false
@@ -265,7 +274,7 @@ featured: false
 coverNone: true
 ---
 
-`bun test` ships a built-in test runner that's surprisingly capable. The `expect` API is Jest-compatible, watch mode is near-instant, and it automatically loads `.env` files — no `dotenv` setup required.
+`bun test` ships a built-in test runner that's surprisingly capable. The `expect` API is Jest-compatible, watch mode is near-instant, and it automatically loads `.env` files, with no `dotenv` setup required.
 
 I've been using it on the artisan app for unit tests and haven't needed Vitest or Jest for anything. For basic test suites, it's one less dependency and zero config.
 

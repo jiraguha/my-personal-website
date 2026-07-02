@@ -10,6 +10,6 @@ featured: false
 coverNone: true
 ---
 
-The danger is that generative tools can amplify **confirmation bias** by enabling users to construct plausible explanations in domains where they lack expertise — reinforcing confidence without deepening understanding.
+The danger is that generative tools can amplify **confirmation bias** by enabling users to construct plausible explanations in domains where they lack expertise, reinforcing confidence without deepening understanding.
 
 In medical contexts, this often manifests as self-medication. How many of us have already asked ChatGPT to diagnose the cause of a headache or interpret a harmless skin irregularity?

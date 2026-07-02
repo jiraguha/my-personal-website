@@ -1,14 +1,14 @@
 ---
-title: "Programming Is No Longer About Execution — It's About Meaning"
+title: "Programming Is No Longer About Execution: It's About Meaning"
 slug: programming-is-no-longer-about-execution-its-about-meaning
 date: 2026-03-22
-summary: "We used to tell machines what to do. Now they interpret what we mean. The core challenge of modern programming isn't controlling execution — it's preventing systems from redefining meaning."
+summary: "We used to tell machines what to do. Now they interpret what we mean. The core challenge of modern programming isn't controlling execution: it's preventing systems from redefining meaning."
 tags: ["software-engineering", "artificial-intelligence", "philosophy", "abstraction"]
 category: blog
 draft: false
 featured: false
 coverKeywords: ["meaning", "interpretation", "execution", "abstraction", "epistemology"]
-coverHint: "a split between a precise mechanical blueprint and a blurred, shifting reflection — illustrating the tension between instruction and interpretation"
+coverHint: "a split between a precise mechanical blueprint and a blurred, shifting reflection, illustrating the tension between instruction and interpretation"
 ---
 
 ## The Old Contract
@@ -27,7 +27,7 @@ When a compiler runs your code, meaning is unambiguous because it's encoded in t
 
 ## From Execution to Epistemics
 
-This is where the word **epistemic** becomes essential — and it's worth defining precisely.
+This is where the word **epistemic** becomes essential, and it's worth defining precisely.
 
 **Epistemics** refers to the study of knowledge itself, encompassing how we know what we know, what counts as justified belief, and how certainty is established or undermined. In philosophy, epistemology asks foundational questions such as what distinguishes belief from knowledge, how we validate claims, and when confidence is warranted, and these questions turn out to be exactly the ones that matter when a system starts making decisions on your behalf.
 

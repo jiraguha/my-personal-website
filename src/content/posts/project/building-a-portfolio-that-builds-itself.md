@@ -8,7 +8,7 @@ category: project
 draft: false
 featured: false
 coverKeywords: ["spec-driven", "portfolio-engine", "ai-covers", "fork-adapt", "developer-brand"]
-coverHint: "A cyberpunk HUD showing a blueprint/schematic of a portfolio site being assembled by automated systems — specs flowing into tested components, AI generating cover art, slides rendering in a holographic preview panel"
+coverHint: "A cyberpunk HUD showing a blueprint/schematic of a portfolio site being assembled by automated systems: specs flowing into tested components, AI generating cover art, slides rendering in a holographic preview panel"
 ---
 
 Over the past few months, I stopped treating my personal site as a static artefact and started treating it as a small production system – with specs, tests, a content pipeline, and a Claude skill that drafts posts for me. The change was quieter than I expected, but the effect on how often I actually publish has been the most obvious shift.
